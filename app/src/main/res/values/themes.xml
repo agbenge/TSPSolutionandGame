@@ -1,0 +1,63 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.TSPSolutionAndGame" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/blackDark</item>
+        <item name="colorPrimaryVariant">@color/blackLight</item>
+        <item name="colorOnPrimary">@color/yellowLight</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/yellowDark</item>
+        <item name="colorSecondaryVariant">@color/yellowLight</item>
+        <item name="colorOnSecondary">@color/blackDark</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+
+
+    </style>
+
+    <style name="Theme.TSPSolutionAndGame.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.TSPSolutionAndGame.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.TSPSolutionAndGame.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+
+    <!-- custom day   -->
+     <style name="YellowTxt" parent="Widget.AppCompat.TextView">
+         <item name="android:background">@drawable/btn_y</item>
+         <item name="android:textColor">@color/blackDark</item>
+    </style>
+    <style name="BlackTxt" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@drawable/btn_b</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="BtnYellow" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/btn_y</item>
+        <item name="android:textColor">@color/blackDark</item>
+    </style>
+    <style name="BtnBlack" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/btn_b</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="Theme.TSPSolutionAndGame.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/yellowDark</item>
+    </style>
+    <style name="Label" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">16sp</item>
+    <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/yellowDark</item>
+
+    </style>
+    <style name="TextField" parent="Widget.AppCompat.EditText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/yellowDark</item>
+
+    </style>
+</resources>
