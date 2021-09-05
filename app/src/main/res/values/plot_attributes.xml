@@ -1,3 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="PlotTSP">
+        <attr name="circleColor" format="reference|color" />
+        <attr name="labelColor" format="reference|color"/>
+        <attr name="lineColor" format="reference|color"/>
+        <attr name="textSize" format="integer"/>
+        <attr name="boardColor" format="reference|color" />
+        <attr name="boardBorderColor" format="reference|color"/>
+        <attr name="boardBorderWidth" format="reference|integer"/>
+        <attr name="lineWidth" format="reference|integer" />
+        <attr name="padding" format="reference|color"/>
+        <attr name="zoomValue" format="integer"/>
+    </declare-styleable>
 </resources>

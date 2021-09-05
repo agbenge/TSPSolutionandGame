@@ -11,7 +11,6 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
-        android:fitsSystemWindows="true"
         android:theme="@style/Theme.TSPSolutionAndGame.AppBarOverlay">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -19,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
+            app:titleEnabled="false"
             app:contentScrim="@drawable/softcaretech_b"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
+                app:title=""
                 app:popupTheme="@style/Theme.TSPSolutionAndGame.PopupOverlay" />
 
             <ImageView
@@ -39,38 +40,138 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context=".SolutionActivity"
         tools:showIn="@layout/activity_solution">
 
-        <include
-            layout="@layout/content_solution"
+
+        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:context=".SolutionActivity"
+            android:padding="@dimen/fab_margin">
+
+            <EditText
+                android:id="@+id/outputMatrix"
+                style="@style/YellowTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="textMultiLine"
+             android:focusable="false"
+                tools:text=" A  B C D \n A 0 4 6 7 \n B 7 0 5 4 \n C 56 7 0 6 \n  D 3 6 7 8 "
+                app:layout_constraintBottom_toTopOf="@+id/title_l"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title_m" />
+
+            <EditText
+                android:id="@+id/outputLocations"
+                style="@style/YellowTxt"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:focusable="false"
+                android:gravity="start|top"
+                android:inputType="textMultiLine"
+                tools:text=" city lat log \n A 0 4   \n B 7 0   \n C 56 7 \n  D 3 6  "
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title_l" />
+
+            <TextView
+                android:id="@+id/title_l"
+                style="@style/Theme.TSPSolutionAndGame.Title"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:text="Estimated Location"
+                app:layout_constraintBottom_toTopOf="@+id/outputLocations"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/outputMatrix" />
+
+            <TextView
+                android:id="@+id/title_m"
+                style="@style/Theme.TSPSolutionAndGame.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Matrix representation of cities"
+                app:layout_constraintBottom_toTopOf="@+id/outputMatrix"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/vM"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+android:visibility="gone"
+                android:text="Visualised"
+                app:layout_constraintBottom_toBottomOf="@+id/outputMatrix"
+                app:layout_constraintEnd_toEndOf="@+id/outputMatrix"
+                app:layout_constraintStart_toStartOf="@+id/outputMatrix" />
+
+            <Button
+                android:id="@+id/vL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="visualised"
+                app:layout_constraintBottom_toBottomOf="@+id/outputLocations"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/addL"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="bottom|start"
+        android:layout_gravity="top"
+        android:src="@drawable/ic_baseline_exposure_plus_1_24" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/clear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="top|start"
+        android:layout_gravity="top"
+        android:src="@drawable/ic_baseline_exposure_plus_1_24" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addD"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        android:src="@drawable/ic_baseline_exposure_plus_1_24"
-        app:srcCompat="@drawable/ic_baseline_exposure_plus_1_24" />
+        android:layout_gravity="top"
+        android:src="@drawable/ic_baseline_exposure_plus_1_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/solve"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
+        android:layout_gravity="bottom|end"
         android:clickable="true"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_baseline_follow_the_signs_24"
-        app:srcCompat="@drawable/ic_baseline_follow_the_signs_24" />
+        android:focusable="true" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

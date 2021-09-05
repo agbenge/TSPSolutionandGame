@@ -1,4 +1,4 @@
-package softcare.game;
+package softcare.game.model;
 
 public class CodeX {
     public static String tag="game";

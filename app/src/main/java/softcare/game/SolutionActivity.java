@@ -2,35 +2,45 @@ package softcare.game;
 
 //import com.google.android.gms.tasks.Task;
 //import com.google.android.gms.tasks.Tasks;
-import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar; ;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.Constraints;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import softcare.game.databinding.ActivitySolutionBinding;
+import softcare.game.model.Alg;
+import softcare.game.model.CodeX;
+import softcare.game.model.ErrorCode;
+import softcare.game.model.ProgressX;
+import softcare.game.model.SolutionViewModel;
+import softcare.game.model.Tsp;
+import softcare.game.model.TspCode;
+import softcare.gui.DialogPopup;
+import softcare.gui.PlotTSP;
 import softcare.gui.PointXY;
+import softcare.gui.StyleDialog;
 
 public class SolutionActivity extends AppCompatActivity {
 
     private ActivitySolutionBinding binding;
 
 
-    private SolutionModel solutionViewModel;
+    private SolutionViewModel solutionViewModel;
 
 
     @Override
@@ -44,14 +54,17 @@ public class SolutionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         CollapsingToolbarLayout toolBarLayout = binding.toolbarLayout;
         toolBarLayout.setTitle(getTitle());
-
+        solutionViewModel = new ViewModelProvider(this).get(SolutionViewModel.class);
        binding.addD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                Tsp tsp = solutionViewModel.getTsp();
                 Intent intent = new Intent(SolutionActivity.this, AddCityDActivity.class);
                if(tsp!=null) {
-                   intent.putExtra("cities",tsp.getCities().toArray());
+                   Log.d(CodeX.tag,tsp.getCities().toString()+" sending names  "+tsp.getCities().size());
+                   intent.putExtra("Cities", tsp.getCities().toArray(new String[0]));
+               }else{
+                   Log.d(CodeX.tag, " sending names is 00  " );
                }
                addD.launch(intent);
                //Snackbar.make(view, "Unable to intiallsed", Snackbar.LENGTH_LONG) .setAction("Action", null).show();
@@ -65,14 +78,40 @@ public class SolutionActivity extends AppCompatActivity {
                 //Snackbar.make(view, "Unable to intiallsed", Snackbar.LENGTH_LONG) .setAction("Action", null).show();
             }
         });
-        solutionViewModel = new ViewModelProvider(this).get(SolutionModel.class);
+        binding.solve.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Tsp tsp = solutionViewModel.getTsp(); 
+                if(tsp!=null) { 
+                    if(tsp.getTspActions()== TspCode.READ||tsp.getTspActions()== TspCode.UPDATE){
+                        if(tsp.getCities().size()>2){
+                            solutionViewModel.startAgl(Alg.DYN); // add choose algorithm here
+                        }else  Snackbar.make(view, "Cities too small to be a program", Snackbar.LENGTH_LONG).show();
+
+                    }else if(tsp.getTspActions()== TspCode.SOLVED) dialogResult(tsp);
+                    else Snackbar.make(view, "Cities are not added", Snackbar.LENGTH_LONG).show();
+
+                }else  Snackbar.make(view, "Unable to initialised, add distances or locations", Snackbar.LENGTH_LONG).show();
+  
+            }
+        });
+        binding.clear.setOnClickListener(view -> solutionViewModel.clear());/// change to button toback if already cleard
        solutionViewModel.getTspLiveData().observe(this, new Observer<Tsp>() {
 
             @Override
             public void onChanged(Tsp tsp) {
      if(tsp!=null){
-         binding.outputMatrix.setText(solutionViewModel.getPreview());
-         binding.outputLocations.setText(solutionViewModel.getPreviewXY());
+         if(tsp.getTspActions()!=TspCode.SOLVED) {
+             binding.outputMatrix.setText(solutionViewModel.getPreview());
+             binding.outputLocations.setText(solutionViewModel.getPreviewXY());
+         }else{
+             dialogResult(tsp);
+         }
+     }else{
+         binding.outputMatrix.setText("");
+         binding.outputLocations.setText("");
+         Snackbar.make(binding.getRoot(), "Inputs empty start a new problem", Snackbar.LENGTH_LONG ).show();
+
      }
             }
         });
@@ -118,7 +157,7 @@ public class SolutionActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(ActivityResult result) {
                     int resultCode= result.getResultCode();
-                    Log.d(CodeX.tag," here "+(resultCode==RESULT_OK));
+                    Log.d(CodeX.tag," location --------- "+(resultCode==RESULT_OK));
                     if(resultCode==RESULT_OK) {
                         Intent data = result.getData();
 
@@ -131,5 +170,34 @@ public class SolutionActivity extends AppCompatActivity {
             }
     );
 
+private  void dialogResult(Tsp tsp){
+    Dialog dialog= new  Dialog(this);
+    dialog.setContentView(R.layout.plot_tsp_result);
+    PlotTSP plotTSP=dialog.findViewById(R.id.plotTSP);
+    dialog.getWindow().setLayout(Constraints.LayoutParams.MATCH_PARENT, Constraints.LayoutParams.MATCH_PARENT);
+    dialog.show();
+    plotTSP.plot(tsp.getPointXY(), tsp.getCities(),
+            tsp.getDirection(), tsp.getDistance());
+    ((TextView)dialog.findViewById(R.id.result)).setText(tsp.getResult());
+    dialog.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            dialog.cancel();
+        }
+    });
+    dialog.findViewById(R.id.zoom_in).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            plotTSP.zoomIn();
+        }
+    });
+    dialog.findViewById(R.id.zoom_out).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            plotTSP.zoomOut();
+        }
+    });
 
+
+}
 }

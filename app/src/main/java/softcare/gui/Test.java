@@ -1,8 +1,15 @@
 package softcare.gui;
 
 
+import java.util.Random;
+
+import softcare.algorithm.SalesmanGenome;
+import softcare.algorithm.Salesmensch;
+import softcare.algorithm.SelectionType;
+import softcare.algorithm.TSPNearestNeighbour;
+import softcare.algorithm.TspDynamicProgrammingIterative;
 public class Test {
-    /*
+
     public static void printTravelPrices(double[][] travelPrices, int numberOfCities){
         for(int i = 0; i<numberOfCities; i++){
             for(int j=0; j<numberOfCities; j++){
@@ -116,7 +123,7 @@ public class Test {
 long start=System.currentTimeMillis();
 long end;
 System.out.println(" Gen problem");
-         Salesmensch geneticAlgorithm = new  Salesmensch(numberOfCities, SelectionType.ROULETTE, travelPrices, 0, 0);
+         Salesmensch geneticAlgorithm = new Salesmensch(numberOfCities, SelectionType.ROULETTE, travelPrices, 0, 0);
         SalesmanGenome result = geneticAlgorithm.optimize();
          end =System.currentTimeMillis();
         System.out.println(result);
@@ -162,7 +169,6 @@ System.out.println(" Gen problem");
 		  }
 		return  travelPrices2;
 	}
-	/
-     */
+
 }
 

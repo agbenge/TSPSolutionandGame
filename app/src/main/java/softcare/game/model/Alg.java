@@ -1,4 +1,4 @@
-package softcare.game;
+package softcare.game.model;
 
 public enum Alg {
     EMPTY,

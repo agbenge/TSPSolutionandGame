@@ -1,10 +1,8 @@
 package softcare.game;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -14,9 +12,9 @@ import android.widget.LinearLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import softcare.game.model.CodeX;
 import softcare.gui.ViewCityDistance;
 import softcare.util.S;
 
@@ -27,38 +25,24 @@ public class AddCityDActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_city_dactivity);
-        try{
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                addCity( Arrays.stream(getIntent().getStringArrayExtra("cities")).sorted().toArray(String[]::new));
-            }else {
 
-                addCity(  getIntent().getStringArrayExtra("cities"));
-
-            }
-
-
-        }catch (Exception e){
-
-        }
+addCity();
 
     }
 
 
-
-
-
-    public void addCity( String [] existingCities) {
-        final List<ViewCityDistance> citiesDistance = new ArrayList<>();
-        int x = 0;
-
+    public void addCity() {
+        final List<ViewCityDistance> citiesDistance   = new ArrayList<>();     int x = 0;
         LinearLayout root = findViewById(R.id.linear_list);
-        for (String cityName : existingCities) {
-           ViewCityDistance c= new ViewCityDistance(cityName, x, this);
-            citiesDistance.add(c);
-            root.addView(c,x);
-            x++;
-        }
-
+        if(getIntent().getStringArrayExtra("Cities")!=null)
+        for (String cityName : getIntent().getStringArrayExtra("Cities") ) {
+                ViewCityDistance c = new ViewCityDistance(this, x, cityName);
+            LinearLayout.LayoutParams layoutParams =
+                    new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,  LinearLayout.LayoutParams.WRAP_CONTENT);
+                citiesDistance.add(c);
+                root.addView(c, x,layoutParams);
+                x++;
+            }
         Button go = findViewById(R.id.add);
         EditText newCityName = findViewById(R.id.new_city_name);
 
@@ -85,7 +69,8 @@ public class AddCityDActivity extends AppCompatActivity {
                             intent.putExtra("cityName",newCityName.getText().toString());
                             intent.putExtra("data",data);
                             intent.setFlags(RESULT_OK);
-                            startActivity(intent);
+                            Log.d(CodeX.tag,"Sending name and data ");
+                            setResult(RESULT_OK,intent);
                             finish();
                            // mCities.add(newCityName.getText());
                            // updateMatrix(mCities.size() - 1, data);
@@ -105,12 +90,13 @@ public class AddCityDActivity extends AppCompatActivity {
                        // setLocation(mCities.size() - 1);
                        // stage.close();
                         Snackbar.make( newCityName,   "   Adding city", Snackbar.LENGTH_LONG).show();
-
+                        Log.d(CodeX.tag,"Sending only name");
                         Intent intent = new Intent(this, SolutionActivity.class);
                         intent.putExtra("cityName",newCityName.getText().toString());
                         //intent.putExtra("data", a);
                         intent.setFlags(RESULT_OK);
-                        startActivity(intent);
+                        setResult(RESULT_OK,intent);
+
                         finish();
                     }
                 } else {

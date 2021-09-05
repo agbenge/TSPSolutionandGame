@@ -1,4 +1,4 @@
-package softcare.game;
+package softcare.game.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +13,7 @@ public class Tsp {
         header="";
         pointXY=new ArrayList<>();
     }
+    private  String result;
    private TspCode tspCode = TspCode.EMPTY;
     private List<String> cities;
     private List<Integer> direction;
@@ -130,8 +131,13 @@ public class Tsp {
         this.cost = cost;
     }
 
+    public void setResult(String result) {
+        this.result = result;
+    }
 
-
+    public String getResult() {
+        return result;
+    }
 
     public int[][] getDataInt() {
         int[][] res = new int[cities.size()][cities.size()];

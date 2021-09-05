@@ -31,7 +31,7 @@ public class PopCityLocation extends StyleDialog implements View.OnKeyListener {
 		this.context= activity.getApplicationContext();
 	} 
 	public void addCity(String name, int index) {
-		setContentView(R.layout.pop_add_city_location);
+		setContentView(R.layout.activity_add_city_lactivity);
 		show();
 		x_input = findViewById(R.id.city_lat);
 		y_input = findViewById(R.id.city_log);

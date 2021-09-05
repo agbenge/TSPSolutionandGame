@@ -4,10 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    tools:context=".SolutionActivity"
     android:padding="@dimen/fab_margin">
 
     <EditText
-        android:id="@+id/editTextTextMultiLine"
+        android:id="@+id/outputMatrix"
         style="@style/YellowTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -15,14 +16,14 @@
         android:inputType="textMultiLine"
 
         android:text=" A  B C D \n A 0 4 6 7 \n B 7 0 5 4 \n C 56 7 0 6 \n  D 3 6 7 8 "
-        app:layout_constraintBottom_toTopOf="@+id/textView5"
+        app:layout_constraintBottom_toTopOf="@+id/title_l"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+        app:layout_constraintTop_toBottomOf="@+id/title_m" />
 
     <EditText
-        android:id="@+id/editTextTextMultiLine2"
+        android:id="@+id/outputLocations"
         style="@style/YellowTxt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -34,51 +35,51 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/title_l" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/title_l"
         style="@style/Theme.TSPSolutionAndGame.Title"
         android:layout_width="wrap_content"
 
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/fab_margin"
         android:text="estimated Location"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextMultiLine2"
+        app:layout_constraintBottom_toTopOf="@+id/outputLocations"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+        app:layout_constraintTop_toBottomOf="@+id/outputMatrix" />
 
     <TextView
-        android:id="@+id/textView6"
+        android:id="@+id/title_m"
         style="@style/Theme.TSPSolutionAndGame.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         android:text="Matrix representation of cities"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/outputMatrix"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/textView4"
+        android:id="@+id/vM"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
         android:text="Visualised"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextTextMultiLine"
-        app:layout_constraintEnd_toEndOf="@+id/editTextTextMultiLine"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextMultiLine" />
+        app:layout_constraintBottom_toBottomOf="@+id/outputMatrix"
+        app:layout_constraintEnd_toEndOf="@+id/outputMatrix"
+        app:layout_constraintStart_toStartOf="@+id/outputMatrix" />
 
     <Button
-        android:id="@+id/textView7"
+        android:id="@+id/vL"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="visualised"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextTextMultiLine2"
+        app:layout_constraintBottom_toBottomOf="@+id/outputLocations"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

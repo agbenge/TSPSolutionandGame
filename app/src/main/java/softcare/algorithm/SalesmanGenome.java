@@ -1,4 +1,4 @@
-package algorithm;
+package   softcare.algorithm;
 
 import java.util.*;
 

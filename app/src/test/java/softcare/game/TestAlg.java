@@ -1,4 +1,4 @@
-package softcare.gui;
+package softcare.game;
 
 
 import java.util.Random;
@@ -8,7 +8,9 @@ import softcare.algorithm.Salesmensch;
 import softcare.algorithm.SelectionType;
 import softcare.algorithm.TSPNearestNeighbour;
 import softcare.algorithm.TspDynamicProgrammingIterative;
-public class Test {
+import softcare.gui.PointXY;
+
+public class TestAlg {
 
     public static void printTravelPrices(double[][] travelPrices, int numberOfCities){
         for(int i = 0; i<numberOfCities; i++){
@@ -34,7 +36,7 @@ public class Test {
             System.out.println("");
         }
     }
-    private static double distance(PointXY p1,PointXY  p2) {
+    private static double distance(PointXY p1, PointXY  p2) {
     	  return euclidean(p1.x - p2.x, p1.y - p2.y);
     	}
     	private static double euclidean(double dx,double dy) {

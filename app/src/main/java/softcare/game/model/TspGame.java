@@ -6,17 +6,15 @@ import java.util.List;
 import softcare.gui.PointXY;
 import softcare.gui.Test;
 
-public class Tsp {
-    public Tsp() {
+public class TspGame {
+    public TspGame() {
         cities= new ArrayList<>();
         direction=new ArrayList<>();
-        header="";
         pointXY=new ArrayList<>();
     }
    private TspCode tspCode = TspCode.EMPTY;
     private List<String> cities;
     private List<Integer> direction;
-    private  String header;
     private List<PointXY> pointXY;
     private int defaultSize = 1024;
     private double matrix[][] = new double[defaultSize][defaultSize];
@@ -37,9 +35,6 @@ public class Tsp {
     }
     public void addPointXY(PointXY _pointXY){
         pointXY.add(_pointXY);
-    }
-    public void addHeader(String _header){
-        header=header+_header;
     }
 
     public List<String> getCities() {
@@ -82,13 +77,6 @@ public class Tsp {
         this.matrix = matrix;
     }
 
-    public String getHeader() {
-        return header;
-    }
-
-    public void setHeader(String header) {
-        this.header = header;
-    }
 
     public TspCode getTspActions() {
         return tspCode;

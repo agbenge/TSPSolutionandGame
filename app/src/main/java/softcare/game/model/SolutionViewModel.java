@@ -13,30 +13,30 @@ import softcare.algorithm.TspDynamicProgrammingIterative;
 import softcare.gui.PointXY;
 import softcare.util.S;
 
-public class SolutionModel extends ViewModel {
+public class SolutionViewModel extends ViewModel {
 
     private MutableLiveData<Tsp> tspLiveData;
     private MutableLiveData<ProgressX> progressXLiveData;
     private MutableLiveData<ErrorCode> errorCodeLiveData;
 
     public MutableLiveData<Tsp> getTspLiveData() {
-        if (tspLiveData == null) tspLiveData = new MutableLiveData();
+        if (tspLiveData == null) tspLiveData = new MutableLiveData<>();
         return tspLiveData;
     }
 
     public MutableLiveData<ErrorCode> getErrorCodeLiveData() {
-        if (errorCodeLiveData == null) errorCodeLiveData = new MutableLiveData();
+        if (errorCodeLiveData == null) errorCodeLiveData = new MutableLiveData<>();
         return errorCodeLiveData;
     }
 
     public Tsp getTsp() {
-        if (tspLiveData == null)
+        if (tspLiveData != null)
             return tspLiveData.getValue();
         return null;
     }
 
     public MutableLiveData<ProgressX> getProgressXLiveData() {
-        if (progressXLiveData == null) progressXLiveData = new MutableLiveData();
+        if (progressXLiveData == null) progressXLiveData = new MutableLiveData<>();
         return progressXLiveData;
     }
 
@@ -117,7 +117,10 @@ public class SolutionModel extends ViewModel {
                     System.out.println(duration);
                     System.out.println();
                     tsp.setTspActions(TspCode.SOLVED);
-                    tspLiveData.postValue(tsp);
+                    tsp.setResult( geFullResult(tsp));
+                   tspLiveData.postValue(tsp);
+
+
                 } else {
                     System.out.println("error size is " + tsp.getCities().size());
                     errorCodeLiveData.postValue(ErrorCode.DYN_MAX_REACHED);
@@ -141,6 +144,7 @@ public class SolutionModel extends ViewModel {
                 System.out.println(duration);
 
                 tsp.setTspActions(TspCode.SOLVED);
+                tsp.setResult( geFullResult(tsp));
                 tspLiveData.postValue(tsp);
                 break;
             }
@@ -167,6 +171,7 @@ public class SolutionModel extends ViewModel {
                 System.out.println(duration);
 
                 tsp.setTspActions(TspCode.SOLVED);
+                tsp.setResult( geFullResult(tsp));
                 tspLiveData.postValue(tsp);
                 break;
             }
@@ -272,7 +277,7 @@ public class SolutionModel extends ViewModel {
     /// preview full Result,
     public String getPreviewXY() {
         Tsp tsp = tspLiveData.getValue();
-        String res = " ";
+        String res = "";
         if (TspCode.READ != tsp.getTspActions() && TspCode.UPDATE != tsp.getTspActions()) {
             errorCodeLiveData.postValue(ErrorCode.NOT_READ_OR_UPDATED);
             return "";
@@ -281,12 +286,12 @@ public class SolutionModel extends ViewModel {
         res = tsp.getHeader();
         for (int i = 0; i < tsp.getCities().size(); i++) {
             res = res + tsp.getCities().get(i).replace(" ", "_") +
-                    "    " + tsp.getPointXY().get(i).getX() + " "
+                    "    " + tsp.getPointXY().get(i).getX() + "\t\t "
                     + tsp.getPointXY().get(i).getY();
             res += "\n";
         }
 
-        return res + "EOF";
+        return res ;
     }
 
 
@@ -381,8 +386,8 @@ public class SolutionModel extends ViewModel {
 
     }
 
-    protected String geFullResult() { /// presenting path as result
-        Tsp tsp = tspLiveData.getValue();
+    protected String geFullResult( Tsp tsp) { /// presenting path as result
+
         if (TspCode.SOLVED != tsp.getTspActions()) {
             errorCodeLiveData.postValue(ErrorCode.NOT_SOLVED);
             return "";
@@ -469,10 +474,14 @@ public class SolutionModel extends ViewModel {
             tsp.addPointXY(_pointXY);
             tsp.addCity(name);
             tsp.countDistancesAndUpdateMatrix();
-
+        tsp.setTspActions(TspCode.UPDATE);
+        tspLiveData.setValue(tsp);
     }
 
-
+public  void  clear(){
+        if(tspLiveData!=null)
+    tspLiveData.setValue(null);
+}
 
 
 

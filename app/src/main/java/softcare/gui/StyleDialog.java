@@ -14,7 +14,7 @@ import softcare.game.R;
 public class StyleDialog extends Dialog {
     public StyleDialog(@NonNull Context context) {
         super(context);
-        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+       // getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         //getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
     }
 

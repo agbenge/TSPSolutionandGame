@@ -10,11 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import algorithm.SalesmanGenome;
-import algorithm.Salesmensch;
-import algorithm.SelectionType;
-import algorithm.TSPNearestNeighbour;
-import algorithm.TspDynamicProgrammingIterative;
 
 public class Start  {
 	/*

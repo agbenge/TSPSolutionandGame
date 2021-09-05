@@ -6,7 +6,7 @@
  *
  * @author William Fiset, william.alexandre.fiset@gmail.com
  */
-package algorithm;
+package   softcare.algorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;

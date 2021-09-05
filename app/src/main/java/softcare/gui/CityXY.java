@@ -2,6 +2,8 @@ package softcare.gui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +11,9 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import softcare.game.R;
@@ -17,9 +22,24 @@ public class CityXY extends FrameLayout implements View.OnKeyListener {
 	private boolean ok=false;
 	private String x;
 	private String y;
-
 	public CityXY(Context context) {
 		super(context);
+		addCity();
+	}
+
+	public CityXY(@NonNull  Context context, @Nullable  AttributeSet attrs) {
+		super(context, attrs);
+		addCity();
+	}
+
+	public CityXY(@NonNull  Context context, @Nullable  AttributeSet attrs, int defStyleAttr) {
+		super(context, attrs, defStyleAttr);
+		addCity();
+	}
+
+	@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+	public CityXY(@NonNull  Context context, @Nullable  AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+		super(context, attrs, defStyleAttr, defStyleRes);
 		addCity();
 	}
 
@@ -36,7 +56,7 @@ public class CityXY extends FrameLayout implements View.OnKeyListener {
 		this.context= activity.getApplicationContext();
 	} 
 	public void addCity() {
-		inflate(getContext(), R.layout.pop_add_city_location, this);
+		inflate(getContext(), R.layout.activity_add_city_lactivity, this);
 		x_input = findViewById(R.id.city_lat);
 		y_input = findViewById(R.id.city_log);
 		city = findViewById(R.id.city_name);

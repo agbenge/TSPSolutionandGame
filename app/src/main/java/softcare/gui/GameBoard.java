@@ -18,7 +18,7 @@ import java.util.List;
 
 import softcare.game.R;
 
-public class PlotTSP extends View {
+public class GameBoard extends View {
     //circle and text colors
     private int circleColor, labelColor ,lineColor,
             boardColor, boardBorderWidth, boardBorderColor,
@@ -31,7 +31,7 @@ public class PlotTSP extends View {
     private int contentWidth = 400, contentHeight = 500;
 
 
-    public PlotTSP(Context context, @Nullable AttributeSet attrs) {
+    public GameBoard(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
 
@@ -43,7 +43,6 @@ public class PlotTSP extends View {
         labelPaint = new Paint();
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.PlotTSP, 0, 0);
-
 
         int padding = 10, circleRadius = 10;
         try {

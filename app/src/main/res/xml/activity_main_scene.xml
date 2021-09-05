@@ -16,4 +16,8 @@
 
     <ConstraintSet android:id="@+id/end">
     </ConstraintSet>
+    <Transition
+        motion:constraintSetStart="@+id/start"
+        motion:constraintSetEnd="@+id/end"
+        motion:autoTransition="animateToEnd" />
 </MotionScene>
