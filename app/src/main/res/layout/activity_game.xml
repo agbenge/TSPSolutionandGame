@@ -4,33 +4,168 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg"
     tools:context=".GameActivity">
 
-    <softcare.gui.PlotTSP
-        android:id="@+id/plotTSP2"
+    <TextView
+        android:id="@+id/level"
+        style="@style/BoardItem"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedWidth="false"
+        app:layout_constraintDimensionRatio="w,h 1:1"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="8" />
+
+    <TextView
+        android:id="@+id/scores"
+        style="@style/BoardItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/level"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="88" />
+
+    <TextView
+        android:id="@+id/time"
+        style="@style/BoardItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="45s"
+        app:layout_constraintStart_toEndOf="@+id/scores"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <HorizontalScrollView
-        android:id="@+id/horizontalScrollView"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/menu"
+        style="@style/BoardItem"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent">
+        android:background="@drawable/btn_y"
+        android:text="Menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@+id/time"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Menu" />
+
+    <TextView
+        android:id="@+id/_level"
+        style="@style/BoardItemLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Level"
+        app:layout_constraintEnd_toEndOf="@id/level"
+        app:layout_constraintStart_toStartOf="@id/level"
+        app:layout_constraintTop_toTopOf="@id/level" />
+
+    <TextView
+        android:id="@+id/_scores"
+        style="@style/BoardItemLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Scores"
+        app:layout_constraintEnd_toEndOf="@id/scores"
+        app:layout_constraintStart_toStartOf="@id/scores"
+        app:layout_constraintTop_toTopOf="@id/scores" />
+
+    <TextView
+        android:id="@+id/_time"
+        style="@style/BoardItemLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        app:layout_constraintEnd_toEndOf="@id/time"
+        app:layout_constraintStart_toStartOf="@id/time"
+        app:layout_constraintTop_toTopOf="@id/time" />
+    <HorizontalScrollView
+        android:id="@+id/answer_h_scroll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scores"
+        app:layout_constraintStart_toStartOf="parent"
+       >
 
         <LinearLayout
+            android:id="@+id/answersContainer"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:dividerPadding="@dimen/fab_margin"
+            android:orientation="horizontal"
+            android:padding="@dimen/fab_margin"/>
+    </HorizontalScrollView>
 
-            <Button
-                android:id="@+id/button"
+    <HorizontalScrollView
+        android:id="@+id/h_scroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_constraintBottom_toTopOf="@+id/options_h_scroll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/answer_h_scroll"
+        app:layout_constraintVertical_bias="0.0">
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="100dp">
+
+            <softcare.gui.PlotGame
+                android:id="@+id/plotGame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Button" />
-        </LinearLayout>
+                app:circleColor="@color/blueLight"
+                app:labelColor="@color/white"
+                app:lineColor="@color/magenta"
+                app:zoomValue="60" />
+        </ScrollView>
     </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:id="@+id/options_h_scroll"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/optionsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:dividerPadding="@dimen/fab_margin"
+            android:orientation="horizontal"
+            android:padding="@dimen/fab_margin" />
+    </HorizontalScrollView>
+
+    <ImageView
+        android:id="@+id/zoom_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:background="@drawable/btn_b"
+        android:onClick="zoomOut"
+        android:padding="@dimen/fab_margin"
+
+        app:layout_constraintBottom_toTopOf="@+id/options_h_scroll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_zoom_out_24"
+        app:tint="@color/white" />
+
+    <ImageView
+        android:id="@+id/zoom_in"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_b"
+        android:onClick="zoomIn"
+        android:padding="@dimen/fab_margin"
+        app:layout_constraintBottom_toTopOf="@+id/zoom_out"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_zoom_in_24"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

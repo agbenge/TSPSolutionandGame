@@ -9,7 +9,7 @@
         <attr name="boardBorderColor" format="reference|color"/>
         <attr name="boardBorderWidth" format="reference|integer"/>
         <attr name="lineWidth" format="reference|integer" />
-        <attr name="padding" format="reference|color"/>
         <attr name="zoomValue" format="integer"/>
+        <attr name="circleRadiusTsp" format="reference|integer"/>
     </declare-styleable>
 </resources>

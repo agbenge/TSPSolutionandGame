@@ -3,8 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="softcare.game.SolutionActivity">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:id="@+id/action_save"
+        android:orderInCategory="200"
+        android:title="@string/action_save"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_open"
+        android:orderInCategory="300"
+        android:title="@string/action_open"
+        app:showAsAction="never" />
+
 </menu>

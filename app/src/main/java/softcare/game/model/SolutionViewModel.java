@@ -117,7 +117,7 @@ public class SolutionViewModel extends ViewModel {
                     System.out.println(duration);
                     System.out.println();
                     tsp.setTspActions(TspCode.SOLVED);
-                    tsp.setResult( geFullResult(tsp));
+                    tsp.setResult( getResult(tsp));
                    tspLiveData.postValue(tsp);
 
 
@@ -144,7 +144,7 @@ public class SolutionViewModel extends ViewModel {
                 System.out.println(duration);
 
                 tsp.setTspActions(TspCode.SOLVED);
-                tsp.setResult( geFullResult(tsp));
+                tsp.setResult( getResult(tsp));
                 tspLiveData.postValue(tsp);
                 break;
             }
@@ -171,7 +171,7 @@ public class SolutionViewModel extends ViewModel {
                 System.out.println(duration);
 
                 tsp.setTspActions(TspCode.SOLVED);
-                tsp.setResult( geFullResult(tsp));
+                tsp.setResult( getResult(tsp));
                 tspLiveData.postValue(tsp);
                 break;
             }
@@ -386,7 +386,7 @@ public class SolutionViewModel extends ViewModel {
 
     }
 
-    protected String geFullResult( Tsp tsp) { /// presenting path as result
+    protected String getResult(Tsp tsp) { /// presenting path as result
 
         if (TspCode.SOLVED != tsp.getTspActions()) {
             errorCodeLiveData.postValue(ErrorCode.NOT_SOLVED);

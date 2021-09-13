@@ -26,7 +26,7 @@ public class PlotTSP extends View {
             boardColor, boardBorderWidth, boardBorderColor,
             textSize, lineWidth, circleBorderWidth;
 
-    int padding = 10, circleRadius = 10;
+    int padding = 10, circleRadius ;
   protected Paint circlePaint;
     protected Paint linePaint;
     protected Paint labelPaint;
@@ -56,7 +56,7 @@ public class PlotTSP extends View {
         super(context);
     }
 
-    private void init(Context context, @Nullable AttributeSet attrs) {
+    protected void init(Context context, @Nullable AttributeSet attrs) {
         circlePaint = new Paint();
         linePaint = new Paint();
         labelPaint = new Paint();
@@ -64,7 +64,6 @@ public class PlotTSP extends View {
                 R.styleable.PlotTSP, 0, 0);
 
 
-        int padding, circleRadius = 10;
         try {
             //get the text and colors specified using the names in attrs.xml
             circleColor = a.getInt(R.styleable.PlotTSP_circleColor, Color.BLUE);
@@ -74,7 +73,7 @@ public class PlotTSP extends View {
             lineWidth = a.getInteger(R.styleable.PlotTSP_lineWidth, 5);
             boardColor = a.getInteger(R.styleable.PlotTSP_boardColor, Color.LTGRAY);
             boardBorderColor = a.getInteger(R.styleable.PlotTSP_lineWidth, Color.BLACK);
-
+            circleRadius=a.getInteger(R.styleable.PlotTSP_circleRadiusTsp, textSize);
             zoom = a.getInteger(R.styleable.PlotTSP_zoomValue, 1);
         } finally {
             a.recycle();
@@ -104,14 +103,12 @@ public class PlotTSP extends View {
 
     protected void setColorsAndSizes() {
 
-        circlePaint.setStyle(Paint.Style.FILL);
+        circlePaint.setStyle(Paint.Style.STROKE);
         circlePaint.setAntiAlias(true);
         circlePaint.setColor(circleColor);
-
         labelPaint.setColor(labelColor);
         labelPaint.setTextAlign(Paint.Align.CENTER);
         labelPaint.setTextSize(textSize);
-
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setColor(lineColor);
         linePaint.setStrokeWidth(lineWidth);
@@ -195,8 +192,8 @@ public class PlotTSP extends View {
             y = (float) ((pointXY.get(i).y + invertNegavative  + 1) * zoom - 1* zoom) + padding +40;
             gc.lineTo(x, y);
 
-            canvas.drawCircle(x, y, circleRadius, circlePaint);
-            canvas.drawText(cities.get(i), x, y, labelPaint);
+            canvas.drawCircle(x, y, textSize/4, circlePaint);
+            canvas.drawText(cities.get(i), x, y-(textSize), labelPaint);
         }
         gc.lineTo(i_x, i_y);
        canvas.drawPath(gc, linePaint);
@@ -286,49 +283,66 @@ private double zoomInto=-1;
 
    private void zoom() {
         System.out.println("INVERT NEGATIVE  " + invertNegavative);
-/*        canvas.clearRect(0, 0, w,h); // First clear the canvas
-        // Set drawing parameters
-        gc.setStroke(Color.RED);
-        gc.setFill(Color.BLUE);
-        gc.setLineWidth(1);
-        */
 
 
     }
 
    double zoomIntoValue=0;
-    public void zoomOut() {
+    public void zoomIn() {
         zoom = zoom + 4;
+        if(circleRadius<100) {
+            circleRadius ++;
+            textSize++;
+        }
         refresh();
     }
 
-    public void zoomIn() {
+    public void zoomOut() {
         if (zoom > 2) {
             zoom = zoom - 2;
+            if(circleRadius>20) {
+                circleRadius--;
+                textSize--;
+            }
         } else if(zoomInto>0){
             zoomIntoValue= zoomIntoValue -3;
             zoomInto=zoomInto-3;
         }
         refresh();
     }
-int defaultZoom=0;
+
     private   void calculateZoom(int contentHeight, int contentWidth) {
         float max= contentHeight>contentWidth? contentHeight:contentWidth;
+       if(!isInEditMode()) setZoom(max*5);
     }
     private void initValues() {
                 this.pointXY = Arrays.asList(
-                new PointXY(1, 0),
-                new PointXY(2, 1),
-                new PointXY(0, 0) );
+                        new PointXY(1, 1),
+                        new PointXY(4, 4),
+                        new PointXY(0, 0),
+                new PointXY(7, 5),
+                new PointXY(5, 3),
+                new PointXY(6, 2) );
         this.cities = Arrays.asList(
                 "A",
                 "B",
-                "C" );
+                "C","d","e","f" );
         this.path = Arrays.asList(
                 0,
                 1,
-                2 );
+                2 ,5,4,3);
         this.distance = new double[]{3, 4, 3 };
         measureDim();
+        /*
+
+         */
+    }
+
+    public double getZoom() {
+        return zoom;
+    }
+
+    public void setZoom(double zoom) {
+        this.zoom = zoom;
     }
 }

@@ -20,8 +20,6 @@ public 	static  void print (List<String> sub) {
 	  }
 
 	public static String doubleToString(double d) {
-
-
         Formatter f = new Formatter();
         String s =String.valueOf(f.format("%.2f", d));
         f.close();

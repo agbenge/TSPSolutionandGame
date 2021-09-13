@@ -1,5 +1,9 @@
 package softcare.game;
+import org.junit.Test;
 
+import softcare.game.model.Game;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -11,4 +15,15 @@ public class ExampleUnitTest {
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
     }
+
+    @Test
+    public void test() {
+
+
+        Game g= new Game(1,30,5,34);
+        g.start(10);
+
+    }
+
+
 }

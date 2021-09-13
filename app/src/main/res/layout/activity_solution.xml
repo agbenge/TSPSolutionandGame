@@ -19,7 +19,6 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:titleEnabled="false"
-            app:contentScrim="@drawable/softcaretech_b"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/toolbar">
 
@@ -28,14 +27,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:title=""
+                app:title="@string/title_activity_solution"
                 app:popupTheme="@style/Theme.TSPSolutionAndGame.PopupOverlay" />
 
-            <ImageView
-                android:id="@+id/imageView3"
+            <TextView
+                android:id="@+id/addL"
+                android:textSize="18sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/softcaretech_b" />
+                android:layout_gravity="center"
+                android:drawableEnd="@drawable/ic_baseline_swap_horizontal_circle_24"
+                android:text="Add by points" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -48,9 +50,7 @@
         tools:showIn="@layout/activity_solution">
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:context=".SolutionActivity"
@@ -58,38 +58,34 @@
 
             <EditText
                 android:id="@+id/outputMatrix"
-                style="@style/YellowTxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:ems="10"
+                android:focusable="false"
                 android:inputType="textMultiLine"
-             android:focusable="false"
-                tools:text=" A  B C D \n A 0 4 6 7 \n B 7 0 5 4 \n C 56 7 0 6 \n  D 3 6 7 8 "
                 app:layout_constraintBottom_toTopOf="@+id/title_l"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title_m" />
+                app:layout_constraintTop_toBottomOf="@+id/title_m"
+                tools:text=" A  B C D \n A 0 4 6 7 \n B 7 0 5 4 \n C 56 7 0 6 \n  D 3 6 7 8 " />
 
             <EditText
                 android:id="@+id/outputLocations"
-                style="@style/YellowTxt"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:focusable="false"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
-                tools:text=" city lat log \n A 0 4   \n B 7 0   \n C 56 7 \n  D 3 6  "
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title_l" />
+                app:layout_constraintTop_toBottomOf="@+id/title_l"
+                tools:text=" city lat log \n A 0 4   \n B 7 0   \n C 56 7 \n  D 3 6  " />
 
             <TextView
                 android:id="@+id/title_l"
-                style="@style/Theme.TSPSolutionAndGame.Title"
                 android:layout_width="wrap_content"
 
                 android:layout_height="wrap_content"
@@ -103,7 +99,6 @@
 
             <TextView
                 android:id="@+id/title_m"
-                style="@style/Theme.TSPSolutionAndGame.Title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
@@ -135,43 +130,35 @@ android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|start"
-        android:layout_gravity="top"
-        android:src="@drawable/ic_baseline_exposure_plus_1_24" />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/clear"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="top|start"
-        android:layout_gravity="top"
-        android:src="@drawable/ic_baseline_exposure_plus_1_24" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addD"
+        android:id="@+id/refresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_anchor="@id/app_bar"
-        app:layout_anchorGravity="bottom|end"
         android:layout_gravity="top"
-        android:src="@drawable/ic_baseline_exposure_plus_1_24" />
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_baseline_refresh_24"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="bottom|start" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_baseline_add_24"
+        app:layout_anchor="@id/app_bar"
+        app:layout_anchorGravity="bottom|end" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/solve"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:clickable="true"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_baseline_follow_the_signs_24"
-        android:focusable="true" />
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_round_arrow_right_alt_24" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

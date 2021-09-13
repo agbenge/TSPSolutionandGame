@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle" >
+    <solid  android:color="@color/yellowLight"/>
+    <padding   android:right="8dp" android:left="8dp"
+        android:top="8dp" android:bottom="8dp"/>
+    <gradient
+        android:angle="0"
+        android:type="sweep"
+        android:startColor="@color/blueDark"
+        android:centerColor="@color/yellowDark"
+        android:endColor="@color/magenta"/>
+    <stroke android:color="@color/white" android:width="4dp" />
+    <corners android:radius="@dimen/fab_margin"  ></corners>
+</shape>

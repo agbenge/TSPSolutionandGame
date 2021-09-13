@@ -92,6 +92,11 @@ public class ViewCityDistance extends FrameLayout {
 
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     public int getIndex() {
         return this.index;
     }

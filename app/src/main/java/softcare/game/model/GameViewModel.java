@@ -5,6 +5,11 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.logging.Handler;
+
 import softcare.algorithm.SalesmanGenome;
 import softcare.algorithm.Salesmensch;
 import softcare.algorithm.SelectionType;
@@ -18,7 +23,7 @@ public class GameViewModel extends ViewModel {
     private MutableLiveData<Tsp> tspLiveData;
     private MutableLiveData<ProgressX> progressXLiveData;
     private MutableLiveData<ErrorCode> errorCodeLiveData;
-
+    private MutableLiveData<Game> game;
     public MutableLiveData<Tsp> getTspLiveData() {
         if (tspLiveData == null) tspLiveData = new MutableLiveData<>();
         return tspLiveData;
@@ -27,6 +32,11 @@ public class GameViewModel extends ViewModel {
     public MutableLiveData<ErrorCode> getErrorCodeLiveData() {
         if (errorCodeLiveData == null) errorCodeLiveData = new MutableLiveData<>();
         return errorCodeLiveData;
+    }
+
+    public MutableLiveData<Game> getGame() {
+        if(game==null) game=new MutableLiveData<>();
+        return game;
     }
 
     public Tsp getTsp() {
@@ -43,12 +53,11 @@ public class GameViewModel extends ViewModel {
     boolean stop;
 
 
-    public long startAgl(Alg alg) {
-        Tsp tsp = tspLiveData.getValue();
+    public long startAgl(Tsp tsp) {
         long start = System.currentTimeMillis();
         long duration = 0L;
         long end;
-        tsp.setAlg(alg);
+
         switch (tsp.getAlg()) {
             case DYN: {
 
@@ -184,4 +193,128 @@ public class GameViewModel extends ViewModel {
     }
 
 
+    public void start(Game game) {
+        Random r= new Random();
+        List<PointXY> p=  new ArrayList<>();
+        List<String> n=  new ArrayList<>();
+        for (int i = 0; i<game.getNodes() ;i++){
+            int x= r.nextInt(game.getBound());
+            int y= r.nextInt(game.getBound());
+             p.add(new PointXY(x,y));
+             n.add(getName(i));
+            Log.d(CodeX.tag, i+"---->  x "+x+"  y "+y);
+        }
+        Tsp tsp = getTspLiveData().getValue();
+
+
+
+        if(tsp==null) {
+            tsp = new Tsp();
+            tsp.setPointXY(p);
+            tsp.setCities(n);
+            tsp.countDistancesAndUpdateMatrix();
+        }else {
+                tsp.setPointXY(p);
+                tsp.setCities(n);
+                tsp.countDistancesAndUpdateMatrix();
+        }
+
+
+
+        /// run in background thread...
+        if(n.size()<20){
+            tsp.setAlg(Alg.DYN);
+        }else {
+            tsp.setAlg(Alg.KNN);
+        }
+        startAgl(tsp);
+    }
+
+
+
+    public void tryAgain(Game game) {
+        if(game.getRefreshPoints()) start(game);
+        else {
+            Tsp tsp = getTspLiveData().getValue();
+            tspLiveData.setValue(tsp);
+        }
+
+    }
+
+    int  getRandomInt(Random r, int lower, int upper){
+        return   r.nextInt(upper-lower)+lower;
+    }
+    private  String getName(int i){
+        switch (i){
+            case 0: return "A";
+            case 1: return "B";
+            case 2: return "C";
+            case 3: return "D";
+            case 4: return "E";
+            case 5: return "F";
+            case 6: return "G";
+            case 7: return "H";
+            case 9: return "I";
+            case 10: return "J";
+            case 11: return "K";
+            case 12: return "L";
+            case 13: return "M";
+            case 14: return "N";
+            case 15: return "O";
+            case 16: return "P";
+            case 17: return "Q";
+            case 18: return "R";
+            case 19: return "S";
+            case 20: return "T";
+            case 21: return "U";
+            case 22: return "V";
+            case 23: return "W";
+            case 24: return "X";
+            case 25: return "Y";
+            case 26: return "Z";
+        }
+
+        return String.valueOf(i);
+    }
+
+    public void pause(long startTime) {
+     Game  g= game.getValue();
+     if(g!=null) {
+         g.pause(startTime);
+         game.postValue(g);
+     }
+
+    }
+
+    public void setGame(Game _game) {
+        game.setValue(_game);
+    }
+
+    public void onCreateGame(Game _game) {
+        if(game.getValue()==null||tspLiveData.getValue()==null) {
+            start(_game);
+            setGame(_game);
+        }
+    }
+    public void onResumeGame(Game _game,List<PointXY> p,  List<String> n ) {
+        Tsp tsp = getTspLiveData().getValue();
+        if(tsp==null)
+            tsp = new Tsp();
+            tsp.setPointXY(p);
+            tsp.setCities(n);
+            tsp.countDistancesAndUpdateMatrix();
+        if(n.size()<20){
+            tsp.setAlg(Alg.DYN);
+        }else {
+            tsp.setAlg(Alg.KNN);
+        }
+        startAgl(tsp);
+    }
+
+    public void next(Game game) {
+        start(game);
+    }
+
+    public void saveGame() {
+    }
 }

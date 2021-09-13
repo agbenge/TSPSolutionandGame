@@ -2,13 +2,13 @@
     <!-- Base application theme. -->
     <style name="Theme.TSPSolutionAndGame" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/blackDark</item>
-        <item name="colorPrimaryVariant">@color/blackLight</item>
-        <item name="colorOnPrimary">@color/yellowLight</item>
+        <item name="colorPrimary">@color/blueDark</item>
+        <item name="colorPrimaryVariant">@color/blueLight</item>
+        <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/yellowDark</item>
         <item name="colorSecondaryVariant">@color/yellowLight</item>
-        <item name="colorOnSecondary">@color/blackDark</item>
+        <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
@@ -27,37 +27,43 @@
 
 
 
-    <!-- custom day   -->
-     <style name="YellowTxt" parent="Widget.AppCompat.TextView">
-         <item name="android:background">@drawable/btn_y</item>
-         <item name="android:textColor">@color/blackDark</item>
-    </style>
-    <style name="BlackTxt" parent="Widget.AppCompat.TextView">
-        <item name="android:background">@drawable/btn_b</item>
+    <style name="BoardItem" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@drawable/anim_bg_l</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:textSize">35sp</item>
+        <item name="android:minWidth">70dp</item>
         <item name="android:textColor">@color/white</item>
+        <item name="layout_constraintDimensionRatio">w 1:1</item>
+        <item name="android:textAlignment">center</item>
     </style>
-
-    <style name="BtnYellow" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/btn_y</item>
-        <item name="android:textColor">@color/blackDark</item>
-    </style>
-    <style name="BtnBlack" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/btn_b</item>
+    <style name="BoardItemLabel" parent="Widget.AppCompat.TextView">
         <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:textAlignment">center</item>
     </style>
-    <style name="Theme.TSPSolutionAndGame.Title">
+    <style name="PopText" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+    <style name="PopButton" parent="Widget.AppCompat.Button">
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+    <style name="PopMenuSwitch" parent="Widget.AppCompat.CompoundButton.Switch">
         <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/yellowDark</item>
+        <item name="android:layout_margin">@dimen/fab_margin</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/blueDark</item>
     </style>
-    <style name="Label" parent="Widget.AppCompat.TextView">
-        <item name="android:textSize">16sp</item>
-    <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/yellowDark</item>
-
-    </style>
-    <style name="TextField" parent="Widget.AppCompat.EditText">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/yellowDark</item>
-
+    <style name="PopMenuSub" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:textSize">35sp</item>
+        <item name="android:minWidth">70dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAlignment">center</item>
     </style>
 </resources>
