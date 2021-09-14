@@ -2,11 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Pop"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/fab_margin"
-    android:layout_margin="@dimen/fab_margin"
-    android:background="@drawable/bg_">
+    android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/msg"
@@ -21,47 +19,35 @@
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <Button
-        android:id="@+id/take_rest"
+        android:id="@+id/return_btn"
+        style="@style/PopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:background="@drawable/btn_b"
-        android:text="Exit"
+
+        android:text="Return"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/save_game"
+        app:layout_constraintEnd_toStartOf="@+id/try_again"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/msg" />
 
     <Button
-        android:id="@+id/save_game"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="Save"
-        app:layout_constraintBottom_toBottomOf="@+id/take_rest"
-        app:layout_constraintEnd_toStartOf="@+id/try_again"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/take_rest" />
-
-    <Button
         android:id="@+id/try_again"
+        style="@style/PopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Try Again"
-
-        app:layout_constraintBottom_toBottomOf="@+id/take_rest"
+        app:layout_constraintBottom_toBottomOf="@+id/return_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/save_game" />
+        app:layout_constraintStart_toEndOf="@+id/return_btn" />
 
     <TextView
         android:id="@+id/title"
         style="@style/BoardItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Game Over"
+        android:text="You lose"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

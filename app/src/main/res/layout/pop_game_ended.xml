@@ -2,11 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Pop"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/fab_margin"
-    android:layout_margin="@dimen/fab_margin"
-    android:background="@drawable/bg_">
+    android:layout_height="wrap_content">
 
 
     <TextView
@@ -36,7 +34,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/level"
         app:layout_constraintTop_toBottomOf="@+id/title"
-        tools:text="88" />
+        tools:text="56" />
 
     <TextView
         android:id="@+id/time"
@@ -84,38 +82,31 @@
         app:layout_constraintTop_toTopOf="@id/time" />
 
     <Button
-        android:id="@+id/take_rest"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:background="@drawable/btn_b"
-        android:text="Exit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/save_game"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/level" />
 
-    <Button
-        android:id="@+id/save_game"
+        android:id="@+id/return_btn"
+        style="@style/PopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="Save"
-        app:layout_constraintBottom_toBottomOf="@+id/take_rest"
+        android:layout_marginTop="16dp"
+        android:text="Return"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/try_again"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/take_rest" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flow" />
 
     <Button
         android:id="@+id/try_again"
+        style="@style/PopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Try Again"
-        app:layout_constraintBottom_toBottomOf="@+id/take_rest"
+        android:layout_marginTop="16dp"
+        android:text="New"
+        app:layout_constraintBottom_toBottomOf="@+id/return_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/save_game" />
+        app:layout_constraintStart_toEndOf="@+id/return_btn"
+        app:layout_constraintTop_toBottomOf="@+id/flow" />
 
     <TextView
         android:id="@+id/title"
@@ -126,4 +117,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/fab_margin"
+        app:constraint_referenced_ids="level,scores,time"
+        app:flow_horizontalStyle="packed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 </androidx.constraintlayout.widget.ConstraintLayout>

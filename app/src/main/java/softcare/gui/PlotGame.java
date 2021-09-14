@@ -83,7 +83,6 @@ public class PlotGame extends PlotTSP {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
     }
 
 
@@ -175,8 +174,8 @@ public class PlotGame extends PlotTSP {
             if ((xp-circleRadius <= x && xp + circleRadius >= x) &&
                     (yp-circleRadius <= y && yp + circleRadius >= y))
                 return i;
-            Log.d(CodeX.tag, (xp-circleRadius)+" >= x  <= "+xp + circleRadius +"  actual X "+x);
-            Log.d(CodeX.tag, (yp-circleRadius)+" >= x <= "+yp + circleRadius +"  actual Y "+y);
+         //   Log.d(CodeX.tag, (xp-circleRadius)+" >= x  <= "+xp + circleRadius +"  actual X "+x);
+         //   Log.d(CodeX.tag, (yp-circleRadius)+" >= x <= "+yp + circleRadius +"  actual Y "+y);
         }
         return -1;
     }

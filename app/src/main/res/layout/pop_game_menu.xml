@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/fab_margin"
-    android:background="@drawable/bg_"
-    android:padding="@dimen/fab_margin">
+    style="@style/Pop">
 
     <TextView
         android:id="@+id/title"
         style="@style/BoardItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Game  Menu"
+        android:text="Preference"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
-        android:id="@+id/sound"
+        android:id="@+id/k_sound"
         style="@style/PopMenuSwitch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Sound"
+        android:text="Actions Sounds"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider3" />
+        app:layout_constraintTop_toBottomOf="@+id/b_sound" />
 
     <Switch
         android:id="@+id/refresh_points"
@@ -36,7 +38,27 @@
         android:text="Refresh points alway"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sound" />
+        app:layout_constraintTop_toBottomOf="@+id/k_sound" />
+
+    <Switch
+        android:id="@+id/keys"
+        style="@style/PopMenuSwitch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Keys"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+    <Switch
+        android:id="@+id/b_sound"
+        style="@style/PopMenuSwitch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Backgroud Sound"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/keys" />
 
     <TextView
         android:id="@+id/level"
@@ -167,31 +189,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
-    <TextView
-        android:id="@+id/exit"
-        style="@style/PopMenuSub"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/fab_margin"
-        android:background="@drawable/btn_y"
-        android:text="Exit Game"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/close"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2" />
-
-    <TextView
+    <Button
         android:id="@+id/close"
-        style="@style/PopMenuSub"
+        style="@style/PopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_y"
-        android:text="Close"
+        android:layout_marginEnd="@dimen/fab_margin"
+        android:text="Return"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/exit"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout> </ScrollView>

@@ -232,8 +232,8 @@ public class GameViewModel extends ViewModel {
 
 
 
-    public void tryAgain(Game game) {
-        if(game.getRefreshPoints()) start(game);
+    public void tryAgain(Game game, boolean refreshPoints) {
+        if(refreshPoints) start(game);
         else {
             Tsp tsp = getTspLiveData().getValue();
             tspLiveData.setValue(tsp);

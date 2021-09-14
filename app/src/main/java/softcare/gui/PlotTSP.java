@@ -1,5 +1,6 @@
 package softcare.gui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -10,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -19,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import softcare.game.R;
+import softcare.game.model.CodeX;
 
 public class PlotTSP extends View {
     //circle and text colors
@@ -55,11 +59,12 @@ public class PlotTSP extends View {
     public PlotTSP(Context context) {
         super(context);
     }
-
+private Context context;
     protected void init(Context context, @Nullable AttributeSet attrs) {
         circlePaint = new Paint();
         linePaint = new Paint();
         labelPaint = new Paint();
+        this.context=context;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.PlotTSP, 0, 0);
 
@@ -158,6 +163,7 @@ public class PlotTSP extends View {
 
      @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
         int minw = (int) ((((contentWidth + invertNegavative +1) * zoom) - 1 * zoom)
                 + ( padding +40));
         int w = resolveSizeAndState(minw, widthMeasureSpec, MeasureSpec.EXACTLY);
@@ -167,20 +173,11 @@ public class PlotTSP extends View {
 // (((pointXY.get(0).x + invertNegavative +1) * zoom) - 1 * zoom) + padding +40;
         setMeasuredDimension(w,  minh);
         ty=h;
-        tx=w;
-    }
+        tx=w;  }
 
-    protected Path getTrianglePath() {
-        int shapeHeight = 20, shapeWidth = 60;
-        Path trianglePath = new Path();
-        trianglePath.moveTo(0, shapeHeight);
-        trianglePath.lineTo(shapeWidth, shapeHeight);
-        trianglePath.lineTo(shapeWidth / 2, 0);
-        return trianglePath;
-    }
 
     protected void drawWithZoom(Canvas canvas) {
-        if(zoom<1)zoom=1;
+        if(zoom<=0)zoom=1;
         Path gc = new Path();
         gc.reset();
         float x = (float) (((pointXY.get(0).x + invertNegavative +1) * zoom) - 1 * zoom) + padding +40;
@@ -192,8 +189,8 @@ public class PlotTSP extends View {
             y = (float) ((pointXY.get(i).y + invertNegavative  + 1) * zoom - 1* zoom) + padding +40;
             gc.lineTo(x, y);
 
-            canvas.drawCircle(x, y, textSize/4, circlePaint);
-            canvas.drawText(cities.get(i), x, y-(textSize), labelPaint);
+            canvas.drawCircle(x, y, textSize , circlePaint);
+            canvas.drawText(cities.get(i), x, y+textSize/2, labelPaint);
         }
         gc.lineTo(i_x, i_y);
        canvas.drawPath(gc, linePaint);
@@ -306,15 +303,17 @@ private double zoomInto=-1;
             }
         } else if(zoomInto>0){
             zoomIntoValue= zoomIntoValue -3;
-            zoomInto=zoomInto-3;
-        }
+            zoomInto=zoomInto-3;        }
         refresh();
     }
 
     private   void calculateZoom(int contentHeight, int contentWidth) {
         float max= contentHeight>contentWidth? contentHeight:contentWidth;
-       if(!isInEditMode()) setZoom(max*5);
-    }
+        DisplayMetrics dm= new DisplayMetrics();
+        ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(dm);
+        setZoom((int)(dm.widthPixels-100)/max) ;
+        Log.e(CodeX.tag," m width ="+dm.widthPixels);
+           }
     private void initValues() {
                 this.pointXY = Arrays.asList(
                         new PointXY(1, 1),

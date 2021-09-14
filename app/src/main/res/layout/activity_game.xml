@@ -96,6 +96,7 @@
             android:padding="@dimen/fab_margin"/>
     </HorizontalScrollView>
 
+
     <HorizontalScrollView
         android:id="@+id/h_scroll"
         android:layout_width="0dp"
@@ -117,12 +118,14 @@
                 android:id="@+id/plotGame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg"
                 app:circleColor="@color/blueLight"
                 app:labelColor="@color/white"
                 app:lineColor="@color/magenta"
                 app:zoomValue="60" />
         </ScrollView>
     </HorizontalScrollView>
+
 
     <HorizontalScrollView
         android:id="@+id/options_h_scroll"
@@ -140,7 +143,14 @@
             android:orientation="horizontal"
             android:padding="@dimen/fab_margin" />
     </HorizontalScrollView>
-
+    <Button
+        android:id="@+id/btn_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PLay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
     <ImageView
         android:id="@+id/zoom_out"
         android:layout_width="wrap_content"

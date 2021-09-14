@@ -3,4 +3,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="ico_size_small">100</dimen>
+    <dimen name="title_padding_top">32dp</dimen>
 </resources>

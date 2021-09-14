@@ -3,7 +3,14 @@ package softcare.game;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +31,7 @@ import softcare.game.model.TspCode;
 import softcare.gui.OnPointListener;
 import softcare.gui.PlotGame;
 import softcare.gui.StyleDialog;
+import softcare.util.S;
 
 public class GameActivity extends AppCompatActivity implements OnPointListener {
     private GameViewModel gameViewModel;
@@ -35,15 +43,55 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     private TextView time;
     private TextView menu;
     private long startTime;
+    private final SharedPreferences gameSettings = getSharedPreferences("game_settings",
+            Activity.MODE_PRIVATE);
+    private int[] soundIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-          _init();
+        _init();
         viewModelListener();
-      if( gameViewModel.getGame().getValue()==null) resume(readStoredGame());
-       setAnimations();
+        if (gameViewModel.getGame().getValue() == null) dialogResume(readStoredGame());
+        setAnimations();
+
+        startSound();
+    }
+
+    private SoundPool soundPool;
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (soundPool != null) soundPool.release();
+    }
+
+    private void startSound() {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+            soundPool = new SoundPool.Builder().
+                    setMaxStreams(10).
+                    setAudioAttributes(audioAttributes)
+                    .build();
+        } else {
+            soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+        }
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        //0 background; 1 answered 2 unanswered,  3 win , 4 loose, 5 game over, 6 button presssed. 7 zoomin 8 zoom 0ut
+
+        soundIds = new int[10];
+        /// soundIds[0]=soundPool.load(this,R.raw.move,1);
+        if (gameSettings.getBoolean("b_sound", false))
+            soundPool.play(soundIds[0], 1, 1, 0, 1, 1.0f);
+
+        // looop 0 no loop; 1 loop forever
+
     }
 
     private void _init() {
@@ -60,13 +108,13 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
 
     private Game readStoredGame() {
-        SharedPreferences s =getSharedPreferences("game_settings",
-                Activity.MODE_PRIVATE);
-        return  new Game(3,   10);
+
+        return new Game(3);
     }
+
     private void storedGame() {
 
-        SharedPreferences s =getSharedPreferences("game_settings",
+        SharedPreferences s = getSharedPreferences("game_settings",
                 Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = s.edit();
         editor.apply();
@@ -74,41 +122,74 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     }
 
     private void addOption(Button b, int i) {
-        b.setOnClickListener(v -> answer(b,i));
+        b.setOnClickListener(v -> {
+            optionsContainer.removeView(b);
+            addAnswer(b, i);
+            Game game = gameViewModel.getGame().getValue();
+
+            game.addDirection(i);
+
+            gameViewModel.setGame(game);
+            // plotGame.plotPath(game.getDirection());
+            if (optionsContainer.getChildCount() == 0L) {
+                finishGame();
+            }
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[1], 1, 1, 1, 1, 1.0f);
+        });
         optionsContainer.addView(b);
     }
+
     private void addAnswer(Button b, int i) {
         b.setOnClickListener(v -> {
             answersContainer.removeView(b);
             addOption(b, i);
-            Game game=  gameViewModel.getGame().getValue();
+            Game game = gameViewModel.getGame().getValue();
             game.removeDirection(i);
             gameViewModel.setGame(game);
-           // plotGame.plotPath(game.getDirection());
-
+            // plotGame.plotPath(game.getDirection());
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[2], 1, 1, 1, 1, 1.0f);
 
         });
         answersContainer.addView(b);
     }
-   private void answer(Button b, int i){
-        optionsContainer.removeView(b);
-        addAnswer(b, i);
-       Game game=  gameViewModel.getGame().getValue();
 
-        game.addDirection(i);
 
-       gameViewModel.setGame(game);
-       // plotGame.plotPath(game.getDirection());
-        if (optionsContainer.getChildCount() == 0L) {
-            finishGame();
-        }
-    }
     private void viewModelListener() {
         gameViewModel.getTspLiveData().observe(this, tsp -> {
-            Game game=  gameViewModel.getGame().getValue();
-            if (tsp != null&&game!=null) {
+            Game game = gameViewModel.getGame().getValue();
+            if (tsp != null && game != null) {
 
-                plotGame.setZoom(game.getBound() * 5);
+                //  plotGame.setZoom(game.getBound() * 5);
+                if(gameSettings.getBoolean("timing", false)) {
+                    new CountDownTimer(game.getTiming(), 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            time.setText(S.timeDisplay( millisUntilFinished  ));
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            dialogLoose( game,"You time finish try again pints will be refresh");
+
+                        }
+                    };
+                }else{
+                    new CountUp(1000*60*60, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+                            time.setText(S.timeDisplay(millisUntilFinished  ));
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            dialogLoose( game,"Sorry you have take too much time to figure out the solution try again");
+
+                        }
+                    };
+
+                }
                 level.setText(String.valueOf(game.getLevel()));
                 scores.setText(String.valueOf(game.getScores()));
                 if (tsp.getTspActions() == TspCode.SOLVED) {
@@ -134,93 +215,134 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         gameViewModel.getErrorCodeLiveData().observe(this, errorCode -> Snackbar.make(plotGame, "Error " + errorCode.toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show());
         gameViewModel.getProgressXLiveData().observe(this, progressX -> Log.d("game", progressX.toString()));
         gameViewModel.getGame().observe(this, game -> {
-            if(game!=null) {
+            if (game != null) {
                 plotGame.plotPath(game.getDirection());
             }
 
         });
-plotGame.setOnPointListener(this);
-menu.setOnClickListener(v -> menu());
+        plotGame.setOnPointListener(this);
+        menu.setOnClickListener(v -> menu());
     }
+
     private void finishGame() {
         answersContainer.removeAllViews();
         Tsp tsp = gameViewModel.getTspLiveData().getValue();
-        Game game =gameViewModel.getGame().getValue();
+        Game game = gameViewModel.getGame().getValue();
         if (tsp != null) {
             if (game != null) {
                 String result = game.getResult(tsp);
-                if (tsp.getCost() >=game.getCost()) {
-                    win(game, result,tsp);
+                if (S.formDouble(tsp.getCost()) >= S.formDouble(game.getCost())) {
+                    dialogWin(game, result, tsp);
                 } else {
-                   loose(game, result);
+                    dialogLoose(game, result);
                 }
             }
         }
     }
 
-    private void win(Game game,String result, Tsp tsp) {
+    private void dialogWin(Game game, String result, Tsp tsp) {
         StyleDialog ad = new StyleDialog(this);
         ad.setContentView(R.layout.pop_game_end);
-        ((TextView) ad.findViewById(R.id.title)).setText("You Wine");
+        ((TextView) ad.findViewById(R.id.title)).setText("You are a Winner");
         ((TextView) ad.findViewById(R.id.msg)).setText(result);
         ((TextView) ad.findViewById(R.id.try_again)).setText("Next");
-        ad.findViewById(R.id.msg).setOnClickListener(v -> {
 
-        });
-        ad.findViewById(R.id.take_rest).setOnClickListener(v -> {
+        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
             ad.cancel();
-            takeRest(game);
+            activePlayButton(game, result, tsp);
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-        ad.findViewById(R.id.save_game).setOnClickListener(v -> gameViewModel.saveGame());
+
         ad.findViewById(R.id.try_again).setOnClickListener(v -> {
             ad.cancel();
-            game.next(tsp.getCost() >game.getCost(),System.currentTimeMillis()-startTime);
+            game.next(tsp.getCost() > game.getCost(), System.currentTimeMillis() - startTime);
             gameViewModel.next(game);
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
+        ad.setCancelable(false);
         ad.show();
+        if (gameSettings.getBoolean("k_sound", true))
+            soundPool.play(soundIds[0], 1, 1, 1, 0, 1.0f);
+
     }
 
-    private void loose(Game game,String result) {
-        if(game.getTryAgain()< 3) {
-             gameOver(game);
+    private void dialogLoose(Game game, String result) {
+        if (game.getTryAgain() > 3) {
+            dialogGameOver(game);
             return;
         }
         StyleDialog ad = new StyleDialog(this);
         ad.setContentView(R.layout.pop_game_end);
-
-        ((TextView) ad.findViewById(R.id.title)).setText("You Lose");
         ((TextView) ad.findViewById(R.id.msg)).setText(result);
-        ad.findViewById(R.id.msg).setOnClickListener(v -> {
-
+        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
+            ad.cancel();
+            dialogTakeRest(game, result, null);
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-        ad.findViewById(R.id.take_rest).setOnClickListener(v -> { takeRest(game);
-             takeRest(game);
-        });
-        ad.findViewById(R.id.save_game).setOnClickListener(v -> {
-            if( gameViewModel.getGame().getValue()==null) gameViewModel.onCreateGame(readStoredGame());
+        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
+            ad.cancel();
+            activePlayButton(game, result, null);
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         ad.findViewById(R.id.try_again).setOnClickListener(v -> {
-
+            ad.cancel();
             game.tryAgain();
-            gameViewModel.tryAgain(game);
+            gameViewModel.tryAgain(game,gameSettings.getBoolean("timing", false));
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+
         });
+        ad.setCancelable(false);
         ad.show();
+        if (gameSettings.getBoolean("k_sound", true))
+            soundPool.play(soundIds[4], 1, 1, 1, 0, 1.0f);
     }
 
-    private void takeRest(Game game) {
+    private void activePlayButton(Game game, String result, Tsp tsp) {
+        Button b = findViewById(R.id.btn_play);
+        b.setVisibility(View.VISIBLE);
+        b.setOnClickListener(v -> {
+            b.setVisibility(View.GONE);
+            if (tsp == null) {
+                if (result == null) {
+                    if (game == null) {
+                        dialogResume(readStoredGame());
+                    } else {
+                        if (gameViewModel.getGame().getValue() == null)
+                            gameViewModel.onCreateGame(readNewGame());
+                    }
+                } else {
+                    //  dialogLoose(game, result);
+                    game.tryAgain();
+                    gameViewModel.tryAgain(game,gameSettings.getBoolean("timing", false));
+                }
+            } else dialogWin(game, result, tsp);
+        });
+
+    }
+
+    private void dialogTakeRest(Game game, String result, Tsp tsp) {
         StyleDialog ad = new StyleDialog(this);
         ad.setContentView(R.layout.pop_game_ended);
-            ((TextView) ad.findViewById(R.id.title)).setText("Stop Game");
+        ((TextView) ad.findViewById(R.id.title)).setText("Stop Game");
         ((TextView) ad.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
         ((TextView) ad.findViewById(R.id.scores)).setText(String.valueOf(game.getLevel()));
         ((TextView) ad.findViewById(R.id.time)).setText(String.valueOf(game.getGameLifeTime()));
-        ((TextView) ad.findViewById(R.id.try_again)).setText("Exit");
-        ad.findViewById(R.id.msg).setOnClickListener(v -> {
+        ((TextView) ad.findViewById(R.id.try_again)).setText("Return");
+        ((TextView) ad.findViewById(R.id.return_btn)).setText("Exit");
+
+        ad.findViewById(R.id.try_again).setOnClickListener(v -> {
+            ad.cancel();
+            if (tsp == null) dialogLoose(game, result);
+            else dialogWin(game, result, tsp);
 
         });
-        ad.findViewById(R.id.try_again).setVisibility(View.GONE);
-        ad.findViewById(R.id.save_game).setOnClickListener(v -> gameViewModel.saveGame());
-        ad.findViewById(R.id.take_rest).setOnClickListener(v -> {
+
+        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
             ad.cancel();
             onBackPressed();
         });
@@ -228,7 +350,7 @@ menu.setOnClickListener(v -> menu());
         ad.setCancelable(false);
     }
 
-    private void gameOver(Game game) {
+    private void dialogGameOver(Game game) {
         StyleDialog ad = new StyleDialog(this);
         ad.setContentView(R.layout.pop_game_ended);
         ((TextView) ad.findViewById(R.id.title)).setText("Game Over");
@@ -236,119 +358,205 @@ menu.setOnClickListener(v -> menu());
         ((TextView) ad.findViewById(R.id.scores)).setText(String.valueOf(game.getLevel()));
         ((TextView) ad.findViewById(R.id.time)).setText(String.valueOf(game.getGameLifeTime()));
         ((TextView) ad.findViewById(R.id.try_again)).setText("New");
-        ad.findViewById(R.id.msg).setOnClickListener(v -> {
-
-        });
-        ad.findViewById(R.id.take_rest).setVisibility(View.INVISIBLE);
-        ad.findViewById(R.id.save_game).setOnClickListener(v -> gameViewModel.saveGame());
         ad.findViewById(R.id.try_again).setOnClickListener(v -> {
-            if( gameViewModel.getGame().getValue()==null) gameViewModel.onCreateGame(readNewGame());
+            ad.cancel();
+            activePlayButton(game, null, null);
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         ad.show();
+        ad.findViewById(R.id.try_again).setOnClickListener(v -> {
+            ad.cancel();
+            if (gameViewModel.getGame().getValue() == null)
+                gameViewModel.onCreateGame(readNewGame());
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+        });
         ad.setCancelable(false);
+        ad.show();
+        if (gameSettings.getBoolean("k_sound", true))
+            soundPool.play(soundIds[5], 1, 1, 1, 0, 1.0f);
     }
-    private void   resume(Game game){
-        
+
+    private void dialogResume(Game game) {
+
         StyleDialog ad = new StyleDialog(this);
-        ad.setContentView(R.layout.pop_game_ended); 
+        ad.setContentView(R.layout.pop_game_ended);
         ((TextView) ad.findViewById(R.id.title)).setText("Welcome");
         ((TextView) ad.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
         ((TextView) ad.findViewById(R.id.scores)).setText(String.valueOf(game.getLevel()));
-        ((TextView) ad.findViewById(R.id.time)).setText(String.valueOf(game.getGameLifeTime()));
+        ((TextView) ad.findViewById(R.id.time)).setText(String.valueOf(S.timeDisplay(game.getGameLifeTime())));
         ((TextView) ad.findViewById(R.id.try_again)).setText("Resume");
-        ((TextView) ad.findViewById(R.id.take_rest)).setText("New");
+        ((TextView) ad.findViewById(R.id.return_btn)).setText("New");
 
-        ad.findViewById(R.id.save_game).setVisibility(View.GONE);
-        ad.findViewById(R.id.take_rest).setOnClickListener(v -> {
+
+        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
             ad.cancel();
-            if( gameViewModel.getGame().getValue()==null) gameViewModel.onCreateGame(readNewGame());
+            findViewById(R.id.btn_play).setVisibility(View.GONE);
+            if (gameViewModel.getGame().getValue() == null)
+                gameViewModel.onCreateGame(readNewGame());
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
 
         });
         ad.findViewById(R.id.try_again).setOnClickListener(v -> {
+            findViewById(R.id.btn_play).setVisibility(View.GONE);
             ad.cancel();
-            if( gameViewModel.getGame().getValue()==null) gameViewModel.onCreateGame(readStoredGame());
+            if (gameViewModel.getGame().getValue() == null)
+                gameViewModel.onCreateGame(readStoredGame());
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         ad.show();
         ad.setCancelable(false);
     }
+
     private Game readNewGame() {
-        return  new Game(1,   5000);
+        return new Game(1);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        startTime= System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
     }
 
 
     @Override
     protected void onPause() {
         super.onPause();
-        gameViewModel.pause(System.currentTimeMillis()-startTime);
+        gameViewModel.pause(System.currentTimeMillis() - startTime);
     }
 
     @Override
     public void onPoint(int index) {
-       Button b =optionsContainer.findViewById(index);
-       if(b==null)b =answersContainer.findViewById(index);
+        Button b = optionsContainer.findViewById(index);
+        if (b == null) b = answersContainer.findViewById(index);
         //answer(b,index);
-        if(b!=null) b.performClick();
-        Log.d(CodeX.tag, "index "+index);
+        if (b != null) b.performClick();
+        Log.d(CodeX.tag, "index " + index);
     }
-
-
-
-
-
 
 
     private void menu() {
         StyleDialog ad = new StyleDialog(this);
-        ad.setContentView(R.layout.pop_game_meue);
-        SharedPreferences s =getSharedPreferences("game_settings",
-                Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = s.edit();
+        ad.setContentView(R.layout.pop_game_menu);
+        SharedPreferences.Editor editor = gameSettings.edit();
+        Switch timing = ad.findViewById(R.id.timing);
+        Switch kSound = ad.findViewById(R.id.k_sound);
+        Switch bSound = ad.findViewById(R.id.b_sound);
+        Switch refreshingPoints = ad.findViewById(R.id.refresh_points);
+        Switch keys = ad.findViewById(R.id.keys);
+        timing.setChecked(gameSettings.getBoolean("timing", false));
+        kSound.setChecked(gameSettings.getBoolean("k_sound", true));
+        bSound.setChecked(gameSettings.getBoolean("b_sound", false));
+        refreshingPoints.setChecked(gameSettings.getBoolean("refresh_points", true));
+        keys.setChecked(gameSettings.getBoolean("keys", true));
 
-        ((Switch)  ad.findViewById(R.id.timing)).setOnCheckedChangeListener((buttonView, isChecked) -> {
+        timing.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("timing", isChecked);
             editor.apply();
             editor.commit();
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-        ((Switch)  ad.findViewById(R.id.sound)).setOnCheckedChangeListener((buttonView, isChecked) -> {
-            editor.putBoolean("sound", isChecked);
+        kSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            editor.putBoolean("k_sound", isChecked);
             editor.apply();
             editor.commit();
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-        ((Switch)  ad.findViewById(R.id.refresh_points)).setOnCheckedChangeListener((buttonView, isChecked) -> {
+        bSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            editor.putBoolean("b_sound", isChecked);
+            editor.apply();
+            editor.commit();
+            if (isChecked)
+                soundPool.stop(soundIds[0]);
+            else soundPool.play(soundIds[6], 1, 1, 0, 1, 1.0f);
+
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+        });
+        refreshingPoints.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("refresh_points", isChecked);
             editor.apply();
             editor.commit();
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-
+        keys.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            editor.putBoolean("keys", isChecked);
+            editor.apply();
+            editor.commit();
+            setKeys(isChecked);
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+        });
         ad.show();
     }
 
 
-
-
-
-
-
     private void setAnimations() {
-        ( (AnimationDrawable) level.getBackground()).start();
-        ( (AnimationDrawable) scores.getBackground()).start();
-        ( (AnimationDrawable) time.getBackground()).start();
+        ((AnimationDrawable) level.getBackground()).start();
+        ((AnimationDrawable) scores.getBackground()).start();
+        ((AnimationDrawable) time.getBackground()).start();
     }
 
     public void zoomIn(View v) {
         plotGame.zoomIn();
         Log.d(CodeX.tag, " Zoom In -------- zoom is " + plotGame.getZoom());
+        if (gameSettings.getBoolean("k_sound", true))
+            soundPool.play(soundIds[7], 1, 1, 1, 0, 1.0f);
     }
 
     public void zoomOut(View v) {
         plotGame.zoomOut();
         Log.d(CodeX.tag, " Zoom out -------- zoom is " + plotGame.getZoom());
+        if (gameSettings.getBoolean("k_sound", true))
+            soundPool.play(soundIds[8], 1, 1, 1, 0, 1.0f);
     }
 
+    private void setSound(boolean on) {
+
+    }
+
+    private void setKeys(boolean on) {
+        if (on) {
+            optionsContainer.setVisibility(View.VISIBLE);
+            answersContainer.setVisibility(View.VISIBLE);
+        } else {
+
+            optionsContainer.setVisibility(View.GONE);
+            answersContainer.setVisibility(View.GONE);
+        }
+    }
+
+
+    abstract class CountUp extends CountDownTimer {
+
+        private long duration;
+
+        public CountUp(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+            this.duration = millisInFuture;
+        }
+
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            long time = duration - millisUntilFinished;
+            onTick(time);
+        }
+
+        @Override
+        public void onFinish() {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+            }, 5000);
+        }
+    }
 }
+
+
+

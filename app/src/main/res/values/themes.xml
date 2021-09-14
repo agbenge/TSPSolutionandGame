@@ -39,7 +39,6 @@
     <style name="BoardItemLabel" parent="Widget.AppCompat.TextView">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:paddingTop">2dp</item>
         <item name="android:textAlignment">center</item>
     </style>
     <style name="PopText" parent="Widget.AppCompat.TextView">
@@ -49,9 +48,10 @@
         <item name="android:textAlignment">center</item>
     </style>
     <style name="PopButton" parent="Widget.AppCompat.Button">
-        <item name="android:layout_margin">2dp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textAlignment">center</item>
+        <item name="android:layout_marginTop">@dimen/fab_margin</item>
+        <item name="android:background">@drawable/btn_b</item>
     </style>
     <style name="PopMenuSwitch" parent="Widget.AppCompat.CompoundButton.Switch">
         <item name="android:textSize">20sp</item>
@@ -66,4 +66,14 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textAlignment">center</item>
     </style>
+    <style name="Pop" parent="CardView">
+        <item name="android:layout_margin">16dp</item>
+        <item name="android:paddingTop">@dimen/title_padding_top</item>
+        <item name="android:paddingBottom">@dimen/title_padding_top</item>
+        <item name="android:paddingStart">@dimen/fab_margin</item>
+        <item name="android:paddingEnd">@dimen/fab_margin</item>
+        <item name="android:background">@drawable/bg_</item>
+    </style>
+
+
 </resources>

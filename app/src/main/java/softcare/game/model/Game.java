@@ -10,15 +10,13 @@ import softcare.util.S;
 public class Game {
     private int level;
     private int scores;
-   private  final int TIME_LIMIT;// 5second
+   private  final int TIME_LIMIT= 7000;// 7second
     private  int min;
     private double cost;
-    private boolean refreshPoints;
     private  long usedTime;
     private long gameLifeTime;
-    public Game(int level , int TIME_LIMIT) {
+    public Game(int level ) {
         this.level = level ;
-        this.TIME_LIMIT = TIME_LIMIT;
         direction = new ArrayList<>();
     }
 
@@ -34,9 +32,6 @@ public class Game {
         return gameLifeTime;
     }
 
-    public void setRefreshPoints(boolean refreshPoints) {
-        this.refreshPoints = refreshPoints;
-    }
 
     public int getScores() {
         return scores;
@@ -45,9 +40,6 @@ public class Game {
     public void setMin(int min) {
         this.min = min;
     }
- public  boolean getRefreshPoints() {
-        return  this.refreshPoints;
- }
     public int getBound() {
         return level+10;
     }
@@ -118,12 +110,13 @@ public class Game {
 
             dist[prevouse] = tsp.getMatrix()[prevouse][i];
             cost = cost + tsp.getMatrix()[prevouse][i];
+
             prevouse = i;
         }
-
+        cost = cost + tsp.getMatrix()[prevouse][getDirection().get(0)];
         res += tsp.getCities().get(prevouse) + "\t";
         res1 += "\nTotal distance by you \t" + S.formDouble(cost)+
-                "Expected cost is "+S.formDouble(tsp.getCost());
+                "\nExpected cost is "+S.formDouble(tsp.getCost());
 
 
         this.cost = cost;
