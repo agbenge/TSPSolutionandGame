@@ -317,4 +317,7 @@ public class GameViewModel extends ViewModel {
 
     public void saveGame() {
     }
+
+    public void resume(long startTime) {
+    }
 }

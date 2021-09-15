@@ -177,7 +177,7 @@ public class Start  {
 							// Run the task in a background thread
 							backgroundThread = new Thread(task);
 							
-							ps = new ProgressPopUp(backgroundThread);
+							ps = new ogressPopUp(backgroundThread);
 							ps.notice(stage, "Loading TSP");
 							// Terminate the running thread if the application exits
 							backgroundThread.setDaemon(true);

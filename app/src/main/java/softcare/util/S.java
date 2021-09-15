@@ -38,3 +38,15 @@ public 	static  void print (List<String> sub) {
 	}
 
 }
+/*
+ soundIds = new int[10];
+        soundIds[0]=soundPool.load(this,R.raw.b_sound,1);
+        soundIds[1]=soundPool.load(this,R.raw.answered,1);
+        soundIds[2]=soundPool.load(this,R.raw.k_unanswered,1);
+        soundIds[3]=soundPool.load(this,R.raw.k_win,1);
+        soundIds[4]=soundPool.load(this,R.raw.k_loose ,1);
+        soundIds[5]=soundPool.load(this,R.raw.k_game_over,1);
+        soundIds[6]=soundPool.load(this,R.raw.k_keys1,1);
+        soundIds[7]=soundPool.load(this,R.raw.zoom_in,1);
+        soundIds[8]=soundPool.load(this,R.raw.zoom_out,1);
+ */

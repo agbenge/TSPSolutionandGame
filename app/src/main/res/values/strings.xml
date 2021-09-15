@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">TSP G.S </string>
-    <string name="title_activity_solution">TSP solution</string>
+    <string name="app_name">Path Finder</string>
+    <string name="title_activity_solution">Find My Path</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -93,9 +93,9 @@
     <string name="action_settings">Settings</string>
     <string name="action_save">Save</string>
     <string name="action_open">Open</string>
-    <string name="dyn">Dynamic Algorithm</string>
+    <string name="dyn">Dynamic</string>
     <string name="knn">K-Nearest Neighbour</string>
-    <string name="gen">Genitic Algorithm</string>
+    <string name="gen">Genetic</string>
     <string name="auto">Auto(from above)</string>
     <string name="cancel">Cancel</string>
     <string name="select_alg">Select Algorithm</string>

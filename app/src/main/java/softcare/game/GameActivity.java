@@ -1,6 +1,7 @@
 package softcare.game;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioAttributes;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -43,19 +45,22 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     private TextView time;
     private TextView menu;
     private long startTime;
-    private final SharedPreferences gameSettings = getSharedPreferences("game_settings",
-            Activity.MODE_PRIVATE);
+    private SharedPreferences gameSettings;
     private int[] soundIds;
+    private int bSoundStreamId;
+    private CountUp countUPTimer;
+    private CountDownTimer countDownTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        gameSettings = getSharedPreferences("game_settings",
+                Activity.MODE_PRIVATE);
         _init();
         viewModelListener();
         if (gameViewModel.getGame().getValue() == null) dialogResume(readStoredGame());
         setAnimations();
-
         startSound();
     }
 
@@ -83,13 +88,29 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         }
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        //0 background; 1 answered 2 unanswered,  3 win , 4 loose, 5 game over, 6 button presssed. 7 zoomin 8 zoom 0ut
+        //0 background; 1 answered 2 unanswered,  3 win ,
+        // 4 loose, 5 game over, 6 button presssed. 7 zoomin 8 zoom 0ut
 
         soundIds = new int[10];
-        /// soundIds[0]=soundPool.load(this,R.raw.move,1);
-        if (gameSettings.getBoolean("b_sound", false))
-            soundPool.play(soundIds[0], 1, 1, 0, 1, 1.0f);
+        soundIds[0] = soundPool.load(this, R.raw.b_sound, 1);
+        soundIds[1] = soundPool.load(this, R.raw.answered, 1);
+        soundIds[2] = soundPool.load(this, R.raw.k_unanswered, 1);
+        soundIds[3] = soundPool.load(this, R.raw.k_win, 1);
+        soundIds[4] = soundPool.load(this, R.raw.k_loose, 1);
+        soundIds[5] = soundPool.load(this, R.raw.k_game_over, 1);
+        soundIds[6] = soundPool.load(this, R.raw.k_keys1, 1);
+        soundIds[7] = soundPool.load(this, R.raw.zoom_in, 1);
+        soundIds[8] = soundPool.load(this, R.raw.zoom_out, 1);
+        if (gameSettings.getBoolean("b_sound", false)) {
+new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+    @Override
+    public void run() {
+        bSoundStreamId = soundPool.play(soundIds[0], 1, 1, 2, -1, 1.0f);
 
+    }
+},2000);
+
+        }
         // looop 0 no loop; 1 loop forever
 
     }
@@ -103,7 +124,10 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         answersContainer = findViewById(R.id.answersContainer);
         optionsContainer = findViewById(R.id.optionsContainer);
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-
+       findViewById(R.id.btn_play).setOnClickListener(v -> {
+            v.setVisibility(View.GONE);
+           dialogResume(readStoredGame());
+        });
     }
 
 
@@ -135,7 +159,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 finishGame();
             }
             if (gameSettings.getBoolean("k_sound", true))
-                soundPool.play(soundIds[1], 1, 1, 1, 1, 1.0f);
+                soundPool.play(soundIds[1], 1, 1, 1, 0, 1.0f);
         });
         optionsContainer.addView(b);
     }
@@ -149,7 +173,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             gameViewModel.setGame(game);
             // plotGame.plotPath(game.getDirection());
             if (gameSettings.getBoolean("k_sound", true))
-                soundPool.play(soundIds[2], 1, 1, 1, 1, 1.0f);
+                soundPool.play(soundIds[2], 1, 1, 1, 0, 1.0f);
 
         });
         answersContainer.addView(b);
@@ -161,33 +185,38 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             Game game = gameViewModel.getGame().getValue();
             if (tsp != null && game != null) {
 
+                answersContainer.removeAllViews();
                 //  plotGame.setZoom(game.getBound() * 5);
-                if(gameSettings.getBoolean("timing", false)) {
-                    new CountDownTimer(game.getTiming(), 1000) {
+                if (gameSettings.getBoolean("timing", false)) {
+                    Log.d(CodeX.tag," timing");
+                    countDownTimer = new CountDownTimer(game.getTiming(), 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
-                            time.setText(S.timeDisplay( millisUntilFinished  ));
+                            Log.d(CodeX.tag," time change "+S.timeDisplay(millisUntilFinished));
+                            time.setText(S.timeDisplay(millisUntilFinished));
                         }
 
                         @Override
                         public void onFinish() {
-                            dialogLoose( game,"You time finish try again pints will be refresh");
+                            dialogLoose(game, "You time finish try again pints will be refresh");
 
                         }
                     };
-                }else{
-                    new CountUp(1000*60*60, 1000) {
+                    countDownTimer.start();
+                } else {
+                    countUPTimer = new CountUp(1000 * 60 * 60, 1000) {
                         @Override
                         public void onTick(long millisUntilFinished) {
-                            time.setText(S.timeDisplay(millisUntilFinished  ));
+                            time.setText(S.timeDisplay(millisUntilFinished));
                         }
 
                         @Override
                         public void onFinish() {
-                            dialogLoose( game,"Sorry you have take too much time to figure out the solution try again");
+                            dialogLoose(game, "Sorry you have take too much time to figure out the solution try again");
 
                         }
                     };
+        countUPTimer.start();
 
                 }
                 level.setText(String.valueOf(game.getLevel()));
@@ -221,11 +250,12 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
         });
         plotGame.setOnPointListener(this);
-        menu.setOnClickListener(v -> menu());
+        menu.setOnClickListener(v -> dialogMenu());
     }
 
     private void finishGame() {
-        answersContainer.removeAllViews();
+        if(countDownTimer!=null)countDownTimer.cancel();
+        if(countUPTimer!=null)countUPTimer.cancel();
         Tsp tsp = gameViewModel.getTspLiveData().getValue();
         Game game = gameViewModel.getGame().getValue();
         if (tsp != null) {
@@ -241,6 +271,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     }
 
     private void dialogWin(Game game, String result, Tsp tsp) {
+        setBest(game);
         StyleDialog ad = new StyleDialog(this);
         ad.setContentView(R.layout.pop_game_end);
         ((TextView) ad.findViewById(R.id.title)).setText("You are a Winner");
@@ -249,7 +280,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
         ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
             ad.cancel();
-            activePlayButton(game, result, tsp);
+            activatePlayButton(game, result, tsp);
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
@@ -264,8 +295,33 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         ad.setCancelable(false);
         ad.show();
         if (gameSettings.getBoolean("k_sound", true))
-            soundPool.play(soundIds[0], 1, 1, 1, 0, 1.0f);
+            soundPool.play(soundIds[3], 1, 1, 1, 0, 1.0f);
 
+    }
+
+    private void setBest(Game game) {
+        SharedPreferences.Editor editor = gameSettings.edit();
+        long level = gameSettings.getLong("b_level", 0L);
+        long scores = gameSettings.getLong("b_score", 0L);
+        long time = gameSettings.getLong("b_time", 0L);
+        if (game.getLevel() > level)
+            editBest(game, editor);
+        else if (game.getLevel() == level)
+            if (game.getScores() > scores)
+                editBest(game, editor);
+            else if (game.getScores() == scores)
+                if (game.getTiming() < time)
+                    editBest(game, editor);
+
+
+    }
+
+    private void editBest(Game game, SharedPreferences.Editor editor) {
+        editor.putLong("b_level", game.getLevel());
+        editor.putLong("b_scores", game.getLevel());
+        editor.putLong("b_time", game.getLevel());
+        editor.apply();
+        editor.commit();
     }
 
     private void dialogLoose(Game game, String result) {
@@ -276,22 +332,17 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         StyleDialog ad = new StyleDialog(this);
         ad.setContentView(R.layout.pop_game_end);
         ((TextView) ad.findViewById(R.id.msg)).setText(result);
+
         ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
             ad.cancel();
-            dialogTakeRest(game, result, null);
-            if (gameSettings.getBoolean("k_sound", true))
-                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
-        });
-        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
-            ad.cancel();
-            activePlayButton(game, result, null);
+            activatePlayButton(game, result, null);
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         ad.findViewById(R.id.try_again).setOnClickListener(v -> {
             ad.cancel();
             game.tryAgain();
-            gameViewModel.tryAgain(game,gameSettings.getBoolean("timing", false));
+            gameViewModel.tryAgain(game, gameSettings.getBoolean("timing", false));
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
 
@@ -302,7 +353,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             soundPool.play(soundIds[4], 1, 1, 1, 0, 1.0f);
     }
 
-    private void activePlayButton(Game game, String result, Tsp tsp) {
+    private void activatePlayButton(Game game, String result, Tsp tsp) {
         Button b = findViewById(R.id.btn_play);
         b.setVisibility(View.VISIBLE);
         b.setOnClickListener(v -> {
@@ -315,11 +366,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                         if (gameViewModel.getGame().getValue() == null)
                             gameViewModel.onCreateGame(readNewGame());
                     }
-                } else {
-                    //  dialogLoose(game, result);
-                    game.tryAgain();
-                    gameViewModel.tryAgain(game,gameSettings.getBoolean("timing", false));
-                }
+                } else   dialogLoose(game, result);
             } else dialogWin(game, result, tsp);
         });
 
@@ -358,17 +405,18 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         ((TextView) ad.findViewById(R.id.scores)).setText(String.valueOf(game.getLevel()));
         ((TextView) ad.findViewById(R.id.time)).setText(String.valueOf(game.getGameLifeTime()));
         ((TextView) ad.findViewById(R.id.try_again)).setText("New");
-        ad.findViewById(R.id.try_again).setOnClickListener(v -> {
+        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
             ad.cancel();
-            activePlayButton(game, null, null);
+            activatePlayButton(game, null, null);
+
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         ad.show();
         ad.findViewById(R.id.try_again).setOnClickListener(v -> {
             ad.cancel();
-            if (gameViewModel.getGame().getValue() == null)
                 gameViewModel.onCreateGame(readNewGame());
+
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
@@ -408,7 +456,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         ad.show();
-        ad.setCancelable(false);
+        ad.setCanceledOnTouchOutside(false);
     }
 
     private Game readNewGame() {
@@ -438,7 +486,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     }
 
 
-    private void menu() {
+    private void dialogMenu (){
+        pauseGame(startTime);
         StyleDialog ad = new StyleDialog(this);
         ad.setContentView(R.layout.pop_game_menu);
         SharedPreferences.Editor editor = gameSettings.edit();
@@ -452,7 +501,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         bSound.setChecked(gameSettings.getBoolean("b_sound", false));
         refreshingPoints.setChecked(gameSettings.getBoolean("refresh_points", true));
         keys.setChecked(gameSettings.getBoolean("keys", true));
-
+        ((TextView) ad.findViewById(R.id.level)).setText("" + gameSettings.getLong("b_level", 0L));
+        ((TextView) ad.findViewById(R.id.scores)).setText("" + gameSettings.getLong("b_score", 0L));
+        ((TextView) ad.findViewById(R.id.time)).setText("" + gameSettings.getLong("b_time", 0L));
         timing.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("timing", isChecked);
             editor.apply();
@@ -472,8 +523,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             editor.apply();
             editor.commit();
             if (isChecked)
-                soundPool.stop(soundIds[0]);
-            else soundPool.play(soundIds[6], 1, 1, 0, 1, 1.0f);
+                soundPool.resume(bSoundStreamId);
+            else soundPool.pause(bSoundStreamId);
 
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
@@ -493,9 +544,17 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
+        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
+            ad.cancel();
+            resumeGame();
+        });
         ad.show();
     }
 
+    private void pauseGame(long startTime) {
+    }
+    private void resumeGame() {
+    }
 
     private void setAnimations() {
         ((AnimationDrawable) level.getBackground()).start();
@@ -551,9 +610,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
         @Override
         public void onFinish() {
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-            }, 5000);
         }
     }
 }
