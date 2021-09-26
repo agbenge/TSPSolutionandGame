@@ -1,203 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+style="@style/Pop"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+
+<TextView
+    android:id="@+id/title"
+    style="@style/BoardItem"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    style="@style/Pop">
+    android:text="Preference"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/title"
-        style="@style/BoardItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Preference"
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="@dimen/fab_margin"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@+id/return_btn"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight="wrap_content_constrained"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Switch
-        android:id="@+id/k_sound"
-        style="@style/PopMenuSwitch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Actions Sounds"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/b_sound" />
-
-    <Switch
-        android:id="@+id/refresh_points"
-        style="@style/PopMenuSwitch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Refresh points alway"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/k_sound" />
-
-    <Switch
-        android:id="@+id/keys"
-        style="@style/PopMenuSwitch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Keys"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider3" />
-
-    <Switch
-        android:id="@+id/b_sound"
-        style="@style/PopMenuSwitch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Backgroud Sound"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/keys" />
-
-    <TextView
-        android:id="@+id/level"
-        style="@style/BoardItem"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:background="@drawable/bg_"
-        app:layout_constrainedWidth="false"
-        app:layout_constraintDimensionRatio="w,h 1:1"
-        app:layout_constraintEnd_toStartOf="@+id/scores"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        tools:text="8" />
-
-    <TextView
-        android:id="@+id/scores"
-        style="@style/BoardItem"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginTop="96dp"
-        android:background="@drawable/bg_"
-        app:layout_constraintEnd_toStartOf="@+id/time"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/level"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        tools:text="88" />
-
-    <TextView
-        android:id="@+id/time"
-        style="@style/BoardItem"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginTop="32dp"
-        android:background="@drawable/bg_"
-        android:text="45s"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/scores"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@+id/title">
 
 
-    <TextView
-        android:id="@+id/_level"
-        style="@style/BoardItemLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Level"
-        app:layout_constraintEnd_toEndOf="@id/level"
-        app:layout_constraintStart_toStartOf="@id/level"
-        app:layout_constraintTop_toTopOf="@id/level" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/_scores"
-        style="@style/BoardItemLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Scores"
-        app:layout_constraintEnd_toEndOf="@id/scores"
-        app:layout_constraintStart_toStartOf="@id/scores"
-        app:layout_constraintTop_toTopOf="@id/scores" />
+            <Switch
+                android:id="@+id/k_sound"
+                style="@style/PopMenuSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:button="@color/blueDark"
+                android:text="Actions Sounds"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/b_sound" />
 
-    <TextView
-        android:id="@+id/_time"
-        style="@style/BoardItemLabel"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Time"
-        app:layout_constraintEnd_toEndOf="@id/time"
-        app:layout_constraintStart_toStartOf="@id/time"
-        app:layout_constraintTop_toTopOf="@id/time" />
+            <Switch
+                android:id="@+id/refresh_points"
+                style="@style/PopMenuSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Refresh points alway"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/k_sound" />
 
-    <TextView
-        android:id="@+id/textView3"
-        style="@style/PopMenuSub"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Best Player"
-        app:drawableEndCompat="@android:drawable/ic_menu_share"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider" />
+            <Switch
+                android:id="@+id/keys"
+                style="@style/PopMenuSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Keys"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginTop="49dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.281"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timing" />
+            <Switch
+                android:id="@+id/b_sound"
+                style="@style/PopMenuSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Backgroud Sound"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/keys" />
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_margin="@dimen/fab_margin"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scores" />
+            <include
+                android:id="@+id/lst_sub"
+                layout="@layout/lst_sub"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
-    <Switch
-        android:id="@+id/timing"
-        style="@style/PopMenuSwitch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Timing"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.111"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/refresh_points" />
+            <TextView
+                android:id="@+id/textView3"
+                style="@style/PopMenuSub"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Highest score"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-    <View
-        android:id="@+id/divider3"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_margin="@dimen/fab_margin"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+            <View
+                android:id="@+id/divider"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_margin="@dimen/fab_margin"
+                android:layout_marginTop="32dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.281"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/timing" />
+
+
+            <Switch
+                android:id="@+id/timing"
+                style="@style/PopMenuSwitch"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Timing"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/refresh_points" />
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_margin="@dimen/fab_margin"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
 
     <Button
         android:id="@+id/return_btn"
         style="@style/PopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/fab_margin"
+
         android:text="Return"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout> </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

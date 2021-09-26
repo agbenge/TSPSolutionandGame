@@ -1,6 +1,7 @@
 package softcare.gui;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -14,6 +15,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -24,7 +26,7 @@ import java.util.List;
 import softcare.game.R;
 import softcare.game.model.CodeX;
 
-public class PlotTSP extends View {
+public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
     //circle and text colors
     private int circleColor, labelColor ,lineColor,
             boardColor, boardBorderWidth, boardBorderColor,
@@ -49,17 +51,12 @@ public class PlotTSP extends View {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public PlotTSP(Context context, @Nullable  AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(context, attrs);
 
-    }
 
     public PlotTSP(Context context) {
         super(context);
     }
-private Context context;
+protected Context context;
     protected void init(Context context, @Nullable AttributeSet attrs) {
         circlePaint = new Paint();
         linePaint = new Paint();
@@ -67,7 +64,6 @@ private Context context;
         this.context=context;
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.PlotTSP, 0, 0);
-
 
         try {
             //get the text and colors specified using the names in attrs.xml
@@ -258,6 +254,16 @@ private Context context;
         refresh();
 
     }
+
+    public void plot(List<PointXY> pointXY, List<String> cities,
+                     List<Integer> path) {
+        this.pointXY = pointXY;
+        this.cities = cities;
+        this.path = path;
+        measureDim();
+        refresh();
+
+    }
 private double zoomInto=-1;
     protected void measureDim() {
         for (PointXY p : pointXY) {
@@ -307,12 +313,13 @@ private double zoomInto=-1;
         refresh();
     }
 
-    private   void calculateZoom(int contentHeight, int contentWidth) {
-        float max= contentHeight>contentWidth? contentHeight:contentWidth;
-        DisplayMetrics dm= new DisplayMetrics();
-        ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(dm);
-        setZoom((int)(dm.widthPixels-100)/max) ;
-        Log.e(CodeX.tag," m width ="+dm.widthPixels);
+    protected    void calculateZoom(int contentHeight, int contentWidth) {
+
+      float max= contentHeight>contentWidth? contentHeight:contentWidth;
+       // DisplayMetrics dm= new DisplayMetrics();
+        //getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        setZoom((int)(getWidth())/max) ;
+       // Log.e(CodeX.tag," m width ="+dm.widthPixels);
            }
     private void initValues() {
                 this.pointXY = Arrays.asList(

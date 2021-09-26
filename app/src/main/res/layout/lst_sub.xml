@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="4dp">
+
+
+    <TextView
+        android:id="@+id/level"
+        style="@style/BoardItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:background="@drawable/bg_0"
+        app:layout_constrainedWidth="false"
+        app:layout_constraintDimensionRatio="w,h 1:1"
+        app:layout_constraintEnd_toStartOf="@+id/scores"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="113dp"
+        tools:text="8" />
+
+    <TextView
+        android:id="@+id/scores"
+        style="@style/BoardItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:background="@drawable/bg_0"
+        app:layout_constraintEnd_toStartOf="@+id/time"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/level"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="56" />
+
+    <TextView
+        android:id="@+id/time"
+        style="@style/BoardItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        android:background="@drawable/bg_0"
+        android:text="09:45s"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/scores"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/_level"
+        style="@style/BoardItemLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Level"
+        app:layout_constraintEnd_toEndOf="@id/level"
+        app:layout_constraintStart_toStartOf="@id/level"
+        app:layout_constraintTop_toTopOf="@id/level" />
+
+    <TextView
+        android:id="@+id/_scores"
+        style="@style/BoardItemLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Scores"
+        app:layout_constraintEnd_toEndOf="@id/scores"
+        app:layout_constraintStart_toStartOf="@id/scores"
+        app:layout_constraintTop_toTopOf="@id/scores" />
+
+    <TextView
+        android:id="@+id/_time"
+        style="@style/BoardItemLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        app:layout_constraintEnd_toEndOf="@id/time"
+        app:layout_constraintStart_toStartOf="@id/time"
+        app:layout_constraintTop_toTopOf="@id/time" />
+
+
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/flow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        app:constraint_referenced_ids="level,scores,time"
+        app:flow_horizontalAlign="center"
+        app:flow_horizontalGap="4dp"
+        app:flow_horizontalStyle="spread_inside"
+        app:flow_verticalAlign="top"
+        app:flow_verticalGap="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

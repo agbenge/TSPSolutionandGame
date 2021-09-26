@@ -1,14 +1,17 @@
 package softcare.game.model;
 
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Handler;
+import java.util.Set;
 
 import softcare.algorithm.SalesmanGenome;
 import softcare.algorithm.Salesmensch;
@@ -23,7 +26,7 @@ public class GameViewModel extends ViewModel {
     private MutableLiveData<Tsp> tspLiveData;
     private MutableLiveData<ProgressX> progressXLiveData;
     private MutableLiveData<ErrorCode> errorCodeLiveData;
-    private MutableLiveData<Game> game;
+    private MutableLiveData<Game> gameLiveData;
     public MutableLiveData<Tsp> getTspLiveData() {
         if (tspLiveData == null) tspLiveData = new MutableLiveData<>();
         return tspLiveData;
@@ -34,13 +37,18 @@ public class GameViewModel extends ViewModel {
         return errorCodeLiveData;
     }
 
-    public MutableLiveData<Game> getGame() {
-        if(game==null) game=new MutableLiveData<>();
-        return game;
+    public MutableLiveData<Game> getGameLiveData() {
+        if(gameLiveData ==null) gameLiveData =new MutableLiveData<>();
+        return gameLiveData;
     }
 
+    public Game getGame() {
+        if (gameLiveData != null)
+            return gameLiveData.getValue();
+        return null;
+    }
     public Tsp getTsp() {
-        if (tspLiveData == null)
+        if (tspLiveData != null)
             return tspLiveData.getValue();
         return null;
     }
@@ -193,20 +201,36 @@ public class GameViewModel extends ViewModel {
     }
 
 
+
+   private PointXY getUniquePoint( List<PointXY> p, Random r,Game game, int i){
+
+       int x= r.nextInt(game.getBound());
+       int y= r.nextInt(game.getBound());
+      PointXY pxy= new PointXY(x,y);
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+           if(p.stream().anyMatch(pointXY -> {
+               return (pointXY.x == pxy.x) && (pointXY.y == pxy.y);
+           })){
+               x= r.nextInt(game.getBound());
+               y= r.nextInt(game.getBound());
+           }
+           Log.d(CodeX.tag, i+"---->  x "+x+"  y "+y);
+       } else{
+           Log.w(CodeX.tag, i+" This point may be same with others ---->  x "+x+"  y "+y);
+       }
+
+
+        return pxy;
+    }
     public void start(Game game) {
         Random r= new Random();
         List<PointXY> p=  new ArrayList<>();
         List<String> n=  new ArrayList<>();
         for (int i = 0; i<game.getNodes() ;i++){
-            int x= r.nextInt(game.getBound());
-            int y= r.nextInt(game.getBound());
-             p.add(new PointXY(x,y));
-             n.add(getName(i));
-            Log.d(CodeX.tag, i+"---->  x "+x+"  y "+y);
+             p.add(getUniquePoint(p,r,game,i));
+             n.add(S.getName(i));
         }
         Tsp tsp = getTspLiveData().getValue();
-
-
 
         if(tsp==null) {
             tsp = new Tsp();
@@ -227,11 +251,48 @@ public class GameViewModel extends ViewModel {
         }else {
             tsp.setAlg(Alg.KNN);
         }
+        if(n.size()>2)
         startAgl(tsp);
+        else
+        errorCodeLiveData.setValue(ErrorCode.NOT_SOLVED);
+    }
+
+   public void storeGame(SharedPreferences.Editor editor) {
+        Game game=  getGameLiveData().getValue();
+        if(game!=null&getTsp()!=null) {
+            String tsp=null;
+            Set<String> g=null;
+        int i=0;
+        if(!(game.getTryAgain()>=2)) {
+            for (PointXY p : getTsp().getPointXY()) {
+                tsp += getTsp().getCities().get(i) + p.getStore();
+                i++;
+            }
+            if(game.getDirection()!=null){
+
+                g = new HashSet<String>();
+                for (int s: game.getDirection() ) {
+                    g.add(String.valueOf(s));
+                }
+            }
+        }
+            editor.putString("tsp",tsp);
+            editor.putStringSet("game",g);
+            editor.apply();
+            editor.commit();
+        }
     }
 
 
 
+
+
+
+
+
+    public void setGameLiveData(Game _game) {
+       getGameLiveData().setValue(_game);
+    }
     public void tryAgain(Game game, boolean refreshPoints) {
         if(refreshPoints) start(game);
         else {
@@ -241,83 +302,18 @@ public class GameViewModel extends ViewModel {
 
     }
 
-    int  getRandomInt(Random r, int lower, int upper){
-        return   r.nextInt(upper-lower)+lower;
-    }
-    private  String getName(int i){
-        switch (i){
-            case 0: return "A";
-            case 1: return "B";
-            case 2: return "C";
-            case 3: return "D";
-            case 4: return "E";
-            case 5: return "F";
-            case 6: return "G";
-            case 7: return "H";
-            case 9: return "I";
-            case 10: return "J";
-            case 11: return "K";
-            case 12: return "L";
-            case 13: return "M";
-            case 14: return "N";
-            case 15: return "O";
-            case 16: return "P";
-            case 17: return "Q";
-            case 18: return "R";
-            case 19: return "S";
-            case 20: return "T";
-            case 21: return "U";
-            case 22: return "V";
-            case 23: return "W";
-            case 24: return "X";
-            case 25: return "Y";
-            case 26: return "Z";
-        }
-
-        return String.valueOf(i);
-    }
-
-    public void pause(long startTime) {
-     Game  g= game.getValue();
-     if(g!=null) {
-         g.pause(startTime);
-         game.postValue(g);
-     }
-
-    }
-
-    public void setGame(Game _game) {
-        game.setValue(_game);
-    }
-
-    public void onCreateGame(Game _game) {
-        if(game.getValue()==null||tspLiveData.getValue()==null) {
-            start(_game);
-            setGame(_game);
-        }
-    }
-    public void onResumeGame(Game _game,List<PointXY> p,  List<String> n ) {
-        Tsp tsp = getTspLiveData().getValue();
-        if(tsp==null)
-            tsp = new Tsp();
-            tsp.setPointXY(p);
-            tsp.setCities(n);
-            tsp.countDistancesAndUpdateMatrix();
-        if(n.size()<20){
-            tsp.setAlg(Alg.DYN);
-        }else {
-            tsp.setAlg(Alg.KNN);
-        }
-        startAgl(tsp);
-    }
 
     public void next(Game game) {
         start(game);
     }
-
-    public void saveGame() {
+    public void newGame() {
+        Game game = new Game();
+        setGameLiveData(game);
+        start(game);
     }
 
-    public void resume(long startTime) {
+    public void resumeGame(Tsp tsp, Game game) {
+        getGameLiveData().setValue(game );
+        getTspLiveData().setValue(tsp);
     }
 }

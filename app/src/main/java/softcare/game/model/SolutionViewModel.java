@@ -1,5 +1,6 @@
 package softcare.game.model;
 
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -95,95 +96,102 @@ public class SolutionViewModel extends ViewModel {
         return false;
     }
 
-    public long startAgl(Alg alg) {
+    public void startAgl(Alg alg, TaskManager taskManager) {
+
         Tsp tsp = tspLiveData.getValue();
-        long start = System.currentTimeMillis();
-        long duration = 0L;
-        long end;
-        tsp.setAlg(alg);
-        switch (tsp.getAlg()) {
-            case DYN: {
+        taskManager.runTask(new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+                long duration = 0L;
+                long end;
+                tsp.setAlg(alg);
+                switch (tsp.getAlg()) {
+                    case DYN: {
 
-                if (tsp.getCities().size() <= 20) {
-                    TspDynamicProgrammingIterative dyn = new TspDynamicProgrammingIterative(0, tsp.getDataDouble());
-                    dyn.solve();
-                    System.out.println(dyn.getTour().toString());
-                    tsp.setDirection(dyn.getTour());
-                    System.out.println(dyn.getTourCost());
-                    tsp.setCost(dyn.getTourCost());
-                    end = System.currentTimeMillis();
-                    duration = end - start;
-                    tsp.setDuration(duration);
-                    System.out.println(duration);
-                    System.out.println();
-                    tsp.setTspActions(TspCode.SOLVED);
-                    tsp.setResult( getResult(tsp));
-                   tspLiveData.postValue(tsp);
+                        if (tsp.getCities().size() <= 20) {
+                            TspDynamicProgrammingIterative dyn = new TspDynamicProgrammingIterative(0, tsp.getDataDouble());
+                            dyn.solve();
+                            System.out.println(dyn.getTour().toString());
+                            tsp.setDirection(dyn.getTour());
+                            System.out.println(dyn.getTourCost());
+                            tsp.setCost(dyn.getTourCost());
+                            end = System.currentTimeMillis();
+                            duration = end - start;
+                            tsp.setDuration(duration);
+                            System.out.println(duration);
+                            System.out.println();
+                            tsp.setTspActions(TspCode.SOLVED);
+                            tsp.setResult( getResult(tsp));
+                            tspLiveData.postValue(tsp);
 
 
-                } else {
-                    System.out.println("error size is " + tsp.getCities().size());
-                    errorCodeLiveData.postValue(ErrorCode.DYN_MAX_REACHED);
+                        } else {
+                            System.out.println("error size is " + tsp.getCities().size());
+                            errorCodeLiveData.postValue(ErrorCode.DYN_MAX_REACHED);
+                        }
+
+                        break;
+                    }
+
+                    case GEN: {
+                        start = System.currentTimeMillis();
+                        Salesmensch geneticAlgorithm = new
+                                Salesmensch(tsp.getCities().size(), SelectionType.ROULETTE, tsp.getDataInt(), 0, 0);
+                        SalesmanGenome result = geneticAlgorithm.optimize();
+                        end = System.currentTimeMillis();
+                        System.out.println(result);
+                        tsp.addDirection(result.getStartingCity());
+                        tsp.addDirection(result.getGenome());
+                        tsp.addDirection(result.getStartingCity());
+                        tsp.setCost(result.getFitness());
+                        duration = end - start;
+                        System.out.println(duration);
+
+                        tsp.setTspActions(TspCode.SOLVED);
+                        tsp.setResult( getResult(tsp));
+                        tspLiveData.postValue(tsp);
+                        break;
+                    }
+
+                    case KNN: {
+
+                        start = System.currentTimeMillis();
+                        TSPNearestNeighbour knn = new TSPNearestNeighbour();
+                        knn.tsp(tsp.getDataInt());
+
+                        //System.out.println(dyn.getTour().toString());
+                        //mDirection = dyn.getTour();
+                        //	System.out.println(dyn.getTourCost());
+                        //mCost = dyn.getTourCost();
+                        System.out.println();
+                        System.out.println("  cosst +>> " + String.valueOf(knn.getCost()));
+                        System.out.println("  direction +>> " + String.valueOf(knn.getTour()));
+                        end = System.currentTimeMillis();
+                        System.out.println();
+                        tsp.setDirection(knn.getTour());
+                        tsp.setCost(knn.getCost());
+                        duration = end - start;
+                        tsp.setDuration(duration);
+                        System.out.println(duration);
+
+                        tsp.setTspActions(TspCode.SOLVED);
+                        tsp.setResult( getResult(tsp));
+                        tspLiveData.postValue(tsp);
+                        break;
+                    }
+                    case EMPTY: {
+                        errorCodeLiveData.postValue(ErrorCode.NO_ALG);
+                        break;
+                    }
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + tsp.getAlg());
                 }
 
-                break;
             }
+        });
 
-            case GEN: {
-                start = System.currentTimeMillis();
-                Salesmensch geneticAlgorithm = new
-                        Salesmensch(tsp.getCities().size(), SelectionType.ROULETTE, tsp.getDataInt(), 0, 0);
-                SalesmanGenome result = geneticAlgorithm.optimize();
-                end = System.currentTimeMillis();
-                System.out.println(result);
-                tsp.addDirection(result.getStartingCity());
-                tsp.addDirection(result.getGenome());
-                tsp.addDirection(result.getStartingCity());
-                tsp.setCost(result.getFitness());
-                duration = end - start;
-                System.out.println(duration);
 
-                tsp.setTspActions(TspCode.SOLVED);
-                tsp.setResult( getResult(tsp));
-                tspLiveData.postValue(tsp);
-                break;
-            }
-
-            case KNN: {
-
-                start = System.currentTimeMillis();
-                TSPNearestNeighbour knn = new TSPNearestNeighbour();
-                knn.tsp(tsp.getDataInt());
-
-                //System.out.println(dyn.getTour().toString());
-                //mDirection = dyn.getTour();
-                //	System.out.println(dyn.getTourCost());
-                //mCost = dyn.getTourCost();
-                System.out.println();
-                System.out.println("  cosst +>> " + String.valueOf(knn.getCost()));
-                System.out.println("  direction +>> " + String.valueOf(knn.getTour()));
-                end = System.currentTimeMillis();
-                System.out.println();
-                tsp.setDirection(knn.getTour());
-                tsp.setCost(knn.getCost());
-                duration = end - start;
-                tsp.setDuration(duration);
-                System.out.println(duration);
-
-                tsp.setTspActions(TspCode.SOLVED);
-                tsp.setResult( getResult(tsp));
-                tspLiveData.postValue(tsp);
-                break;
-            }
-            case EMPTY: {
-                errorCodeLiveData.postValue(ErrorCode.NO_ALG);
-                break;
-            }
-            default:
-                throw new IllegalStateException("Unexpected value: " + tsp.getAlg());
-        }
-
-        return duration;
     }
 
 
@@ -482,6 +490,21 @@ public  void  clear(){
         if(tspLiveData!=null)
     tspLiveData.setValue(null);
 }
+
+    public void addIdata(TspData data) {
+        Tsp tsp = new Tsp();
+        tsp.setPointXY(data.getLocations());
+        tsp.setCities(data.getCities());
+       tsp.countDistancesAndUpdateMatrix();
+        tsp.setTspActions(TspCode.UPDATE);
+        tspLiveData.setValue(tsp);
+        int i=0;
+        for( String name :data.getCities()){
+            Log.d(CodeX.tag," Received Name "+name+"   x "
+                    +data.getLocations().get(i).x+"  y"+data.getLocations().get(i).y);
+            i++;
+        }
+    }
 
 
 

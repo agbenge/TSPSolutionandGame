@@ -29,7 +29,7 @@
                 android:layout_height="match_parent"
                 android:isScrollContainer="true"
                 app:labelColor="@color/green"
-                app:zoomValue="50" />
+                app:zoomValue="200" />
         </HorizontalScrollView>
         <TextView
             android:id="@+id/result"

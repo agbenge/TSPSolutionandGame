@@ -2,6 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="softcare.game">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera2"
+        android:required="false" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/tsp_ico"
@@ -9,6 +21,11 @@
         android:roundIcon="@drawable/tsp_ico"
         android:supportsRtl="true"
         android:theme="@style/Theme.TSPSolutionAndGame">
+        <activity android:name=".PlotTspActivity"></activity>
+        <activity
+            android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar"
+            android:name=".AddCityIActivity"
+            android:screenOrientation="locked" />
         <activity
             android:name=".GameActivity"
             android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar" />

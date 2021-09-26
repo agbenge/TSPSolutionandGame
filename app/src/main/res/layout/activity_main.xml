@@ -25,7 +25,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_l"
+        android:background="@drawable/bg_l_1"
         android:onClick="solution"
         android:text="Find My Path"
         app:layout_constraintBottom_toTopOf="@+id/textView"
@@ -75,7 +75,7 @@
         app:srcCompat="@drawable/ic_baseline_volume_up_24" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/ico_main"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerInside"
@@ -83,6 +83,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sound"
-        app:srcCompat="@drawable/softcaretech_b" />
+        app:srcCompat="@drawable/anim_bg_main" />
+
+    <TextView
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:background="@drawable/btn_y"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="Donate"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/sound"
+        app:layout_constraintEnd_toStartOf="@+id/sound"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/sound"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

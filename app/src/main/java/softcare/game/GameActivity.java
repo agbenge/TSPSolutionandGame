@@ -2,6 +2,7 @@ package softcare.game;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioAttributes;
@@ -12,22 +13,30 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+
+import java.util.concurrent.Callable;
 
 import softcare.game.model.CodeX;
 import softcare.game.model.Game;
+import softcare.game.model.GameShare;
 import softcare.game.model.GameViewModel;
+import softcare.game.model.TaskManager;
+import softcare.game.model.TaskX;
 import softcare.game.model.Tsp;
 import softcare.game.model.TspCode;
 import softcare.gui.OnPointListener;
@@ -43,13 +52,15 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     private TextView level;
     private TextView scores;
     private TextView time;
-    private TextView menu;
+    private View menu;
     private long startTime;
     private SharedPreferences gameSettings;
     private int[] soundIds;
-    private int bSoundStreamId;
-    private CountUp countUPTimer;
+    private int bSoundStreamId = -1;
+    private CountUpTimer countUPTimer;
     private CountDownTimer countDownTimer;
+    private StyleDialog dialog;
+    private TaskManager taskManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,11 +68,13 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         setContentView(R.layout.activity_game);
         gameSettings = getSharedPreferences("game_settings",
                 Activity.MODE_PRIVATE);
+
+        taskManager= TaskManager.getInstance();
         _init();
         viewModelListener();
-        if (gameViewModel.getGame().getValue() == null) dialogResume(readStoredGame());
         setAnimations();
         startSound();
+
     }
 
     private SoundPool soundPool;
@@ -71,6 +84,16 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         super.onDestroy();
         if (soundPool != null) soundPool.release();
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (gameViewModel.getGameLiveData().getValue() == null) {
+           dialogResume();
+        }
+        else resumeTimer(gameViewModel.getGameLiveData().getValue());
+    }
+
 
     private void startSound() {
 
@@ -88,9 +111,6 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         }
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        //0 background; 1 answered 2 unanswered,  3 win ,
-        // 4 loose, 5 game over, 6 button presssed. 7 zoomin 8 zoom 0ut
-
         soundIds = new int[10];
         soundIds[0] = soundPool.load(this, R.raw.b_sound, 1);
         soundIds[1] = soundPool.load(this, R.raw.answered, 1);
@@ -102,16 +122,10 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         soundIds[7] = soundPool.load(this, R.raw.zoom_in, 1);
         soundIds[8] = soundPool.load(this, R.raw.zoom_out, 1);
         if (gameSettings.getBoolean("b_sound", false)) {
-new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-    @Override
-    public void run() {
-        bSoundStreamId = soundPool.play(soundIds[0], 1, 1, 2, -1, 1.0f);
-
-    }
-},2000);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> bSoundStreamId = soundPool.play(soundIds[0], 1, 1, 2, -1, 1.0f), 2000);
 
         }
-        // looop 0 no loop; 1 loop forever
+        // loop 0 no loop; 1 loop forever
 
     }
 
@@ -124,36 +138,75 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
         answersContainer = findViewById(R.id.answersContainer);
         optionsContainer = findViewById(R.id.optionsContainer);
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-       findViewById(R.id.btn_play).setOnClickListener(v -> {
-            v.setVisibility(View.GONE);
-           dialogResume(readStoredGame());
+
+    }
+
+  private  void   dialogResume() {
+
+      if(dialog==null)dialog = new StyleDialog(this);
+      dialog.setContentView(R.layout.pop_progress);
+      dialog.show();
+      dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+          @Override
+          public void onCancel(DialogInterface dialog) {
+              onBackPressed();
+          }
+      });
+        taskManager.runTask(new Runnable() {
+            @Override
+            public void run() {
+                GameShare gameShare= openGame(CodeX.tspKey, CodeX.gameKey);
+                runOnUiThread(() -> dialogResume(gameShare.getTsp(),gameShare.getGame()));
+                     }
         });
+       }
+
+
+    private void dialogMenu() {
+        pauseTimer();
+        if(dialog==null)dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.pop_progress);
+        dialog.show();
+//
+        dialog.setOnCancelListener(null);
+        taskManager.runTask(new Runnable() {
+            @Override
+            public void run() {
+                GameShare gameShare= openGame(CodeX.bestTspKey, CodeX.bestGameKey);
+                runOnUiThread(() -> dialogMenu(gameShare.getTsp(),gameShare.getGame()));
+            }
+        });
+
+
     }
-
-
-    private Game readStoredGame() {
-
-        return new Game(3);
-    }
-
-    private void storedGame() {
-
-        SharedPreferences s = getSharedPreferences("game_settings",
-                Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = s.edit();
+    protected void saveGave(Tsp tsp, Game game) {
+        taskManager.runTask(new Runnable() {
+            @Override
+            public void run() {
+        SharedPreferences.Editor editor = gameSettings.edit();
+        Gson gson = new Gson();
+        String jsonTsp = gson.toJson(tsp);
+        String jsonGame = gson.toJson(game);
+        Log.d(CodeX.tag,(tsp==null)+" is saving "+(tsp==null));
+        editor.putString("game", jsonGame);
+        editor.putString("tsp", jsonTsp);
         editor.apply();
         editor.commit();
+
+            }  });
     }
+
+
 
     private void addOption(Button b, int i) {
         b.setOnClickListener(v -> {
             optionsContainer.removeView(b);
             addAnswer(b, i);
-            Game game = gameViewModel.getGame().getValue();
+            Game game = gameViewModel.getGameLiveData().getValue();
 
             game.addDirection(i);
 
-            gameViewModel.setGame(game);
+            gameViewModel.setGameLiveData(game);
             // plotGame.plotPath(game.getDirection());
             if (optionsContainer.getChildCount() == 0L) {
                 finishGame();
@@ -168,9 +221,9 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
         b.setOnClickListener(v -> {
             answersContainer.removeView(b);
             addOption(b, i);
-            Game game = gameViewModel.getGame().getValue();
+            Game game = gameViewModel.getGameLiveData().getValue();
             game.removeDirection(i);
-            gameViewModel.setGame(game);
+            gameViewModel.setGameLiveData(game);
             // plotGame.plotPath(game.getDirection());
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[2], 1, 1, 1, 0, 1.0f);
@@ -182,68 +235,45 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
 
     private void viewModelListener() {
         gameViewModel.getTspLiveData().observe(this, tsp -> {
-            Game game = gameViewModel.getGame().getValue();
+            Game game = gameViewModel.getGame();
             if (tsp != null && game != null) {
-
                 answersContainer.removeAllViews();
-                //  plotGame.setZoom(game.getBound() * 5);
-                if (gameSettings.getBoolean("timing", false)) {
-                    Log.d(CodeX.tag," timing");
-                    countDownTimer = new CountDownTimer(game.getTiming(), 1000) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                            Log.d(CodeX.tag," time change "+S.timeDisplay(millisUntilFinished));
-                            time.setText(S.timeDisplay(millisUntilFinished));
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            dialogLoose(game, "You time finish try again pints will be refresh");
-
-                        }
-                    };
-                    countDownTimer.start();
-                } else {
-                    countUPTimer = new CountUp(1000 * 60 * 60, 1000) {
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-                            time.setText(S.timeDisplay(millisUntilFinished));
-                        }
-
-                        @Override
-                        public void onFinish() {
-                            dialogLoose(game, "Sorry you have take too much time to figure out the solution try again");
-
-                        }
-                    };
-        countUPTimer.start();
-
-                }
+                Log.d(CodeX.tag, " resuming game ");
+                resumeTimer(game);
                 level.setText(String.valueOf(game.getLevel()));
                 scores.setText(String.valueOf(game.getScores()));
                 if (tsp.getTspActions() == TspCode.SOLVED) {
                     int i = 0;
+                    boolean isResuming=false;
                     for (String city : tsp.getCities()) {
+
                         Button b = new Button(GameActivity.this);
                         b.setId(i);
                         b.setText(city);
                         b.setBackground(getResources().getDrawable(R.drawable.btn_b));
                         b.setTextColor(getResources().getColor(R.color.white));
-                        addOption(b, i);
+                        if(game.getDirection().contains(i))
+                            addAnswer(b,i);
+                            else
+                            addOption(b, i);
                         //  Log.d(CodeX.tag," i =="+i+"  "+city);
                         i++;
                     }
                     plotGame.plotGame(tsp.getPointXY(), tsp.getCities());
+                    plotGame.plotPath(game.getDirection());
+                    if(optionsContainer.getChildCount()<1) finishGame();
 
                 }
             } else {
                 Snackbar.make(plotGame, "Inputs empty start a new problem", Snackbar.LENGTH_LONG).show();
-
+if(game==null)Log.e(CodeX.tag," game null");
+                if(tsp==null)Log.e(CodeX.tag," Tsp null");
             }
         });
         gameViewModel.getErrorCodeLiveData().observe(this, errorCode -> Snackbar.make(plotGame, "Error " + errorCode.toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show());
         gameViewModel.getProgressXLiveData().observe(this, progressX -> Log.d("game", progressX.toString()));
-        gameViewModel.getGame().observe(this, game -> {
+        gameViewModel.getGameLiveData().observe(this, game -> {
+
             if (game != null) {
                 plotGame.plotPath(game.getDirection());
             }
@@ -254,15 +284,16 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
     }
 
     private void finishGame() {
-        if(countDownTimer!=null)countDownTimer.cancel();
-        if(countUPTimer!=null)countUPTimer.cancel();
+        pauseTimer();
         Tsp tsp = gameViewModel.getTspLiveData().getValue();
-        Game game = gameViewModel.getGame().getValue();
+        Game game = gameViewModel.getGameLiveData().getValue();
         if (tsp != null) {
             if (game != null) {
                 String result = game.getResult(tsp);
-                if (S.formDouble(tsp.getCost()) >= S.formDouble(game.getCost())) {
+                if (S.formDouble(tsp.getCost()) >=
+                        S.formDouble(game.getCost())) {
                     dialogWin(game, result, tsp);
+
                 } else {
                     dialogLoose(game, result);
                 }
@@ -271,10 +302,9 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
     }
 
     private void dialogWin(Game game, String result, Tsp tsp) {
-        setBest(game);
         StyleDialog ad = new StyleDialog(this);
         ad.setContentView(R.layout.pop_game_end);
-        ((TextView) ad.findViewById(R.id.title)).setText("You are a Winner");
+        ((TextView) ad.findViewById(R.id.title)).setText("Win");
         ((TextView) ad.findViewById(R.id.msg)).setText(result);
         ((TextView) ad.findViewById(R.id.try_again)).setText("Next");
 
@@ -287,42 +317,81 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
 
         ad.findViewById(R.id.try_again).setOnClickListener(v -> {
             ad.cancel();
-            game.next(tsp.getCost() > game.getCost(), System.currentTimeMillis() - startTime);
-            gameViewModel.next(game);
-            if (gameSettings.getBoolean("k_sound", true))
-                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
-        });
+            next(game, tsp);  });
         ad.setCancelable(false);
         ad.show();
         if (gameSettings.getBoolean("k_sound", true))
             soundPool.play(soundIds[3], 1, 1, 1, 0, 1.0f);
 
+
+        setBest(game, tsp);
     }
 
-    private void setBest(Game game) {
+    protected  void next( Game game, Tsp tsp ){
+        game.next(tsp.getCost() > game.getCost(),
+                System.currentTimeMillis() - startTime);
+        gameViewModel.next(game);
+
+        if (gameSettings.getBoolean("k_sound", true))
+            soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+
+    }
+
+    protected void setBest(Game game, Tsp tsp) {
+        Log.d(CodeX.tag,"Incoming  L="+game.getLevel()+"  S="+game.getScores()
+                +" Time "+game.getGameLifeTime());
         SharedPreferences.Editor editor = gameSettings.edit();
-        long level = gameSettings.getLong("b_level", 0L);
-        long scores = gameSettings.getLong("b_score", 0L);
-        long time = gameSettings.getLong("b_time", 0L);
-        if (game.getLevel() > level)
-            editBest(game, editor);
-        else if (game.getLevel() == level)
-            if (game.getScores() > scores)
-                editBest(game, editor);
-            else if (game.getScores() == scores)
-                if (game.getTiming() < time)
-                    editBest(game, editor);
+        Toast.makeText(this,"Checking best", Toast.LENGTH_LONG).show();
+
+
+        taskManager.runTask(new Runnable() {
+            @Override
+            public void run() {
+        Gson gson = new Gson();
+        String jsonTsp = gameSettings.getString("b_tsp", null);
+        String jsonGame = gameSettings.getString("b_game", null);
+        if (jsonGame != null && jsonTsp != null) {
+                    Tsp tspStored = gson.fromJson(jsonTsp, Tsp.class);
+                    Game gameStored = gson.fromJson(jsonGame, Game.class);
+
+                    long level = gameStored.getLevel();
+                    long scores = gameStored.getScores();
+                    long time = gameStored.getGameLifeTime();
+
+                    Log.d(CodeX.tag,"Stored  L="+level+"  S="+scores
+                            +" Time "+time );
+                    if (game.getLevel() > level)
+                        editBest(game, tsp, editor,gson);
+                    else if (game.getLevel() == level)
+                        if (game.getScores() > scores)
+                            editBest(game, tsp, editor,gson);
+                        else if (game.getScores() == scores)
+                            if (game.getGameLifeTime()< time)
+                                editBest(game, tsp, editor,gson);
+                }else  editBest(game, tsp, editor,gson);
+
+   }   });
 
 
     }
 
-    private void editBest(Game game, SharedPreferences.Editor editor) {
-        editor.putLong("b_level", game.getLevel());
-        editor.putLong("b_scores", game.getLevel());
-        editor.putLong("b_time", game.getLevel());
+    private void editBest(Game game, Tsp tsp, SharedPreferences.Editor editor, Gson gson ) {
+
+        String jsonTsp = gson.toJson(tsp);
+        String jsonGame = gson.toJson(game);
+        editor.putString("b_game", jsonGame);
+        editor.putString("b_tsp", jsonTsp);
         editor.apply();
         editor.commit();
-    }
+
+        Snackbar.make(plotGame,"Best played so far",
+                BaseTransientBottomBar.LENGTH_INDEFINITE).setAction("Share"
+                , new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                }).show();  }
 
     private void dialogLoose(Game game, String result) {
         if (game.getTryAgain() > 3) {
@@ -361,41 +430,41 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             if (tsp == null) {
                 if (result == null) {
                     if (game == null) {
-                        dialogResume(readStoredGame());
                     } else {
-                        if (gameViewModel.getGame().getValue() == null)
-                            gameViewModel.onCreateGame(readNewGame());
+                        if (gameViewModel.getGameLiveData().getValue() == null)
+                            gameViewModel.newGame();
                     }
-                } else   dialogLoose(game, result);
+                } else dialogLoose(game, result);
             } else dialogWin(game, result, tsp);
         });
 
     }
 
-    private void dialogTakeRest(Game game, String result, Tsp tsp) {
-        StyleDialog ad = new StyleDialog(this);
-        ad.setContentView(R.layout.pop_game_ended);
-        ((TextView) ad.findViewById(R.id.title)).setText("Stop Game");
-        ((TextView) ad.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
-        ((TextView) ad.findViewById(R.id.scores)).setText(String.valueOf(game.getLevel()));
-        ((TextView) ad.findViewById(R.id.time)).setText(String.valueOf(game.getGameLifeTime()));
-        ((TextView) ad.findViewById(R.id.try_again)).setText("Return");
-        ((TextView) ad.findViewById(R.id.return_btn)).setText("Exit");
 
-        ad.findViewById(R.id.try_again).setOnClickListener(v -> {
-            ad.cancel();
-            if (tsp == null) dialogLoose(game, result);
-            else dialogWin(game, result, tsp);
-
+    private void activatePlayR(Game game,Tsp tsp) {
+        Button b = findViewById(R.id.btn_play);
+        b.setVisibility(View.VISIBLE);
+        b.setOnClickListener(v -> {
+            b.setVisibility(View.GONE);
+                        dialogResume(tsp,game);
         });
 
-        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
-            ad.cancel();
-            onBackPressed();
-        });
-        ad.show();
-        ad.setCancelable(false);
     }
+ @NonNull
+    private  GameShare openGame( String tspKey, String gameKey){
+        Gson gson = new Gson();
+        String jsonTsp = gameSettings.getString(tspKey, null);
+        String jsonGame = gameSettings.getString(gameKey, null);
+        if (jsonGame != null && jsonTsp != null)
+            return  new GameShare(gson.fromJson(jsonTsp, Tsp.class),gson.fromJson(jsonGame, Game.class)) ;
+
+      return  new GameShare(null,null) ;
+    }
+
+
+
+
+
 
     private void dialogGameOver(Game game) {
         StyleDialog ad = new StyleDialog(this);
@@ -403,7 +472,7 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
         ((TextView) ad.findViewById(R.id.title)).setText("Game Over");
         ((TextView) ad.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
         ((TextView) ad.findViewById(R.id.scores)).setText(String.valueOf(game.getLevel()));
-        ((TextView) ad.findViewById(R.id.time)).setText(String.valueOf(game.getGameLifeTime()));
+        ((TextView) ad.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
         ((TextView) ad.findViewById(R.id.try_again)).setText("New");
         ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
             ad.cancel();
@@ -415,7 +484,7 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
         ad.show();
         ad.findViewById(R.id.try_again).setOnClickListener(v -> {
             ad.cancel();
-                gameViewModel.onCreateGame(readNewGame());
+            gameViewModel.newGame();
 
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
@@ -426,84 +495,194 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             soundPool.play(soundIds[5], 1, 1, 1, 0, 1.0f);
     }
 
-    private void dialogResume(Game game) {
+    private void dialogResume(Tsp tsp, Game game) {
+        activatePlayR(game,tsp);
+     if(dialog==null)dialog = new StyleDialog(this);
+            dialog.setContentView(R.layout.pop_game_ended);
+            dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    onBackPressed();
+                }
+            });
+            ((TextView) dialog.findViewById(R.id.title)).setText("Welcome");
+                if (game != null && tsp != null) {
+                    ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
+                   ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getScores()));
+                    ((TextView) dialog.findViewById(R.id.time)).setText(String.valueOf(S.timeDisplay(game.getGameLifeTime())));
 
-        StyleDialog ad = new StyleDialog(this);
-        ad.setContentView(R.layout.pop_game_ended);
-        ((TextView) ad.findViewById(R.id.title)).setText("Welcome");
-        ((TextView) ad.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
-        ((TextView) ad.findViewById(R.id.scores)).setText(String.valueOf(game.getLevel()));
-        ((TextView) ad.findViewById(R.id.time)).setText(String.valueOf(S.timeDisplay(game.getGameLifeTime())));
-        ((TextView) ad.findViewById(R.id.try_again)).setText("Resume");
-        ((TextView) ad.findViewById(R.id.return_btn)).setText("New");
+                    ((TextView) dialog.findViewById(R.id.try_again)).setText("Resume");
+                    ((TextView) dialog.findViewById(R.id.return_btn)).setText("New");
+
+                    dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+                        dialog.setOnCancelListener(null);
+                        dialog.cancel();
+                        findViewById(R.id.btn_play).setVisibility(View.GONE);
+                        gameViewModel.newGame();
+                        if (gameSettings.getBoolean("k_sound", true))
+                            soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+
+                    });
+                    dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
+                        findViewById(R.id.btn_play).setVisibility(View.GONE);
+                        dialog.setOnCancelListener(null);
+                        dialog.cancel();
+                        gameViewModel.resumeGame(tsp, game);
+                        if (gameSettings.getBoolean("k_sound", true))
+                            soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+                    });
+                } else {
+                    ((TextView) dialog.findViewById(R.id.try_again)).setText("New");
+                    dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
+                        dialog.setOnCancelListener(null);
+                        dialog.cancel();
+                        findViewById(R.id.btn_play).setVisibility(View.GONE);
+                        gameViewModel.newGame();
+
+                        if (gameSettings.getBoolean("k_sound", true))
+                            soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+
+                    });
+                    dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+                        dialog.cancel();
+                         activatePlayR(game,tsp);
+
+                    });
+                }
 
 
-        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
-            ad.cancel();
-            findViewById(R.id.btn_play).setVisibility(View.GONE);
-            if (gameViewModel.getGame().getValue() == null)
-                gameViewModel.onCreateGame(readNewGame());
-            if (gameSettings.getBoolean("k_sound", true))
-                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
 
-        });
-        ad.findViewById(R.id.try_again).setOnClickListener(v -> {
-            findViewById(R.id.btn_play).setVisibility(View.GONE);
-            ad.cancel();
-            if (gameViewModel.getGame().getValue() == null)
-                gameViewModel.onCreateGame(readStoredGame());
-            if (gameSettings.getBoolean("k_sound", true))
-                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
-        });
-        ad.show();
-        ad.setCanceledOnTouchOutside(false);
+            dialog.show();
+            dialog.setCanceledOnTouchOutside(false);
+
     }
 
-    private Game readNewGame() {
-        return new Game(1);
-    }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        startTime = System.currentTimeMillis();
+    protected void onStop() {
+        super.onStop();
     }
-
 
     @Override
     protected void onPause() {
+        pauseTimer();
         super.onPause();
-        gameViewModel.pause(System.currentTimeMillis() - startTime);
+
     }
 
     @Override
     public void onPoint(int index) {
         Button b = optionsContainer.findViewById(index);
         if (b == null) b = answersContainer.findViewById(index);
-        //answer(b,index);
-        if (b != null) b.performClick();
-        Log.d(CodeX.tag, "index " + index);
+        if (b != null) b.callOnClick();
+        Log.e(CodeX.tag, "Index  button error " + index);
     }
 
 
-    private void dialogMenu (){
-        pauseGame(startTime);
-        StyleDialog ad = new StyleDialog(this);
-        ad.setContentView(R.layout.pop_game_menu);
+    private void pauseTimer() {
+        if (countUPTimer != null) countUPTimer.cancel();
+        if (countDownTimer != null) countDownTimer.cancel();
+        countUPTimer = null;
+        countDownTimer= null;
+        Game game = gameViewModel.getGame();
+        Tsp tsp = gameViewModel.getTsp();
+        if (game != null && tsp != null) {
+            game.pause(startTime);
+            gameViewModel.setGameLiveData(game);
+            saveGave(tsp, game);
+        } else{
+            Log.e(CodeX.tag, "Null Game or Tsp Cannot pause or save");
+        }
+
+    }
+
+
+    private void resumeTimer(Game game) {
+        Log.d(CodeX.tag, "  resume ... ");
+        startTime = System.currentTimeMillis();
+        if (gameSettings.getBoolean("timing", false)) {
+            Log.d(CodeX.tag, game.getTiming()+" timing, used time"+game.getUsedTime());
+            countUPTimer = null;
+            countDownTimer = new CountDownTimer(game.getTiming() - game.getUsedTime(), 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    Log.d(CodeX.tag, " time change " + S.timeDisplay(millisUntilFinished));
+                    time.setText(S.timeDisplay(millisUntilFinished));
+                }
+
+                @Override
+                public void onFinish() {
+                    optionsContainer.removeAllViews();
+                    answersContainer.removeAllViews();
+                    dialogLoose(game, "You time finish try again pints will be refresh");
+
+                }
+            };
+            countDownTimer.start();
+        } else {
+            countDownTimer = null;
+            countUPTimer = new CountUpTimer(1000 * 60 * 60,
+                    1000) {
+                @Override
+                public void onTickDown(long timeCount) {
+                    Log.d(CodeX.tag, "  count up output ... " + timeCount);
+                    time.setText(S.timeDisplay(timeCount));
+                }
+
+                @Override
+                public void onFinish() {
+                    dialogLoose(game, "Sorry you have take too much time to figure out the solution try again");
+                    optionsContainer.removeAllViews();
+                    answersContainer.removeAllViews();
+                }
+            };
+            countUPTimer.start();
+
+        }
+    }
+
+    private void setAnimations() {
+        ((AnimationDrawable) level.getBackground()).start();
+        ((AnimationDrawable) scores.getBackground()).start();
+        ((AnimationDrawable) time.getBackground()).start();
+    }
+
+    private void dialogMenu(Tsp tsp,Game game ) {
+        if(dialog==null)dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.pop_game_menu);
         SharedPreferences.Editor editor = gameSettings.edit();
-        Switch timing = ad.findViewById(R.id.timing);
-        Switch kSound = ad.findViewById(R.id.k_sound);
-        Switch bSound = ad.findViewById(R.id.b_sound);
-        Switch refreshingPoints = ad.findViewById(R.id.refresh_points);
-        Switch keys = ad.findViewById(R.id.keys);
+        Switch timing = dialog.findViewById(R.id.timing);
+        Switch kSound = dialog.findViewById(R.id.k_sound);
+        Switch bSound = dialog.findViewById(R.id.b_sound);
+        Switch refreshingPoints = dialog.findViewById(R.id.refresh_points);
+        Switch keys = dialog.findViewById(R.id.keys);
         timing.setChecked(gameSettings.getBoolean("timing", false));
         kSound.setChecked(gameSettings.getBoolean("k_sound", true));
         bSound.setChecked(gameSettings.getBoolean("b_sound", false));
         refreshingPoints.setChecked(gameSettings.getBoolean("refresh_points", true));
         keys.setChecked(gameSettings.getBoolean("keys", true));
-        ((TextView) ad.findViewById(R.id.level)).setText("" + gameSettings.getLong("b_level", 0L));
-        ((TextView) ad.findViewById(R.id.scores)).setText("" + gameSettings.getLong("b_score", 0L));
-        ((TextView) ad.findViewById(R.id.time)).setText("" + gameSettings.getLong("b_time", 0L));
+
+        if (game != null && tsp != null) {
+            ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
+            ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getScores()));
+            ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
+
+            dialog.findViewById(R.id.time).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Gson gson= new Gson();
+                    GameShare gs = new GameShare(tsp, game);
+                    String text = gson.toJson(gs, GameShare.class);
+                    Intent sendIntent = new Intent();
+                    sendIntent.setAction(Intent.ACTION_SEND);
+                    sendIntent.setType("text/*");
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+                    sendIntent.putExtra(Intent.EXTRA_TITLE, "Send to");
+                    startActivity(Intent.createChooser(sendIntent, "Share with"));
+
+                }
+            });
+        }
         timing.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("timing", isChecked);
             editor.apply();
@@ -523,7 +702,9 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             editor.apply();
             editor.commit();
             if (isChecked)
-                soundPool.resume(bSoundStreamId);
+                if (bSoundStreamId == -1)
+                    bSoundStreamId = soundPool.play(soundIds[0], 1, 1, 2, -1, 1.0f);
+                else soundPool.resume(bSoundStreamId);
             else soundPool.pause(bSoundStreamId);
 
             if (gameSettings.getBoolean("k_sound", true))
@@ -544,22 +725,14 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
-            ad.cancel();
-            resumeGame();
+        dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+            dialog.cancel();
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+            if (gameViewModel.getGameLiveData().getValue() != null)
+                resumeTimer(gameViewModel.getGameLiveData().getValue());
         });
-        ad.show();
-    }
-
-    private void pauseGame(long startTime) {
-    }
-    private void resumeGame() {
-    }
-
-    private void setAnimations() {
-        ((AnimationDrawable) level.getBackground()).start();
-        ((AnimationDrawable) scores.getBackground()).start();
-        ((AnimationDrawable) time.getBackground()).start();
+        dialog.show();
     }
 
     public void zoomIn(View v) {
@@ -576,9 +749,6 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             soundPool.play(soundIds[8], 1, 1, 1, 0, 1.0f);
     }
 
-    private void setSound(boolean on) {
-
-    }
 
     private void setKeys(boolean on) {
         if (on) {
@@ -592,26 +762,21 @@ new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
     }
 
 
-    abstract class CountUp extends CountDownTimer {
-
+    abstract static class CountUpTimer extends CountDownTimer {
         private long duration;
 
-        public CountUp(long millisInFuture, long countDownInterval) {
+        public CountUpTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
             this.duration = millisInFuture;
         }
 
-
         @Override
         public void onTick(long millisUntilFinished) {
-            long time = duration - millisUntilFinished;
-            onTick(time);
+            onTickDown(duration - millisUntilFinished);
         }
 
-        @Override
-        public void onFinish() {
+        public abstract void onTickDown(long timeCountMillis);
 
-        }
     }
 }
 

@@ -1,8 +1,12 @@
 package softcare.util;
 
+import java.io.File;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Formatter;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class S {
@@ -36,17 +40,60 @@ public 	static  void print (List<String> sub) {
 		Formatter f = new Formatter();
 		return String.valueOf(f.format("%02d:%02d", m,s));
 	}
+	public static int  getRandomInt(Random r, int lower, int upper){
+		return   r.nextInt(upper-lower)+lower;
+	}
+	public static String getName(int i){
+		switch (i){
+			case 0: return "A";
+			case 1: return "B";
+			case 2: return "C";
+			case 3: return "D";
+			case 4: return "E";
+			case 5: return "F";
+			case 6: return "G";
+			case 7: return "H";
+			case 8: return "I";
+			case 9: return "J";
+			case 10: return "K";
+			case 11: return "L";
+			case 12: return "M";
+			case 13: return "N";
+			case 14: return "O";
+			case 15: return "P";
+			case 16: return "Q";
+			case 17: return "R";
+			case 18: return "S";
+			case 19: return "T";
+			case 20: return "U";
+			case 21: return "V";
+			case 22: return "W";
+			case 23: return "X";
+			case 24: return "Y";
+			case 25: return "Z";
+		}
+
+		return String.valueOf(i);
+	}
+
+
+	// project folder and sub folders
+	public static final String PATH_PROJECT = File.separator + "Path Finder";
+	public static final String PATH_IMAGES = PATH_PROJECT + File.separator + "Images";
+
+	public static String DATE_PATTERN = "dd/MM/yyyy HH:mm";
+
+	public  static Date getDateFromString(String s)   {
+		try {
+			SimpleDateFormat sdf=  new SimpleDateFormat(DATE_PATTERN);
+			Date d= sdf.parse(s);
+			Long l= d.getTime();
+			return d;
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return  new Date(0) ;
+	}
+
 
 }
-/*
- soundIds = new int[10];
-        soundIds[0]=soundPool.load(this,R.raw.b_sound,1);
-        soundIds[1]=soundPool.load(this,R.raw.answered,1);
-        soundIds[2]=soundPool.load(this,R.raw.k_unanswered,1);
-        soundIds[3]=soundPool.load(this,R.raw.k_win,1);
-        soundIds[4]=soundPool.load(this,R.raw.k_loose ,1);
-        soundIds[5]=soundPool.load(this,R.raw.k_game_over,1);
-        soundIds[6]=soundPool.load(this,R.raw.k_keys1,1);
-        soundIds[7]=soundPool.load(this,R.raw.zoom_in,1);
-        soundIds[8]=soundPool.load(this,R.raw.zoom_out,1);
- */

@@ -99,4 +99,9 @@
     <string name="auto">Auto(from above)</string>
     <string name="cancel">Cancel</string>
     <string name="select_alg">Select Algorithm</string>
+    <string name="title_activity_addL">Add Locations</string>
+    <string name="addByDistances">Add by Distances</string>
+    <string name="addByLoadingMap">Add by Loading Map</string>
+    <string name="addByLocation">Add by Location</string>
+    <string name="select_input_method">Select Input Method</string>
 </resources>

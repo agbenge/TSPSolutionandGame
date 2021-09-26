@@ -57,29 +57,29 @@ public class ViewCityDistance extends FrameLayout {
     private void initView(String name, int index, Context context) {
         inflate(context, R.layout.item_city_distance, this );
         TextView aNum = this.findViewById(R.id.error);
-        aNum.setText("empty number");
+        aNum.setText("Empty");
         aNum.setTextColor(context.getResources().getColor(R.color.red));
         EditText numS = this.findViewById(R.id.city_edit);
         this.index = index;
         TextView cityLabel = this.findViewById(R.id.city_l);
-        cityLabel.setText("Distance to " + name + " is ");
+        cityLabel.setText("to " + name + " is ");
 
         numS.setOnKeyListener((v, keyCode, event) -> {
 
             try {
                 if (numS.getText().toString().isEmpty()) {
                     aNum.setTextColor(context.getResources().getColor(R.color.red));
-                    aNum.setText("empty number");
+                    aNum.setText("Empty");
                     ok = false;
                 } else {
                     input = Double.parseDouble(numS.getText().toString());
                     aNum.setTextColor(context.getResources().getColor(R.color.green));
-                    aNum.setText("a number");
+                    aNum.setText("Okay");
                     ok=true;
                 }
             } catch (Exception e) {
                 aNum.setTextColor(context.getResources().getColor(R.color.red));
-                aNum.setText("not a number");
+                aNum.setText("Error");
                 input = -1;
                 ok = false;
             }

@@ -13,12 +13,13 @@
         android:layout_height="0dp"
         android:background="@drawable/btn_y"
         android:src="@drawable/ic_baseline_menu_24"
-        app:layout_constraintBottom_toBottomOf="@+id/time"
+        app:layout_constraintBottom_toTopOf="@+id/level"
+
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintEnd_toEndOf="@+id/level"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
         app:srcCompat="@drawable/ic_baseline_menu_24" />
 
     <TextView
@@ -27,9 +28,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constrainedWidth="false"
+        app:layout_constraintBottom_toTopOf="@+id/scores"
         app:layout_constraintDimensionRatio="w,h 1:1"
-        app:layout_constraintEnd_toStartOf="@+id/scores"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:text="8" />
 
     <TextView
@@ -37,8 +38,8 @@
         style="@style/BoardItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/time"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/_time"
+        app:layout_constraintStart_toStartOf="@+id/level"
         tools:text="88" />
 
     <TextView
@@ -47,8 +48,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="45s"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/scores" />
 
     <TextView
         android:id="@+id/_level"
@@ -79,22 +80,25 @@
         app:layout_constraintEnd_toEndOf="@id/time"
         app:layout_constraintStart_toStartOf="@id/time"
         app:layout_constraintTop_toTopOf="@id/time" />
+
     <HorizontalScrollView
         android:id="@+id/answer_h_scroll"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scores"
-        app:layout_constraintStart_toStartOf="parent"
-       >
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:rotationX="0"
+        android:rotationY="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/time"
+        app:layout_constraintTop_toTopOf="parent">
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
-        <LinearLayout
-            android:id="@+id/answersContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal" /> </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/answersContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="vertical" /> </ScrollView>
     </HorizontalScrollView>
 
 
@@ -103,18 +107,20 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/fab_margin"
-        app:layout_constraintBottom_toTopOf="@+id/options_h_scroll"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/answer_h_scroll"
-        app:layout_constraintVertical_bias="0.0">
+        android:overScrollMode="ifContentScrolls"
+        android:scrollbarStyle="outsideOverlay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/options_h_scroll"
+        app:layout_constraintStart_toEndOf="@+id/answer_h_scroll"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:paddingBottom="100dp">
+            android:paddingBottom="100dp"
+            android:scrollbarStyle="outsideOverlay">
+
             <softcare.gui.PlotGame
                 android:id="@+id/plotGame"
                 android:layout_width="wrap_content"
@@ -134,17 +140,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1">
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
-        <LinearLayout
-            android:id="@+id/optionsContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
 
-            android:orientation="horizontal"
-            /></ScrollView>
+            <LinearLayout
+                android:id="@+id/optionsContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+
+                android:orientation="vertical" /></ScrollView>
     </HorizontalScrollView>
 
     <Button
@@ -156,17 +163,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
         android:id="@+id/zoom_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/fab_margin"
         android:background="@drawable/btn_b"
         android:onClick="zoomOut"
         android:padding="@dimen/fab_margin"
 
-        app:layout_constraintBottom_toTopOf="@+id/options_h_scroll"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/options_h_scroll"
         app:srcCompat="@drawable/ic_baseline_zoom_out_24"
         app:tint="@color/white" />
 
@@ -179,7 +186,7 @@
         android:onClick="zoomIn"
         android:padding="@dimen/fab_margin"
         app:layout_constraintBottom_toTopOf="@+id/zoom_out"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/options_h_scroll"
         app:srcCompat="@drawable/ic_baseline_zoom_in_24"
         app:tint="@color/white" />
 

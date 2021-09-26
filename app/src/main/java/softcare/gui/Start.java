@@ -1,6 +1,9 @@
 package softcare.gui;
 
  
+import android.util.Log;
+import android.view.View;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,8 +13,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import softcare.game.model.CodeX;
+
 
 public class Start  {
+
+
 	/*
 	public List<String> mCities;
 	public List<Integer> mDirection;

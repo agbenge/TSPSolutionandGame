@@ -12,4 +12,9 @@
         <attr name="zoomValue" format="integer"/>
         <attr name="circleRadiusTsp" format="reference|integer"/>
     </declare-styleable>
+
+    <declare-styleable name="PlotGame">
+        <attr name="highlightColor" format="reference|color"/>
+        <attr name="positionColor" format="reference|color"/>
+    </declare-styleable>
 </resources>

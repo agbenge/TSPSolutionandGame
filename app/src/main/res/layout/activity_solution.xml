@@ -90,7 +90,7 @@
 
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
-                android:text="Estimated Location"
+                android:text="Location"
                 app:layout_constraintBottom_toTopOf="@+id/outputLocations"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -128,6 +128,7 @@ android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@+id/outputLocations"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

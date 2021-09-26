@@ -10,18 +10,22 @@ import softcare.util.S;
 public class Game {
     private int level;
     private int scores;
-   private  final int TIME_LIMIT= 7000;// 7second
+   private  final int TIME_LIMIT= 3000;// 7second
     private  int min;
     private double cost;
     private  long usedTime;
     private long gameLifeTime;
-    public Game(int level ) {
-        this.level = level ;
+    public Game() {
+        this.level = 0 ;
         direction = new ArrayList<>();
     }
 
     public int getMin() {
         return min;
+    }
+
+    public long getUsedTime() {
+        return usedTime;
     }
 
     public int getTryAgain() {
@@ -49,7 +53,7 @@ public class Game {
     }
 
     public int getTiming() {
-        return level*TIME_LIMIT;
+        return getNodes()*1000+TIME_LIMIT;
     }
 
     public double getCost() {
@@ -57,7 +61,7 @@ public class Game {
     }
 
     public int getNodes() {
-        return level + 2;
+        return level + 3;
     }
  private int tryAgain;
     private List<Integer> direction;
@@ -75,19 +79,20 @@ public class Game {
     public void next(boolean betterThanAlg, long _usedTime) {
         long usedTime= this.usedTime+_usedTime;
         // add mechanism for increasing level
-        scores= scores+ (int)((TIME_LIMIT*level)/usedTime)+   ( betterThanAlg?(TIME_LIMIT*level):0)+level;
+        scores= scores +level+ (int)(((getTiming()/1000)*level)/usedTime)+   ( betterThanAlg?getNodes():0);
 
         level++;
         tryAgain=0;
         direction = new ArrayList<>();
         gameLifeTime+=usedTime;
-        usedTime=0L;
+       this. usedTime=0L;
     }
+
     public void tryAgain() {
         direction = new ArrayList<>();
         tryAgain++;
         gameLifeTime+=usedTime;
-        usedTime=0L;
+        this. usedTime=0L;
     }
 
     public String getResult(Tsp tsp) { /// presenting path as result
@@ -126,6 +131,6 @@ public class Game {
 
 
     public void pause(long startTime) {
-        usedTime+=startTime;
+        usedTime+=(System.currentTimeMillis()-startTime);
     }
 }
