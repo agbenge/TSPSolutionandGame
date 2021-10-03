@@ -8,7 +8,7 @@
         android:id="@+id/city_l"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="City"
+        android:text="@string/city"
         app:layout_constraintBottom_toBottomOf="@+id/city_edit"
         app:layout_constraintEnd_toStartOf="@+id/city_edit"
         app:layout_constraintHorizontal_chainStyle="spread"
@@ -30,7 +30,7 @@
         android:id="@+id/error"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Empty filed"
+        android:text="@string/empty_field"
         app:layout_constraintBottom_toBottomOf="@+id/city_edit"
         app:layout_constraintStart_toEndOf="@+id/city_edit"
         app:layout_constraintTop_toTopOf="parent" />

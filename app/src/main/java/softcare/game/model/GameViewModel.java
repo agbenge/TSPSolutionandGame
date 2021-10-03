@@ -167,7 +167,7 @@ public class GameViewModel extends ViewModel {
         for (int x = 1; x < tsp.getDirection().size(); x++) {
             int i = tsp.getDirection().get(x);
             res += tsp.getDirection().get(prevouse) + "\t";
-            res += "\t" + tsp.getMatrix()[prevouse][i] + "\tto\t";
+            res += "\t" + S.doubleToString( tsp.getMatrix()[prevouse][i] )+ "\tto\t";
 
             dist[prevouse] = tsp.getMatrix()[prevouse][i];
             cost = cost + tsp.getMatrix()[prevouse][i];
@@ -306,8 +306,9 @@ public class GameViewModel extends ViewModel {
     public void next(Game game) {
         start(game);
     }
-    public void newGame() {
+    public void newGame(int i) {
         Game game = new Game();
+        game.setLevel(i);
         setGameLiveData(game);
         start(game);
     }

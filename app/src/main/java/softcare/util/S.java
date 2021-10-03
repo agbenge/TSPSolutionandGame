@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import softcare.gui.PointXY;
+
 public class S {
 	public  static  String TAG="game";
 public 	static  void print (List<String> sub) {
@@ -39,6 +41,17 @@ public 	static  void print (List<String> sub) {
 			TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(time));
 		Formatter f = new Formatter();
 		return String.valueOf(f.format("%02d:%02d", m,s));
+	}
+	public static String timeDisplay2(long time ) {
+		long m= TimeUnit.MILLISECONDS.toMinutes(time);
+		long s=TimeUnit.MILLISECONDS.toSeconds(time)-
+				TimeUnit.MINUTES.toSeconds(m);
+		long ms=time
+		      -TimeUnit.MINUTES.toMillis(m)
+				- TimeUnit.SECONDS.toMillis(s)
+				 ;
+		Formatter f = new Formatter();
+		return String.valueOf(f.format("%02d:%02d:%03d%s", m,s,ms,"ms"));
 	}
 	public static int  getRandomInt(Random r, int lower, int upper){
 		return   r.nextInt(upper-lower)+lower;
@@ -94,6 +107,7 @@ public 	static  void print (List<String> sub) {
 		}
 		return  new Date(0) ;
 	}
+
 
 
 }

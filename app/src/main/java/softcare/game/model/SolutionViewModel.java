@@ -1,10 +1,13 @@
 package softcare.game.model;
 
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import java.io.BufferedWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import softcare.algorithm.SalesmanGenome;
 import softcare.algorithm.Salesmensch;
@@ -19,7 +22,6 @@ public class SolutionViewModel extends ViewModel {
     private MutableLiveData<Tsp> tspLiveData;
     private MutableLiveData<ProgressX> progressXLiveData;
     private MutableLiveData<ErrorCode> errorCodeLiveData;
-
     public MutableLiveData<Tsp> getTspLiveData() {
         if (tspLiveData == null) tspLiveData = new MutableLiveData<>();
         return tspLiveData;
@@ -122,7 +124,7 @@ public class SolutionViewModel extends ViewModel {
                             System.out.println(duration);
                             System.out.println();
                             tsp.setTspActions(TspCode.SOLVED);
-                            tsp.setResult( getResult(tsp));
+                            tsp.setResult(getResult(tsp));
                             tspLiveData.postValue(tsp);
 
 
@@ -135,10 +137,16 @@ public class SolutionViewModel extends ViewModel {
                     }
 
                     case GEN: {
+
+
                         start = System.currentTimeMillis();
                         Salesmensch geneticAlgorithm = new
-                                Salesmensch(tsp.getCities().size(), SelectionType.ROULETTE, tsp.getDataInt(), 0, 0);
+                                Salesmensch(tsp.getCities().size(),
+                                SelectionType.ROULETTE,
+                                tsp.getDataInt(), 0, 0);
+                        Log.d(CodeX.tag, "call optimised");
                         SalesmanGenome result = geneticAlgorithm.optimize();
+                        Log.d(CodeX.tag, "finish");
                         end = System.currentTimeMillis();
                         System.out.println(result);
                         tsp.addDirection(result.getStartingCity());
@@ -146,10 +154,11 @@ public class SolutionViewModel extends ViewModel {
                         tsp.addDirection(result.getStartingCity());
                         tsp.setCost(result.getFitness());
                         duration = end - start;
+                        tsp.setDuration(duration);
                         System.out.println(duration);
 
                         tsp.setTspActions(TspCode.SOLVED);
-                        tsp.setResult( getResult(tsp));
+                        tsp.setResult(getResult(tsp));
                         tspLiveData.postValue(tsp);
                         break;
                     }
@@ -176,7 +185,7 @@ public class SolutionViewModel extends ViewModel {
                         System.out.println(duration);
 
                         tsp.setTspActions(TspCode.SOLVED);
-                        tsp.setResult( getResult(tsp));
+                        tsp.setResult(getResult(tsp));
                         tspLiveData.postValue(tsp);
                         break;
                     }
@@ -294,12 +303,12 @@ public class SolutionViewModel extends ViewModel {
         res = tsp.getHeader();
         for (int i = 0; i < tsp.getCities().size(); i++) {
             res = res + tsp.getCities().get(i).replace(" ", "_") +
-                    "    " + tsp.getPointXY().get(i).getX() + "\t\t "
-                    + tsp.getPointXY().get(i).getY();
+                    "    " + S.doubleToString(tsp.getPointXY().get(i).getX()) + "\t\t "
+                    + S.doubleToString(tsp.getPointXY().get(i).getY());
             res += "\n";
         }
 
-        return res ;
+        return res;
     }
 
 
@@ -334,7 +343,7 @@ public class SolutionViewModel extends ViewModel {
         Tsp tsp = tspLiveData.getValue();
         if (TspCode.READ != tsp.getTspActions() && TspCode.UPDATE != tsp.getTspActions()) {
             errorCodeLiveData.postValue(ErrorCode.NOT_READ_OR_UPDATED);
-            return "";
+            return null;
         }
         for (int i = 0; i < tsp.getCities().size(); i++) {
             res += tsp.getCities().get(i) + ",";
@@ -384,7 +393,7 @@ public class SolutionViewModel extends ViewModel {
         res += "\n";
         for (int i = 0; i < tsp.getCities().size(); i++) {
             for (int j = 0; j < tsp.getCities().size(); j++) {
-                res = res + "\t" + tsp.getMatrix()[i][j];
+                res = res + "\t" + S.doubleToString(tsp.getMatrix()[i][j]);
             }
             res += "\n";
         }
@@ -413,8 +422,8 @@ public class SolutionViewModel extends ViewModel {
 
         for (int x = 1; x < tsp.getDirection().size(); x++) {
             int i = tsp.getDirection().get(x);
-            res += tsp.getDirection().get(prevouse) + "\t";
-            res += "\t" + tsp.getMatrix()[prevouse][i] + "\tto\t";
+            res += tsp.getCities().get(prevouse) + "\t";
+            res += "\t" + S.doubleToString(tsp.getMatrix()[prevouse][i]) + "\tto\t";
 
             dist[prevouse] = tsp.getMatrix()[prevouse][i];
             cost = cost + tsp.getMatrix()[prevouse][i];
@@ -425,7 +434,7 @@ public class SolutionViewModel extends ViewModel {
         if (tsp.getCost() == 0) {
             tsp.setCost(cost);
         }
-        res += "\n Total distances \t" + tsp.getCost();
+        res += "\n Total distances \t" + S.doubleToString(tsp.getCost());
         if (tsp.getDuration() > 0L) {
             double time = (double) tsp.getDuration() / (double) 1000;
             if (time != 1)
@@ -448,65 +457,132 @@ public class SolutionViewModel extends ViewModel {
     }
 
     public void addCity(String name, double[] distance) {
-        Log.d(CodeX.tag," D adding "+name );
+        Log.d(CodeX.tag, " D adding " + name);
         Tsp tsp = tspLiveData.getValue();
         if (tsp != null) {
-            if(distance!=null)
-                 updateTsp(tsp,name,distance);
-        }else {
-            if(distance==null){
-                tsp= new Tsp();
-                updateTsp(tsp,name,distance);
+            if (distance != null)
+                updateTsp(tsp, name, distance);
+        } else {
+            if (distance == null) {
+                tsp = new Tsp();
+                updateTsp(tsp, name, distance);
                 return;
             }
-            Log.e(CodeX.tag,"Tsp value is null");
+            Log.e(CodeX.tag, "Tsp value is null");
         }
     }
 
-    private void updateTsp(Tsp tsp, String name,double[] distance) {
+    private void updateTsp(Tsp tsp, String name, double[] distance) {
         tsp.addCity(name);
-        if (tsp.updateMatrix(tsp.getCities().size()-1, distance)) {
-            tsp.setLocation(tsp.getCities().size()-1);
+        if (tsp.updateMatrix(tsp.getCities().size() - 1, distance)) {
+            tsp.setLocation(tsp.getCities().size() - 1);
             tsp.setTspActions(TspCode.UPDATE);
             tspLiveData.setValue(tsp);
-        }  else {
-            Log.e(CodeX.tag,"data unable to update");
+        } else {
+            Log.e(CodeX.tag, "data unable to update");
             errorCodeLiveData.postValue(ErrorCode.UNKNOWN);
         }
     }
 
-    public  void addCityXY(String name, PointXY _pointXY){
-        Log.d(CodeX.tag,"L adding "+name);
+    public void addCityXY(String name, PointXY _pointXY) {
+        Log.d(CodeX.tag, "L adding " + name);
         Tsp tsp = tspLiveData.getValue();
-        if(tsp==null)  tsp= new Tsp();
-            tsp.addPointXY(_pointXY);
-            tsp.addCity(name);
-            tsp.countDistancesAndUpdateMatrix();
+        if (tsp == null) tsp = new Tsp();
+        tsp.addPointXY(_pointXY);
+        tsp.addCity(name);
+        tsp.countDistancesAndUpdateMatrix();
         tsp.setTspActions(TspCode.UPDATE);
         tspLiveData.setValue(tsp);
     }
 
-public  void  clear(){
-        if(tspLiveData!=null)
-    tspLiveData.setValue(null);
-}
+    public void clear() {
+        if (tspLiveData != null)
+            tspLiveData.setValue(null);
+    }
 
-    public void addIdata(TspData data) {
+    public void addMapData(TspData data) {
         Tsp tsp = new Tsp();
         tsp.setPointXY(data.getLocations());
         tsp.setCities(data.getCities());
-       tsp.countDistancesAndUpdateMatrix();
+        tsp.countDistancesAndUpdateMatrix();
         tsp.setTspActions(TspCode.UPDATE);
         tspLiveData.setValue(tsp);
-        int i=0;
-        for( String name :data.getCities()){
-            Log.d(CodeX.tag," Received Name "+name+"   x "
-                    +data.getLocations().get(i).x+"  y"+data.getLocations().get(i).y);
+        int i = 0;
+        for (String name : data.getCities()) {
+            Log.d(CodeX.tag, " Received Name " + name + "   x "
+                    + data.getLocations().get(i).x + "  y" + data.getLocations().get(i).y);
             i++;
         }
     }
 
 
+    public void openFile(InputStream inputStream, TaskManager taskManager, boolean isLocation) {
+        taskManager.runTask(new Runnable() {
+            @Override
+            public void run() {
+                stop = false;
+                if (inputStream != null) {
+                    long s = System.currentTimeMillis();
+                    long st = System.currentTimeMillis();
+                    int counter = 0;
+                    try {
+                        StringBuilder text = new StringBuilder();
+                        int cn = inputStream.read();
+                        while (cn != -1 && !stop && counter < 2) {
+                            char c = (char) cn;
+                            text.append(c);
+                            cn = inputStream.read();
+                            if (System.currentTimeMillis() - s > 5000) {  // updating at 10 seconds
+                                s = System.currentTimeMillis();
+                                stop = true;
+                                counter++;
+                            }
+                        }
+                        inputStream.close();
+
+                        if (stop) {
+                            errorCodeLiveData.setValue(ErrorCode.FILE_TOO_LARGE);
+                        } else if (counter == 2) {
+                            errorCodeLiveData.setValue(ErrorCode.FILE_TOO_LARGE);
+
+                        } else {
+                            if (isLocation) readTSP_XY(text.toString());
+                            else readTSP(text.toString());
+                        }
+
+                    } catch (Exception e) {
+                        errorCodeLiveData.setValue(ErrorCode.FIlE_NOT_OPEN);
+                    }
+                }
+
+            }
+
+
+        });
+    }
+
+
+    public void saveFile(OutputStream out, TaskManager taskManager, boolean isLocation) {
+        taskManager.runTask(new Runnable() {
+            @Override
+            public void run() {
+
+                String text = isLocation ? getSave() : getSave_temp();
+                if (out != null) {
+                    try {
+                        out.write(text.getBytes());
+                        out.flush();
+                        out.close();
+                        errorCodeLiveData.postValue(ErrorCode.FILE_SAVE);
+                    } catch (Exception e) {
+                        errorCodeLiveData.postValue(ErrorCode.FIlE_NOT_SAVE);
+                    }
+                }
+            }
+        });
+
+
+    }
 
 
 

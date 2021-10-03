@@ -31,7 +31,7 @@ public class TaskManager {
 
     }
       public void   shutdownNow(){
-          threadPoolExecutor.shutdownNow();
+          workQueue.clear();
       }
     public static TaskManager getInstance() {
         return instance;

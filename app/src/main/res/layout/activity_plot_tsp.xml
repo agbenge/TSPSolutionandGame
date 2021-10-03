@@ -7,11 +7,20 @@
     android:background="@drawable/bg"
     tools:context=".PlotTspActivity">
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="scores,time"
+        tools:layout_editor_absoluteY="602dp" />
+
     <TextView
         android:id="@+id/scores"
         style="@style/BoardItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toStartOf="@+id/time"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,14 +36,14 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/scores"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="45s" />
+        tools:text="45s " />
 
     <TextView
         android:id="@+id/_scores"
         style="@style/BoardItemLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Total distances(cost)"
+        android:text="@string/total_distances_cost"
        android:maxLines="1"
         android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="@id/scores"
@@ -47,51 +56,50 @@
         style="@style/BoardItemLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Time"
+        android:text="@string/time"
         app:layout_constraintEnd_toEndOf="@id/time"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/time"
         app:layout_constraintTop_toTopOf="@id/time" />
 
+    <TextView
+        android:id="@+id/result"
+        android:layout_width="405dp"
+        android:layout_height="17dp"
+        android:text="Result"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <HorizontalScrollView
         android:id="@+id/h_scroll"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="@dimen/fab_margin"
+
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scores">
+        app:layout_constraintTop_toBottomOf="@+id/b">
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="100dp">
 
-        <ScrollView
+        <softcare.gui.PlotTSP
+            android:id="@+id/plotTSP"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingBottom="100dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <softcare.gui.PlotTSP
-                    android:scaleType="fitXY"
-                    android:id="@+id/plotTSP"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg"
-                    app:circleColor="@color/blueLight"
-                    app:labelColor="@color/white"
-                    app:lineColor="@color/magenta" />
-
-                <TextView
-                    android:id="@+id/result"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="TextView" />
-            </LinearLayout>
-        </ScrollView>
-    </HorizontalScrollView>
+            android:background="@drawable/bg"
+            android:padding="@dimen/medium_dp"
+            app:circleColor="@color/blueLight"
+            app:labelColor="@color/white"
+            app:lineColor="@color/magenta"
+            app:zoomValue="100" />
+    </ScrollView>
+        </HorizontalScrollView>
 
 
     <ImageView
@@ -101,7 +109,7 @@
         android:background="@drawable/btn_b"
         android:onClick="zoomOut"
         android:padding="@dimen/fab_margin"
-
+android:contentDescription="@string/zoom_out"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_zoom_out_24"
@@ -114,10 +122,13 @@
         android:layout_height="wrap_content"
         android:background="@drawable/btn_b"
         android:onClick="zoomIn"
+        android:contentDescription="@string/zoom_in"
         android:padding="@dimen/fab_margin"
         app:layout_constraintBottom_toTopOf="@+id/zoom_out"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_zoom_in_24"
         app:tint="@color/white" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

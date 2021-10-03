@@ -1,5 +1,9 @@
 package   softcare.algorithm;
+import android.util.Log;
+
 import java.util.*;
+
+import softcare.game.model.CodeX;
 
 public class Salesmensch {
     private int generationSize;
@@ -22,11 +26,11 @@ public class Salesmensch {
         this.startingCity = startingCity;
         this.targetFitness = targetFitness;
 
-        generationSize = 5000;
-        reproductionSize = 200;
-        maxIterations = 1000;
+        generationSize = 500; ///origal 5000
+        reproductionSize = 20;///original 200
+        maxIterations = 100;///original 1000
         mutationRate = 0.1f;
-        tournamentSize = 40;
+        tournamentSize = 4;///original 40
     }
 
     public List<SalesmanGenome> initialPopulation(){
@@ -53,7 +57,13 @@ public class Salesmensch {
     }
 
     public SalesmanGenome rouletteSelection(List<SalesmanGenome> population){
-        int totalFitness = population.stream().map(SalesmanGenome::getFitness).mapToInt(Integer::intValue).sum();
+        int totalFitness = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            totalFitness = population.stream().map(SalesmanGenome::getFitness).mapToInt(Integer::intValue).sum();
+        }else {
+            Log.e(CodeX.tag,"Api level 24 required");
+            Log.e(CodeX.tag,"line 62 of rouletteSelection in softcare.algorithm.Salesmensch");
+        }
         Random random = new Random();
         int selectedValue = random.nextInt(totalFitness);
         float recValue = (float) 1/selectedValue;
@@ -143,8 +153,12 @@ public class Salesmensch {
 
     public SalesmanGenome optimize(){
         List<SalesmanGenome> population = initialPopulation();
+
+        Log.d(CodeX.tag,maxIterations+"call now");
         SalesmanGenome globalBestGenome = population.get(0);
+        Log.d(CodeX.tag,maxIterations+"call now    5");
         for(int i=0; i<maxIterations; i++){
+            Log.d(CodeX.tag,maxIterations+"call loop"+i);
             List<SalesmanGenome> selected = selection(population);
             population = createGeneration(selected);
             globalBestGenome = Collections.min(population);

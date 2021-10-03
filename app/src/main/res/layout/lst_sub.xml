@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:background="@drawable/bg_0"
-        android:text="09:45s"
+        tools:text="09:45s"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/scores"
@@ -54,7 +54,7 @@
         style="@style/BoardItemLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Level"
+        android:text="@string/level"
         app:layout_constraintEnd_toEndOf="@id/level"
         app:layout_constraintStart_toStartOf="@id/level"
         app:layout_constraintTop_toTopOf="@id/level" />
@@ -64,7 +64,7 @@
         style="@style/BoardItemLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Scores"
+        android:text="@string/scores"
         app:layout_constraintEnd_toEndOf="@id/scores"
         app:layout_constraintStart_toStartOf="@id/scores"
         app:layout_constraintTop_toTopOf="@id/scores" />
@@ -74,7 +74,7 @@
         style="@style/BoardItemLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Time"
+        android:text="@string/time"
         app:layout_constraintEnd_toEndOf="@id/time"
         app:layout_constraintStart_toStartOf="@id/time"
         app:layout_constraintTop_toTopOf="@id/time" />

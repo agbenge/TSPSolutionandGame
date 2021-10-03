@@ -1,21 +1,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="softcare.game.AddCityIActivity">
+    tools:context="softcare.game.AddCityMapActivity">
+
+    <item
+        android:id="@+id/action_undo"
+        android:orderInCategory="100"
+        android:title="@string/undo"
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_load"
         android:orderInCategory="200"
-        android:title="Load map"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/action_undo"
-        android:orderInCategory="300"
-        android:title="undo "
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/action_finish"
-        android:orderInCategory="300"
-        android:title="finish"
-        app:showAsAction="always" />
+        android:title="@string/load_map"
+        app:showAsAction="ifRoom" />
+
 
 </menu>

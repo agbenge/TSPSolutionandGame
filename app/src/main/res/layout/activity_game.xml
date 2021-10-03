@@ -7,18 +7,22 @@
     android:background="@drawable/bg"
     tools:context=".GameActivity">
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/playGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <ImageView
         android:id="@+id/menu"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/btn_y"
+        android:contentDescription="@string/menu"
         android:src="@drawable/ic_baseline_menu_24"
-        app:layout_constraintBottom_toBottomOf="@+id/time"
+        app:layout_constraintBottom_toBottomOf="@+id/level"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/level"
         app:srcCompat="@drawable/ic_baseline_menu_24" />
 
     <TextView
@@ -28,7 +32,7 @@
         android:layout_height="wrap_content"
         app:layout_constrainedWidth="false"
         app:layout_constraintDimensionRatio="w,h 1:1"
-        app:layout_constraintEnd_toStartOf="@+id/scores"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="8" />
 
@@ -37,7 +41,7 @@
         style="@style/BoardItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/time"
+        app:layout_constraintStart_toEndOf="@+id/level"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="88" />
 
@@ -46,16 +50,18 @@
         style="@style/BoardItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="45s"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/menu"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@+id/scores"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="45s" />
 
     <TextView
         android:id="@+id/_level"
         style="@style/BoardItemLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Level"
+        android:text="@string/level"
         app:layout_constraintEnd_toEndOf="@id/level"
         app:layout_constraintStart_toStartOf="@id/level"
         app:layout_constraintTop_toTopOf="@id/level" />
@@ -65,7 +71,7 @@
         style="@style/BoardItemLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Scores"
+        android:text="@string/scores"
         app:layout_constraintEnd_toEndOf="@id/scores"
         app:layout_constraintStart_toStartOf="@id/scores"
         app:layout_constraintTop_toTopOf="@id/scores" />
@@ -75,7 +81,7 @@
         style="@style/BoardItemLabel"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Time"
+        android:text="@string/time"
         app:layout_constraintEnd_toEndOf="@id/time"
         app:layout_constraintStart_toStartOf="@id/time"
         app:layout_constraintTop_toTopOf="@id/time" />
@@ -93,7 +99,7 @@
         <LinearLayout
             android:id="@+id/answersContainer"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal" /> </ScrollView>
     </HorizontalScrollView>
 
@@ -117,6 +123,7 @@
             android:paddingBottom="100dp">
             <softcare.gui.PlotGame
                 android:id="@+id/plotGame"
+                android:padding="@dimen/medium_dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg"
@@ -141,7 +148,7 @@
         <LinearLayout
             android:id="@+id/optionsContainer"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
 
             android:orientation="horizontal"
             /></ScrollView>
@@ -151,7 +158,7 @@
         android:id="@+id/btn_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="PLay"
+        android:text="@string/play"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -168,7 +175,8 @@
         app:layout_constraintBottom_toTopOf="@+id/options_h_scroll"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_zoom_out_24"
-        app:tint="@color/white" />
+        app:tint="@color/white"
+        android:contentDescription="@string/zoom_out" />
 
     <ImageView
         android:id="@+id/zoom_in"
@@ -181,6 +189,7 @@
         app:layout_constraintBottom_toTopOf="@+id/zoom_out"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_zoom_in_24"
-        app:tint="@color/white" />
+        app:tint="@color/white"
+        android:contentDescription="@string/zoom_in" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

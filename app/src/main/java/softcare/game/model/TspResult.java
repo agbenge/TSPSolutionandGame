@@ -54,6 +54,8 @@ public class TspResult extends TspData   {
        this.path  =al ;
         this.result = in.readString();
         this.imagePath = in.readString();
+        this.cost= in.readDouble();
+        this.time = in.readLong();
     }
     public static final Creator<TspResult> CREATOR = new Creator<TspResult>() {
         @Override
@@ -73,6 +75,8 @@ public class TspResult extends TspData   {
        dest.writeList(path);
         dest.writeString(result);
         dest.writeString(imagePath);
+        dest.writeDouble(cost);
+        dest.writeLong(time);
 
     }
 

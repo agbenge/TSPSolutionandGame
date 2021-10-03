@@ -1,11 +1,11 @@
 package softcare.game.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import softcare.gui.PointXY;
-import softcare.gui.Test;
-
 public class Tsp {
     public Tsp() {
         cities= new ArrayList<>();
@@ -147,7 +147,6 @@ public class Tsp {
                 res[i][j] = (int) matrix[i][j];
             }
         }
-
         return res;
     }
 
@@ -194,31 +193,6 @@ public class Tsp {
             }
         }
     }
-    void setLocation() {
-
-        if (cities != null) {
-            int size = cities.size();
-            {
-                pointXY = new ArrayList<>();
-                pointXY.add(new PointXY(0, 0));
-                pointXY.add(new PointXY(0, matrix[0][1]));
-                for (int i = 2; i < size; i++) {
-                    pointXY.add(Test.getPoint(pointXY.get(0), pointXY.get(1),matrix[0][i], matrix[1][i]));
-                }
-            }
-        }
-
-        if (cities != null) {
-            int size = cities.size();
-
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    matrix[i][j] = distance(pointXY.get(i), pointXY.get(j));
-                }
-            }
-        }
-
-    }
 
     void setLocation( int in) {
         if(pointXY==null)
@@ -237,7 +211,8 @@ public class Tsp {
 
                 }
                 default:{
-                    pointXY.add(in, Test.getPoint(pointXY.get(0), pointXY.get(1), matrix[0][in], matrix[1][in]));
+                    pointXY.add(in, getPoint(pointXY.get(0), pointXY.get(1),
+                            matrix[0][in], matrix[1][in]));
                 }
             }
             {
@@ -271,5 +246,25 @@ public class Tsp {
 
  }
 
+    public   PointXY getPoint(PointXY p0, PointXY p1, double p0r, double p1r) {
+        double x=0,y=0;
+        double d=  distance(p0,p1);
+        if(d<(p0r+p1r)&&d>(p0r-p1r)) {
+            double a= ((p0r*p0r)-(p1r*p1r)+(d*d))/(2*d);
+            PointXY p2= new PointXY(
+                    p0.x+a*(p1.x-p0.x),
+                    p0.y+a*(p1.y-p0.y));
+
+            double h= Math.sqrt( (p0r*p0r) -(a*a));
+            return new PointXY(
+                    (p2.x +h*(p1.y-p0.y))/d,
+                    (p2.y+h* (p1.x-p0.x))/d
+            );
+
+        }
+
+
+        return new PointXY(x,y);
+    }
 
 }

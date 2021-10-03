@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_l_2"
         android:onClick="game"
-        android:text="Shortest Path"
+        android:text="@string/shortest_path"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bg_l_1"
         android:onClick="solution"
-        android:text="Find My Path"
+        android:text="@string/find_my_path"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -46,7 +46,7 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="solution model"
+        android:text="@string/solution_model"
         android:textColor="@color/magenta"
         app:layout_constraintEnd_toEndOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="@+id/textView2"
@@ -56,7 +56,7 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Play Game"
+        android:text="@string/play_game"
         android:textColor="@color/magenta"
         app:layout_constraintEnd_toEndOf="@+id/textView"
         app:layout_constraintStart_toStartOf="@+id/textView"
@@ -69,10 +69,10 @@
         android:layout_margin="@dimen/fab_margin"
         android:background="@drawable/anim_bg_l"
         android:padding="@dimen/fab_margin"
-        android:tint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_volume_up_24" />
+        app:srcCompat="@drawable/ic_baseline_volume_up_24"
+        android:contentDescription="@string/sound_toggle" />
 
     <ImageView
         android:id="@+id/ico_main"
@@ -83,7 +83,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sound"
-        app:srcCompat="@drawable/anim_bg_main" />
+        app:srcCompat="@drawable/anim_bg_main"
+        android:contentDescription="@string/app_name" />
 
     <TextView
         android:id="@+id/button"
@@ -91,7 +92,7 @@
         android:layout_height="0dp"
         android:background="@drawable/btn_y"
         android:gravity="center_horizontal|center_vertical"
-        android:text="Donate"
+        android:text="@string/donate"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/sound"

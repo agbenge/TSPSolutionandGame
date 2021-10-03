@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import softcare.gui.CityXY;
-
 public class AddCityLActivity extends AppCompatActivity implements View.OnKeyListener {
 
 
@@ -72,12 +70,12 @@ public class AddCityLActivity extends AppCompatActivity implements View.OnKeyLis
         y_input = findViewById(R.id.city_log);
         city = findViewById(R.id.city_name);
         msg = findViewById(R.id.msg);
-        x = "Lat ";
-        y = "Log ";
+        x = getString(R.string.latitude);
+        y = getString(R.string.longitude);
         x_input.setOnKeyListener(this);
         y_input.setOnKeyListener(this);
         city.setOnKeyListener(this);
-        msg.setText("Empty fields");
+        msg.setText(getString(R.string.empty_fields));
         msg.setTextColor(context.getResources().getColor(R.color.red));
 
 
@@ -85,11 +83,11 @@ public class AddCityLActivity extends AppCompatActivity implements View.OnKeyLis
     private void callTest( String x, String y ) {
         if(city.getText().toString().isEmpty()) {
             ok=false;
-            msg.setText(" City name is empty");
+            msg.setText(getString(R.string.name_is_empty));
             return;
         }else {
             ok= true;
-            msg.setText("okay");
+            msg.setText( getString(R.string.okay));
 
             ok=	test(x_input,  x);
             if(ok)ok=	test(y_input, y);
@@ -103,18 +101,18 @@ public class AddCityLActivity extends AppCompatActivity implements View.OnKeyLis
         try {
             if(numS.getText().toString().isEmpty()) {
                 msg.setTextColor(context.getResources().getColor(R.color.red));
-                msg.setText("Empty "+msgText);
+                msg.setText(getString(R.string.empty)+msgText);
                 return false;
             }else {
                 Double.parseDouble(numS.getText().toString());
                 msg.setTextColor(context.getResources().getColor(R.color.green));
-                msg.setText("okay");
+                msg.setText(getString(R.string.okay));
                 return true;
 
             }
         }catch(Exception e) {
             msg.setTextColor(context.getResources().getColor(R.color.red));
-            msg.setText("Not a number");
+            msg.setText(getString(R.string.not_a_number));
             return false;
         }
     }
@@ -145,7 +143,7 @@ public class AddCityLActivity extends AppCompatActivity implements View.OnKeyLis
         city.setText("");
         y_input.setText("");
         x_input.setText("");
-        msg.setText("Empty fields");
+        msg.setText(getString(R.string.empty_fields));
         msg.setTextColor(context.getResources().getColor(R.color.red));
 
     }

@@ -4,4 +4,6 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="ico_size_small">100</dimen>
     <dimen name="title_padding_top">32dp</dimen>
+    <dimen name="plot_padding">50dp</dimen>
+    <dimen name="medium_dp">8dp</dimen>
 </resources>

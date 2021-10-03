@@ -13,7 +13,6 @@ import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -29,7 +28,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -48,27 +46,17 @@ import softcare.game.model.TspData;
 import softcare.gui.PlotImage;
 import softcare.util.S;
 
-public class AddCityIActivity extends AppCompatActivity {
+public class AddCityMapActivity extends AppCompatActivity {
           PlotImage  plotImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_city_iactivity);
+        setContentView(R.layout.activity_add_city_mactivity);
         plotImage = findViewById(R.id.plotImage);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        ((Switch)  findViewById(R.id.adding)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                plotImage.setAddingPoint(isChecked);
-            }
-        });
-        findViewById(R.id.finish).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(plotImage);
-            }
-        });
+        ((Switch)  findViewById(R.id.adding)).setOnCheckedChangeListener((buttonView, isChecked) -> plotImage.setAddingPoint(isChecked));
+        findViewById(R.id.finish).setOnClickListener(v -> finish(plotImage));
     }
 
 
@@ -116,19 +104,18 @@ public class AddCityIActivity extends AppCompatActivity {
     public boolean askPermission(String[] permissions) {
         if (!hasPermissions(this, permissions)) {
             Snackbar.make(plotImage,
-                    "Oh you have not accepted permission" +
-                            " for the App to acess your storage",Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Accept now", new View.OnClickListener() {
+                   getString(  R.string.permission_msg),Snackbar.LENGTH_INDEFINITE)
+                    .setAction( getString(R.string.accept_now), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ActivityCompat.requestPermissions(AddCityIActivity.this, permissions, 1);
+                            ActivityCompat.requestPermissions(AddCityMapActivity.this, permissions, 1);
                         }
                     }).show();
 
         } else {
             return true;
         }
-        Toast.makeText(this, "Permission not set", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.permission_not_set), Toast.LENGTH_LONG).show();
         return false;
     }
 
@@ -155,7 +142,7 @@ public class AddCityIActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     int resultCode = result.getResultCode();
                     Log.d(CodeX.tag, " camara  " + (resultCode == RESULT_OK));
-                    setIcon();
+                   setPic();
                 }
             }
     );
@@ -173,57 +160,48 @@ public class AddCityIActivity extends AppCompatActivity {
                         int columnIndex = c.getColumnIndex(filePath[0]);
                         String picturePath = c.getString(columnIndex);
                         c.close();
-
-
-                        OutputStream outFile = null;
-                        initDirectory(new File(Environment.getExternalStorageDirectory().toString() + S.PATH_IMAGES));
-                        File file = new File(Environment.getExternalStorageDirectory().toString() + S.PATH_IMAGES,
-                                "temp" + ".jpg");
-
-                        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
-                        Bitmap bitmap = BitmapFactory.decodeFile(picturePath,
-                                bitmapOptions);
-
-                        try {
-                            outFile = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outFile);
-                            outFile.flush();
-                            outFile.close();
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
-
-                        img= picturePath;
-                        Log.d(CodeX.tag, "path of image from gallery..." + picturePath + "");
-                        plotImage.setImageBitmap(thumbnail);
+                      img=  picturePath;
+                      setPic();
                     }
                 }
             }
     );
 
 
-    void setIcon() {
-        initDirectory(new File(Environment.getExternalStorageDirectory().toString() + S.PATH_IMAGES));
-        File file = new File(Environment.getExternalStorageDirectory().toString() + S.PATH_IMAGES, "temp" + ".jpg");
-
-img= file.getAbsolutePath();
-        return;
-    }
+     
 String img;
-    boolean initDirectory(File file) {
-        if (file != null) {
-            if (file.exists() & file.isDirectory()) {
-                return true;
-            }
-            return file.mkdirs();
-
+  private   void setGalleryPic( String picturePath) {
+        OutputStream outFile = null;
+        File file = null;
+        try {
+            file = createImageFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this,getString(R.string.error),Toast.LENGTH_LONG).show();
+            return;
         }
-        return false;
+
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+        Bitmap bitmap = BitmapFactory.decodeFile(picturePath,
+                bitmapOptions);
+
+        try {
+            outFile = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outFile);
+            outFile.flush();
+            outFile.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
+
+        img= picturePath;
+        Log.d(CodeX.tag, "path of image from gallery..." + picturePath + "");
+        plotImage.setImageBitmap(thumbnail);
     }
 
 
@@ -234,65 +212,112 @@ String img;
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE} )) {
 
-            final CharSequence[] options = {"Take Photo", "Choose from Gallery", "Removed Image", "Cancel"};
+            final CharSequence[] options = {
+                    getString(R.string.take_photo),
+                    getString(R.string.choose_from_gallery),
+                    getString(R.string.cancel)};
             //{ "Take Photo", "Choose from Gallery", "Cancel" };
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Add Photo!");
-            builder.setItems(options, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int item) {
-                    if (options[item].equals("Take Photo")) {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                        initDirectory(new File(Environment.getExternalStorageDirectory().toString() + S.PATH_IMAGES));
-                        File file = new File(Environment.getExternalStorageDirectory().toString() + S.PATH_IMAGES, "temp" + ".jpg");
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT,
-                                FileProvider.getUriForFile(AddCityIActivity.this,
-                                        getApplicationContext().getPackageName() + ".provider", file));
-                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                       camara.launch( intent);
-                    } else if (options[item].equals("Choose from Gallery")) {
-                        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                       gallery.launch( intent);
-                    } else if (options[item].equals("Cancel")) {
-                        dialog.dismiss();
-                    } else if (options[item].equals("Removed Image")) {
-
-                        dialog.dismiss();
-                        ///  deleteIcon();
-                    }
-                }
-            });
+            builder.setTitle(R.string.ad_photo);
+            builder.setItems(options, (dialog, item) -> {
+                if (options[item].equals(getString(R.string.take_photo))) {
+                    dispatchTakePictureIntent(); 
+                } else if (options[item].equals(getString(R.string.choose_from_gallery))) {
+                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                   gallery.launch( intent);
+                } else if (options[item].equals(getString(R.string.cancel))) {
+                    dialog.dismiss();
+                }                                        });
             builder.show();
         }
 
     }
 
 
+    private void dispatchTakePictureIntent() {
+  Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+  // Ensure that there's a camera activity to handle the intent
+  if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+    // Create the File where the photo should go
+    File photoFile = null;
+    try {
+      photoFile = createImageFile();
+    } catch (IOException ex) {
+        Toast.makeText(this,R.string.error,Toast.LENGTH_LONG).show();
+    }
+    // Continue only if the File was successfully created
+    if (photoFile != null) {
+      Uri photoURI = FileProvider.getUriForFile(this,
+              getApplicationContext().getPackageName() + ".provider",
+                                                 photoFile);
+      takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+     camara.launch(takePictureIntent);
+    }
+  }
+    } 
+
+    private File createImageFile() throws IOException {
+  // Create an image file name 
+  String imageFileName = "temp";
+  File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+  File image = File.createTempFile(
+                    imageFileName, /* prefix */
+                    ".jpg",     /* suffix */
+                    storageDir   /* directory */
+                  );
+
+  // Save a file: path for use with ACTION_VIEW intents
+ img = image.getAbsolutePath();
+  return image;
+    }
 
 
 
 
+    private void setPic() {
+ // Get the dimensions of the View
+ int targetW = plotImage.getWidth();
+ int targetH = plotImage.getHeight();
 
+ // Get the dimensions of the bitmap
+ BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+ bmOptions.inJustDecodeBounds = true;
 
+ BitmapFactory.decodeFile(img, bmOptions);
 
+ int photoW = bmOptions.outWidth;
+ int photoH = bmOptions.outHeight;
+
+ // Determine how much to scale down the image
+ int scaleFactor = Math.max(1, Math.min(photoW/targetW, photoH/targetH));
+
+ // Decode the image file into a Bitmap sized to fill the View
+ bmOptions.inJustDecodeBounds = false;
+ bmOptions.inSampleSize = scaleFactor;
+ bmOptions.inPurgeable = true;
+
+ Bitmap bitmap = BitmapFactory.decodeFile(img, bmOptions);
+ plotImage.setImageBitmap(bitmap);
+    }
 
 public void undo(View v){
         plotImage.undo();
 
 }
 
-    public void finish(View v){
-                    Intent intent = new Intent(this, SolutionActivity.class);
-                    TspData data= new TspData(plotImage.getNames(),plotImage.getLocations());int i=0;
+    private void finish(View v){
+      if(plotImage.getNames().size()>=3) {
+          Intent intent = new Intent(this, SolutionActivity.class);
+          TspData data = new TspData(plotImage.getNames(), plotImage.getLocations());
+          intent.putExtra("data", data);
+          intent.putExtra("img", img);
+          intent.setFlags(RESULT_OK);
+          setResult(RESULT_OK, intent);
+          finish();
+      }else{
+          Toast.makeText(this, getString(R.string.ad_some_points),Toast.LENGTH_LONG).show();
+      }
 
-
-                    intent.putExtra("data",data);
-        intent.putExtra("img", img);
-                    intent.setFlags(RESULT_OK);
-                    Log.d(CodeX.tag,"Sending name and data ");
-                    setResult(RESULT_OK,intent);
-                    finish();
     }
 
 
@@ -306,10 +331,7 @@ public void undo(View v){
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuId = item.getItemId();
-        if (menuId == R.id.action_finish) {
-            finish(plotImage);
-            return true;
-        }else  if (menuId == R.id.action_undo) {
+        if (menuId == R.id.action_undo) {
             undo(plotImage);
             return true;
         } else  if (menuId == R.id.action_load) {

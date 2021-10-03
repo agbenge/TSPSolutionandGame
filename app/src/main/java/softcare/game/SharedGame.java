@@ -24,7 +24,7 @@ public class SharedGame extends GameActivity {
     }
 
     @Override
-    protected void next(Game game, Tsp tsp) {
+    protected void next( Tsp tsp,Game game) {
         ///super.next(game, tsp);
         Toast.makeText(this,
                 "You cannot continue from where your fried stop, Screen short and share",

@@ -27,15 +27,16 @@
                 android:id="@+id/plotTSP"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:padding="@dimen/medium_dp"
                 android:isScrollContainer="true"
                 app:labelColor="@color/green"
-                app:zoomValue="200" />
+                app:zoomValue="100" />
         </HorizontalScrollView>
         <TextView
             android:id="@+id/result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="hello text view " />
+            tools:text="hello text view " />
 </LinearLayout>
     </ScrollView>
 
@@ -60,21 +61,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
-                android:text="Close" />
+                android:text="@string/close" />
 
             <Button
                 android:id="@+id/zoom_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
-                android:text="Zoom out" />
+                android:text="@string/zoom_out" />
 
             <Button
                 android:id="@+id/zoom_in"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
-                android:text="Zoom in" />
+                android:text="@string/zoom_in" />
 
 
         </LinearLayout>

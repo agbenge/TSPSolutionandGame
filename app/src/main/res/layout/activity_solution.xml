@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableEnd="@drawable/ic_baseline_swap_horizontal_circle_24"
-                android:text="Add by points" />
+                android:text="@string/addByLocation" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
@@ -90,7 +90,7 @@
 
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fab_margin"
-                android:text="Location"
+                android:text="@string/locations"
                 app:layout_constraintBottom_toTopOf="@+id/outputLocations"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -102,7 +102,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:text="Matrix representation of cities"
+                android:text="@string/matrix_representation_of_distances"
                 app:layout_constraintBottom_toTopOf="@+id/outputMatrix"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -114,7 +114,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 android:visibility="gone"
-                android:text="Visualised"
+                android:text="@string/visualised"
                 app:layout_constraintBottom_toBottomOf="@+id/outputMatrix"
                 app:layout_constraintEnd_toEndOf="@+id/outputMatrix"
                 app:layout_constraintStart_toStartOf="@+id/outputMatrix" />
@@ -124,7 +124,7 @@ android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:text="visualised"
+                android:text="@string/visualised"
                 app:layout_constraintBottom_toBottomOf="@+id/outputLocations"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -138,6 +138,7 @@ android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:layout_margin="@dimen/fab_margin"
+        android:contentDescription="@string/refresh"
         android:src="@drawable/ic_baseline_refresh_24"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|start" />
@@ -148,6 +149,7 @@ android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:layout_margin="@dimen/fab_margin"
+        android:contentDescription="@string/add"
         android:src="@drawable/ic_baseline_add_24"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end" />
@@ -158,6 +160,7 @@ android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        android:contentDescription="@string/solve"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_round_arrow_right_alt_24" />

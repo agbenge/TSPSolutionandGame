@@ -1,24 +1,12 @@
 package softcare.game;
-
-//import com.google.android.gms.tasks.Task;
-//import com.google.android.gms.tasks.Tasks;
-import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.snackbar.Snackbar; ;
+import com.google.android.material.snackbar.Snackbar;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -27,34 +15,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.Constraints;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Calendar;
-import java.util.Date;
 
 import softcare.game.databinding.ActivitySolutionBinding;
 import softcare.game.model.Alg;
 import softcare.game.model.CodeX;
-import softcare.game.model.ErrorCode;
-import softcare.game.model.ProgressX;
 import softcare.game.model.SolutionViewModel;
 import softcare.game.model.TaskManager;
 import softcare.game.model.Tsp;
@@ -63,7 +37,6 @@ import softcare.game.model.TspData;
 import softcare.game.model.TspResult;
 import softcare.gui.PlotTSP;
 import softcare.gui.PointXY;
-import softcare.util.S;
 
 public class SolutionActivity extends AppCompatActivity {
 
@@ -71,39 +44,39 @@ public class SolutionActivity extends AppCompatActivity {
 
 
     private SolutionViewModel solutionViewModel;
-    private ImageView imageView;
 
-private  TaskManager taskManager;
+    private TaskManager taskManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
 
-        taskManager= TaskManager.getInstance();
-       _init();
+        taskManager = TaskManager.getInstance();
+        _init();
     }
 
     Snackbar snackbar;
-private  void  started(String m){
-      snackbar= Snackbar.make(binding.getRoot(),m,Snackbar.LENGTH_INDEFINITE) ;
-      snackbar.setAction("Cancel", new View.OnClickListener() {
-          @Override
-          public void onClick(View v) {
-              if (taskManager!=null){
-                  taskManager.shutdownNow();
-              }
-          }
-      });
-      snackbar.show();
-}
-    private  void  ended(){
 
-    if(snackbar!=null) {
-        snackbar.setText("Finished");
-        snackbar.setDuration(Snackbar.LENGTH_LONG);
+    private void started(String m) {
+        snackbar = Snackbar.make(binding.getRoot(), m, Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction(getText(R.string.cancel), v -> {
+            if (taskManager != null) {
+                taskManager.shutdownNow();
+            }
+        });
+        snackbar.show();
     }
 
+    private void ended() {
+
+        if (snackbar != null) {
+            snackbar.setText(getString(R.string.finished));
+            snackbar.setDuration(Snackbar.LENGTH_LONG);
+        }
+
     }
+
     private void _init() {
         binding = ActivitySolutionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -114,79 +87,53 @@ private  void  started(String m){
         toolBarLayout.setTitle(getTitle());
         solutionViewModel = new ViewModelProvider(this).get(SolutionViewModel.class);
 
-        binding.add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        binding.add.setOnClickListener(view -> {
 
-                if(isAddByDistance) addD(view);
-                else if(isAddByLocation) addL(view);
-                else addI();
-            }
+            if (isAddByDistance) addD(view);
+            else if (isAddByLocation) addL(view);
+            else addI();
         });
-        binding.addL.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               addBy();
-            }
-        });
-        binding.solve.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Tsp tsp = solutionViewModel.getTsp();
-                if (tsp != null) {
-                    if (tsp.getTspActions() == TspCode.READ || tsp.getTspActions() == TspCode.UPDATE) {
-                        if (tsp.getCities().size() > 2) {
-                            launchAlg(view, tsp.getCities().size());
-                        } else
-                            Snackbar.make(view, "Cities too small to be a program", Snackbar.LENGTH_LONG).show();
+        binding.addL.setOnClickListener(view -> addBy());
+        binding.solve.setOnClickListener(view -> {
+            Tsp tsp = solutionViewModel.getTsp();
+            if (tsp != null) {
+                if (tsp.getTspActions() == TspCode.READ || tsp.getTspActions() == TspCode.UPDATE) {
+                    if (tsp.getCities().size() > 2) {
+                        launchAlg(tsp.getCities().size());
+                    } else
+                        Snackbar.make(view, getString(R.string.cities_small), Snackbar.LENGTH_LONG).show();
 
-                    } else if (tsp.getTspActions() == TspCode.SOLVED) prepareResult(tsp);
-                    else Snackbar.make(view, "Cities are not added", Snackbar.LENGTH_LONG).show();
+                } else if (tsp.getTspActions() == TspCode.SOLVED)
+                    launchAlg(tsp.getCities().size());//prepareResult(tsp);
+                else
+                    Snackbar.make(view, getString(R.string.cities_not_added), Snackbar.LENGTH_LONG).show();
 
-                } else
-                    Snackbar.make(view, "Unable to initialised, add distances or locations", Snackbar.LENGTH_LONG).show();
+            } else
+                Snackbar.make(view, getString(R.string.un_init), Snackbar.LENGTH_LONG).show();
 
-            }
         });
         binding.refresh.setOnClickListener(view -> solutionViewModel.clear());/// change to button toback if already cleard
-        solutionViewModel.getTspLiveData().observe(this, new Observer<Tsp>() {
-
-            @Override
-            public void onChanged(Tsp tsp) {
-                if (tsp != null) {
-                    if (tsp.getTspActions() != TspCode.SOLVED) {
-                        binding.outputMatrix.setText(solutionViewModel.getPreview());
-                        binding.outputLocations.setText(solutionViewModel.getPreviewXY());
-                    } else {
-                        prepareResult(tsp);
-                    }
+        solutionViewModel.getTspLiveData().observe(this, tsp -> {
+            if (tsp != null) {
+                if (tsp.getTspActions() != TspCode.SOLVED) {
+                    binding.outputMatrix.setText(solutionViewModel.getPreview());
+                    binding.outputLocations.setText(solutionViewModel.getPreviewXY());
+                    ended();
                 } else {
-                    binding.outputMatrix.setText("");
-                    binding.outputLocations.setText("");
-                    Snackbar.make(binding.getRoot(), "Inputs empty start a new problem", Snackbar.LENGTH_LONG).show();
-
+                    prepareResult(tsp);
                 }
-            }
-        });
-        solutionViewModel.getErrorCodeLiveData().observe(this, new Observer<ErrorCode>() {
-
-            @Override
-            public void onChanged(ErrorCode errorCode) {
-                Snackbar.make(binding.getRoot(), "Error " + errorCode.toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+            } else {
+                binding.outputMatrix.setText("");
+                binding.outputLocations.setText("");
+                Snackbar.make(binding.getRoot(), getString(R.string.input_empty_start_problem), Snackbar.LENGTH_LONG).show();
 
             }
         });
-        solutionViewModel.getProgressXLiveData().observe(this, new Observer<ProgressX>() {
-            @Override
-            public void onChanged(ProgressX progressX) {
-                Log.d("game", progressX.toString());
-            }
-        });
+        solutionViewModel.getErrorCodeLiveData().observe(this, errorCode -> Snackbar.make(binding.getRoot(), getString(R.string.error) + errorCode.toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show());
+        solutionViewModel.getProgressXLiveData().observe(this, progressX -> Log.d("game", progressX.toString()));
 
 
     }
-
-
 
 
     ActivityResultLauncher<Intent> addI = registerForActivityResult(
@@ -197,10 +144,11 @@ private  void  started(String m){
                     Log.d(CodeX.tag, " here " + (resultCode == RESULT_OK));
                     if (resultCode == RESULT_OK) {
                         Intent data = result.getData();
-                       TspData dat = data.getParcelableExtra("data");
-                       imgpath = data.getParcelableExtra("img");
-                       if(dat!=null)
-                        solutionViewModel.addIdata(dat);
+                        assert data != null;
+                        TspData dat = data.getParcelableExtra("data");
+                        imgpath = data.getStringExtra("img");
+                        if (dat != null)
+                            solutionViewModel.addMapData(dat);
 
                     }
                 }
@@ -215,6 +163,7 @@ private  void  started(String m){
                     Log.d(CodeX.tag, " here " + (resultCode == RESULT_OK));
                     if (resultCode == RESULT_OK) {
                         Intent data = result.getData();
+                        assert data != null;
                         String name = data.getStringExtra("cityName");
                         double[] distance = data.getDoubleArrayExtra("data");
                         solutionViewModel.addCity(name, distance);
@@ -232,6 +181,7 @@ private  void  started(String m){
                     if (resultCode == RESULT_OK) {
                         Intent data = result.getData();
 
+                        assert data != null;
                         String name = data.getStringExtra("cityName");
                         double x = data.getDoubleExtra("x", 0);
                         double y = data.getDoubleExtra("y", 0);
@@ -253,20 +203,123 @@ private  void  started(String m){
     public boolean onOptionsItemSelected(MenuItem item) {
         int menuId = item.getItemId();
         if (menuId == R.id.action_save) {
+
+            Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("text/*");
+            intent.putExtra(Intent.EXTRA_TITLE, "");
+            saveLauncher.launch(intent);
+
+            return true;
+        } else if (menuId == R.id.action_open) {
+
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("text/*");
+            openFileLauncher.launch(intent);
+
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
-    private void prepareResult(Tsp tsp ) {
-        Intent intent= new Intent(this, PlotTspActivity.class);
-        //List<String> cities, List<PointXY> locations, List<Integer> path,
-        // double cost, long time, String result, String imagePath
-        intent.putExtra("result",new TspResult(tsp.getCities(), tsp.getPointXY()
-                , tsp.getDirection(), tsp.getCost(),tsp.getDuration(),tsp.getResult(),imgpath));
-        startActivity(intent);
+    ActivityResultLauncher<Intent> saveLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    int resultCode = result.getResultCode();
+                    Log.d(CodeX.tag, " gallery --------- " + (resultCode == RESULT_OK));
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            Intent data = result.getData();
+                            Uri uri = data.getData();
+                            OutputStream outputStream=
+                                    SolutionActivity.this.getContentResolver().openOutputStream(uri);
+                            save(outputStream);
+                        } catch (Exception e) {
+
+                        }
+                    }
+                }
+            }
+    );
+
+
+    ActivityResultLauncher<Intent> openFileLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    int resultCode = result.getResultCode();
+                    Log.d(CodeX.tag, " gallery --------- " + (resultCode == RESULT_OK));
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            Intent data = result.getData();
+                            Uri uri = data.getData();
+                           InputStream inputStream=
+                                   SolutionActivity.this.getContentResolver().openInputStream(uri);
+                           open(inputStream);
+                        } catch (Exception e) {
+
+                        }
+                    }
+                }
+            }
+    );
+
+    private void save(OutputStream outputStream) {
+        final CharSequence[] options = {
+                getString(R.string.saveByLocation),
+                getString(R.string.saveByDistances),
+                getString(R.string.cancel)};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.select_input_method));
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals(getString(R.string.saveByLocation))) {
+                solutionViewModel.saveFile(outputStream, taskManager, true);
+                dialog.dismiss();
+            } else if (options[item].equals(getString(R.string.saveByDistances))) {
+                solutionViewModel.saveFile(outputStream, taskManager, false);
+                dialog.dismiss();
+            } else if (options[item].equals(getString(R.string.cancel))) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+
     }
-    private  String imgpath=null;
+
+    private void open(InputStream inputStream) {
+        final CharSequence[] options = {
+                getString(R.string.openByLocation),
+                getString(R.string.openByDistances),
+                getString(R.string.cancel)};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.select_input_method));
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals(getString(R.string.openByLocation))) {
+                solutionViewModel.openFile(inputStream, taskManager, true);
+                dialog.dismiss();
+            } else if (options[item].equals(getString(R.string.openByDistances))) {
+                solutionViewModel.openFile(inputStream, taskManager, false);
+                dialog.dismiss();
+            } else if (options[item].equals(getString(R.string.cancel))) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    private void prepareResult(Tsp tsp) {
+        Intent intent = new Intent(this, PlotTspActivity.class);
+        intent.putExtra("result", new TspResult(tsp.getCities(), tsp.getPointXY()
+                , tsp.getDirection(), tsp.getCost(), tsp.getDuration(), tsp.getResult(), imgpath));
+        startActivity(intent);
+        Log.d(CodeX.tag, " Path " + imgpath);
+    }
+
+    private String imgpath = null;
+
     private void dialogResult4(Tsp tsp) {
         Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.plot_tsp_result);
@@ -274,38 +327,23 @@ private  void  started(String m){
         dialog.getWindow().setLayout(Constraints.LayoutParams.MATCH_PARENT, Constraints.LayoutParams.MATCH_PARENT);
         dialog.show();
         plotTSP.plot(tsp.getPointXY(), tsp.getCities(),
-                tsp.getDirection(), tsp.getDistance());
+                tsp.getDirection());
         ((TextView) dialog.findViewById(R.id.result)).setText(tsp.getResult());
-        dialog.findViewById(R.id.close).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-        dialog.findViewById(R.id.zoom_in).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                plotTSP.zoomIn();
-            }
-        });
-        dialog.findViewById(R.id.zoom_out).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                plotTSP.zoomOut();
-            }
-        });
+        dialog.findViewById(R.id.close).setOnClickListener(v -> dialog.cancel());
+        dialog.findViewById(R.id.zoom_in).setOnClickListener(v -> plotTSP.zoomIn());
+        dialog.findViewById(R.id.zoom_out).setOnClickListener(v -> plotTSP.zoomOut());
 
 
     }
 
     private void addI() {
-        Tsp tsp = solutionViewModel.getTsp();
-        Intent intent = new Intent(SolutionActivity.this, AddCityIActivity.class);
+        imgpath = null;
+        Intent intent = new Intent(SolutionActivity.this, AddCityMapActivity.class);
         addI.launch(intent);
-        //Snackbar.make(view, "Unable to intiallsed", Snackbar.LENGTH_LONG) .setAction("Action", null).show();
-
     }
+
     public void addD(View view) {
+        imgpath = null;
         Tsp tsp = solutionViewModel.getTsp();
         Intent intent = new Intent(SolutionActivity.this, AddCityDActivity.class);
         if (tsp != null) {
@@ -319,12 +357,13 @@ private  void  started(String m){
     }
 
     public void addL(View view) {
+        imgpath = null;
         Intent intent = new Intent(SolutionActivity.this, AddCityLActivity.class);
         addL.launch(intent);
         //Snackbar.make(view, "Unable to intiallsed", Snackbar.LENGTH_LONG) .setAction("Action", null).show();
     }
 
-    public void launchAlg(View view, int length) {
+    public void launchAlg(int length) {
         final CharSequence[] options = {
                 getString(R.string.dyn),
                 getString(R.string.knn),
@@ -333,30 +372,27 @@ private  void  started(String m){
                 getString(R.string.cancel)};
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.select_alg));
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals(getString(R.string.dyn))) {
-                    started("Started "+ getString(R.string.dyn));
-                    solutionViewModel.startAgl(Alg.DYN,taskManager);
-                    dialog.dismiss();
-                } else if (options[item].equals(getString(R.string.knn))) {
-                    started("Started "+ getString(R.string.knn));
-                    solutionViewModel.startAgl(Alg.KNN,taskManager);
-                    dialog.dismiss();
-                } else if (options[item].equals(getString(R.string.gen))) {
-                    started("Started "+ getString(R.string.gen));
-                    solutionViewModel.startAgl(Alg.GEN,taskManager);
-                    dialog.dismiss();
-                } else if (options[item].equals(getString(R.string.auto))) {
-                    started("Started "+ getString(R.string.auto));
-                    if (length < 20)
-                        solutionViewModel.startAgl(Alg.DYN,taskManager);
-                    else solutionViewModel.startAgl(Alg.KNN,taskManager);
-                    dialog.dismiss();
-                } else if (options[item].equals(getString(R.string.cancel))) {
-                    dialog.dismiss();
-                }
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals(getString(R.string.dyn))) {
+                started("Started " + getString(R.string.dyn));
+                solutionViewModel.startAgl(Alg.DYN, taskManager);
+                dialog.dismiss();
+            } else if (options[item].equals(getString(R.string.knn))) {
+                started("Started " + getString(R.string.knn));
+                solutionViewModel.startAgl(Alg.KNN, taskManager);
+                dialog.dismiss();
+            } else if (options[item].equals(getString(R.string.gen))) {
+                started("Started " + getString(R.string.gen));
+                solutionViewModel.startAgl(Alg.GEN, taskManager);
+                dialog.dismiss();
+            } else if (options[item].equals(getString(R.string.auto))) {
+                started("Started " + getString(R.string.auto));
+                if (length < 20)
+                    solutionViewModel.startAgl(Alg.DYN, taskManager);
+                else solutionViewModel.startAgl(Alg.KNN, taskManager);
+                dialog.dismiss();
+            } else if (options[item].equals(getString(R.string.cancel))) {
+                dialog.dismiss();
             }
         });
         builder.show();
@@ -364,9 +400,9 @@ private  void  started(String m){
     }
 
 
+    boolean isAddByDistance;
+    boolean isAddByLocation = true;
 
- boolean isAddByDistance;
-    boolean  isAddByLocation=true;
     public void addBy() {
         final CharSequence[] options = {
                 getString(R.string.addByLocation),
@@ -377,21 +413,21 @@ private  void  started(String m){
         builder.setTitle(getString(R.string.select_input_method));
         builder.setItems(options, (dialog, item) -> {
             if (options[item].equals(getString(R.string.addByDistances))) {
-                   isAddByDistance=true;
-                   isAddByLocation=false;
-
+                isAddByDistance = true;
+                isAddByLocation = false;
+                binding.addL.setText(R.string.addByDistances);
                 dialog.dismiss();
             } else if (options[item].equals(getString(R.string.addByLoadingMap))) {
-                isAddByDistance=false;
-                isAddByLocation=false;
-
+                isAddByDistance = false;
+                isAddByLocation = false;
+                binding.addL.setText(R.string.addByLoadingMap);
                 dialog.dismiss();
             } else if (options[item].equals(getString(R.string.addByLocation))) {
-                isAddByDistance=false;
-                isAddByLocation=true;
-
+                isAddByDistance = false;
+                isAddByLocation = true;
+                binding.addL.setText(R.string.addByLocation);
                 dialog.dismiss();
-            }   else if (options[item].equals(getString(R.string.cancel))) {
+            } else if (options[item].equals(getString(R.string.cancel))) {
                 dialog.dismiss();
             }
         });

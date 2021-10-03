@@ -1,7 +1,6 @@
 package softcare.game;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
@@ -13,8 +12,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Switch;
@@ -23,20 +24,24 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.Group;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
-import java.util.concurrent.Callable;
+import java.util.ArrayList;
+import java.util.List;
 
 import softcare.game.model.CodeX;
 import softcare.game.model.Game;
 import softcare.game.model.GameShare;
 import softcare.game.model.GameViewModel;
+import softcare.game.model.LevelAdapter;
 import softcare.game.model.TaskManager;
-import softcare.game.model.TaskX;
 import softcare.game.model.Tsp;
 import softcare.game.model.TspCode;
 import softcare.gui.OnPointListener;
@@ -61,6 +66,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     private CountDownTimer countDownTimer;
     private StyleDialog dialog;
     private TaskManager taskManager;
+    private Group playGroup;
+    private GameShare bestGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +76,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         gameSettings = getSharedPreferences("game_settings",
                 Activity.MODE_PRIVATE);
 
-        taskManager= TaskManager.getInstance();
+        taskManager = TaskManager.getInstance();
+        playGroup = findViewById(R.id.playGroup);
         _init();
         viewModelListener();
         setAnimations();
@@ -89,9 +97,11 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     protected void onResume() {
         super.onResume();
         if (gameViewModel.getGameLiveData().getValue() == null) {
-           dialogResume();
+            dialogResume();
+        } else {
+            if (dialog != null) if (dialog.isShowing()) return;
+            resumeTimer(gameViewModel.getGameLiveData().getValue());
         }
-        else resumeTimer(gameViewModel.getGameLiveData().getValue());
     }
 
 
@@ -141,61 +151,57 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
     }
 
-  private  void   dialogResume() {
-
-      if(dialog==null)dialog = new StyleDialog(this);
-      dialog.setContentView(R.layout.pop_progress);
-      dialog.show();
-      dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-          @Override
-          public void onCancel(DialogInterface dialog) {
-              onBackPressed();
-          }
-      });
-        taskManager.runTask(new Runnable() {
-            @Override
-            public void run() {
-                GameShare gameShare= openGame(CodeX.tspKey, CodeX.gameKey);
-                runOnUiThread(() -> dialogResume(gameShare.getTsp(),gameShare.getGame()));
-                     }
+    private void dialogResume() {
+        if (dialog == null) dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.pop_progress);
+        dialog.show();
+        dialog.setOnCancelListener(dialog -> onBackPressed());
+        taskManager.runTask(() -> {
+            GameShare gameShare = openGame(CodeX.tspKey, CodeX.gameKey);
+            if (bestGame != null) {
+                if (bestGame.getGame() == null || bestGame.getTsp() == null)
+                    bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
+            } else bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
+            runOnUiThread(() -> dialogResume(gameShare.getTsp(), gameShare.getGame()));
         });
-       }
+    }
 
 
     private void dialogMenu() {
         pauseTimer();
-        if(dialog==null)dialog = new StyleDialog(this);
+        if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_progress);
         dialog.show();
 //
-        dialog.setOnCancelListener(null);
-        taskManager.runTask(new Runnable() {
-            @Override
-            public void run() {
-                GameShare gameShare= openGame(CodeX.bestTspKey, CodeX.bestGameKey);
-                runOnUiThread(() -> dialogMenu(gameShare.getTsp(),gameShare.getGame()));
+        if (bestGame != null)
+            if (bestGame.getGame() != null && bestGame.getTsp() != null) {
+                dialogMenu(bestGame.getTsp(), bestGame.getGame());
+                return;
             }
+
+        dialog.setOnCancelListener(null);
+        taskManager.runTask(() -> {
+            bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
+            runOnUiThread(() -> dialogMenu(bestGame.getTsp(), bestGame.getGame()));
         });
 
 
     }
+
     protected void saveGave(Tsp tsp, Game game) {
-        taskManager.runTask(new Runnable() {
-            @Override
-            public void run() {
-        SharedPreferences.Editor editor = gameSettings.edit();
-        Gson gson = new Gson();
-        String jsonTsp = gson.toJson(tsp);
-        String jsonGame = gson.toJson(game);
-        Log.d(CodeX.tag,(tsp==null)+" is saving "+(tsp==null));
-        editor.putString("game", jsonGame);
-        editor.putString("tsp", jsonTsp);
-        editor.apply();
-        editor.commit();
+        taskManager.runTask(() -> {
+            SharedPreferences.Editor editor = gameSettings.edit();
+            Gson gson = new Gson();
+            String jsonTsp = gson.toJson(tsp);
+            String jsonGame = gson.toJson(game);
+            Log.d(CodeX.tag, (tsp == null) + " is saving " + (tsp == null));
+            editor.putString("game", jsonGame);
+            editor.putString("tsp", jsonTsp);
+            editor.apply();
+            editor.commit();
 
-            }  });
+        });
     }
-
 
 
     private void addOption(Button b, int i) {
@@ -204,6 +210,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             addAnswer(b, i);
             Game game = gameViewModel.getGameLiveData().getValue();
 
+            assert game != null;
             game.addDirection(i);
 
             gameViewModel.setGameLiveData(game);
@@ -222,6 +229,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             answersContainer.removeView(b);
             addOption(b, i);
             Game game = gameViewModel.getGameLiveData().getValue();
+            assert game != null;
             game.removeDirection(i);
             gameViewModel.setGameLiveData(game);
             // plotGame.plotPath(game.getDirection());
@@ -238,36 +246,42 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             Game game = gameViewModel.getGame();
             if (tsp != null && game != null) {
                 answersContainer.removeAllViews();
-                Log.d(CodeX.tag, " resuming game ");
+                Log.d(CodeX.tag, " getTspLiveData().observe ");
                 resumeTimer(game);
                 level.setText(String.valueOf(game.getLevel()));
                 scores.setText(String.valueOf(game.getScores()));
+
                 if (tsp.getTspActions() == TspCode.SOLVED) {
+                    final int size = tsp.getCities().size() + 1;
+                    int[] playId = new int[size];
+                    playId[0] = plotGame.getId();
+
                     int i = 0;
-                    boolean isResuming=false;
                     for (String city : tsp.getCities()) {
 
                         Button b = new Button(GameActivity.this);
                         b.setId(i);
+                        playId[0 + i] = i;
                         b.setText(city);
                         b.setBackground(getResources().getDrawable(R.drawable.btn_b));
                         b.setTextColor(getResources().getColor(R.color.white));
-                        if(game.getDirection().contains(i))
-                            addAnswer(b,i);
-                            else
+                        if (game.getDirection().contains(i))
+                            addAnswer(b, i);
+                        else
                             addOption(b, i);
                         //  Log.d(CodeX.tag," i =="+i+"  "+city);
                         i++;
                     }
+                    playGroup.setReferencedIds(playId);
                     plotGame.plotGame(tsp.getPointXY(), tsp.getCities());
                     plotGame.plotPath(game.getDirection());
-                    if(optionsContainer.getChildCount()<1) finishGame();
+                    if (optionsContainer.getChildCount() < 1) finishGame();
 
                 }
             } else {
                 Snackbar.make(plotGame, "Inputs empty start a new problem", Snackbar.LENGTH_LONG).show();
-if(game==null)Log.e(CodeX.tag," game null");
-                if(tsp==null)Log.e(CodeX.tag," Tsp null");
+                if (game == null) Log.e(CodeX.tag, " game null");
+                if (tsp == null) Log.e(CodeX.tag, " Tsp null");
             }
         });
         gameViewModel.getErrorCodeLiveData().observe(this, errorCode -> Snackbar.make(plotGame, "Error " + errorCode.toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show());
@@ -302,24 +316,33 @@ if(game==null)Log.e(CodeX.tag," game null");
     }
 
     private void dialogWin(Game game, String result, Tsp tsp) {
-        StyleDialog ad = new StyleDialog(this);
-        ad.setContentView(R.layout.pop_game_end);
-        ((TextView) ad.findViewById(R.id.title)).setText("Win");
-        ((TextView) ad.findViewById(R.id.msg)).setText(result);
-        ((TextView) ad.findViewById(R.id.try_again)).setText("Next");
-
-        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
-            ad.cancel();
-            activatePlayButton(game, result, tsp);
+        if (dialog == null) dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.pop_game_end);
+        ((TextView) dialog.findViewById(R.id.title)).setText(getString(R.string.win));
+        ((TextView) dialog.findViewById(R.id.msg)).setText(result);
+        ((TextView) dialog.findViewById(R.id.try_again)).setText(R.string.next);
+        game.win(tsp.getCost() > game.getCost(),
+                System.currentTimeMillis() - startTime);
+        gameViewModel.setGameLiveData(game);
+        level.setText(String.valueOf(game.getLevel()));
+        scores.setText(String.valueOf(game.getScores()));
+        dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+            dialog.cancel();
+            activatePlay_Win_lose(game, result, tsp);
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
 
-        ad.findViewById(R.id.try_again).setOnClickListener(v -> {
-            ad.cancel();
-            next(game, tsp);  });
-        ad.setCancelable(false);
-        ad.show();
+        dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
+            dialog.cancel();
+            next(tsp, game);
+            if (gameSettings.getBoolean("k_sound", true))
+                soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+
+
+        });
+        dialog.setCancelable(false);
+        dialog.show();
         if (gameSettings.getBoolean("k_sound", true))
             soundPool.play(soundIds[3], 1, 1, 1, 0, 1.0f);
 
@@ -327,233 +350,245 @@ if(game==null)Log.e(CodeX.tag," game null");
         setBest(game, tsp);
     }
 
-    protected  void next( Game game, Tsp tsp ){
-        game.next(tsp.getCost() > game.getCost(),
-                System.currentTimeMillis() - startTime);
-        gameViewModel.next(game);
 
-        if (gameSettings.getBoolean("k_sound", true))
-            soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+    protected void next(Tsp tsp, Game game) {
+        game.next();
+        gameViewModel.next(game);
 
     }
 
     protected void setBest(Game game, Tsp tsp) {
-        Log.d(CodeX.tag,"Incoming  L="+game.getLevel()+"  S="+game.getScores()
-                +" Time "+game.getGameLifeTime());
+        Log.d(CodeX.tag, "Incoming  L=" + game.getLevel() + "  S=" + game.getScores()
+                + " Time " + game.getGameLifeTime());
         SharedPreferences.Editor editor = gameSettings.edit();
-        Toast.makeText(this,"Checking best", Toast.LENGTH_LONG).show();
+        taskManager.runTask(() -> {
+
+            Gson gson = new Gson();
+            String jsonTsp = gameSettings.getString("b_tsp", null);
+            String jsonGame = gameSettings.getString("b_game", null);
+            if (jsonGame != null && jsonTsp != null) {
+                // Tsp tspStored = gson.fromJson(jsonTsp, Tsp.class);
+                if (bestGame == null)
+                    bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
+
+                if (bestGame.getGame() != null && bestGame.getTsp() != null) {
+                    compareBest(bestGame.getGame(), game, tsp, editor, gson);
+                    return;
+                }
+
+                editBest(game, tsp, editor, gson);
 
 
-        taskManager.runTask(new Runnable() {
-            @Override
-            public void run() {
-        Gson gson = new Gson();
-        String jsonTsp = gameSettings.getString("b_tsp", null);
-        String jsonGame = gameSettings.getString("b_game", null);
-        if (jsonGame != null && jsonTsp != null) {
-                    Tsp tspStored = gson.fromJson(jsonTsp, Tsp.class);
-                    Game gameStored = gson.fromJson(jsonGame, Game.class);
+            } else editBest(game, tsp, editor, gson);
 
-                    long level = gameStored.getLevel();
-                    long scores = gameStored.getScores();
-                    long time = gameStored.getGameLifeTime();
-
-                    Log.d(CodeX.tag,"Stored  L="+level+"  S="+scores
-                            +" Time "+time );
-                    if (game.getLevel() > level)
-                        editBest(game, tsp, editor,gson);
-                    else if (game.getLevel() == level)
-                        if (game.getScores() > scores)
-                            editBest(game, tsp, editor,gson);
-                        else if (game.getScores() == scores)
-                            if (game.getGameLifeTime()< time)
-                                editBest(game, tsp, editor,gson);
-                }else  editBest(game, tsp, editor,gson);
-
-   }   });
+        });
 
 
     }
 
-    private void editBest(Game game, Tsp tsp, SharedPreferences.Editor editor, Gson gson ) {
+    private void compareBest(Game gameStored, Game game, Tsp tsp, SharedPreferences.Editor editor, Gson gson) {
+
+        long level = gameStored.getLevel();
+        long scores = gameStored.getScores();
+        long time = gameStored.getGameLifeTime();
+
+        Log.d(CodeX.tag, "Stored  L=" + level + "  S=" + scores
+                + " Time " + time);
+        if (game.getLevel() > level)
+            editBest(game, tsp, editor, gson);
+        else if (game.getLevel() == level)
+            if (game.getScores() > scores)
+                editBest(game, tsp, editor, gson);
+            else if (game.getScores() == scores)
+                if (game.getGameLifeTime() < time)
+                    editBest(game, tsp, editor, gson);
+
+    }
+
+    private void editBest(Game game, Tsp tsp, SharedPreferences.Editor editor, Gson gson) {
 
         String jsonTsp = gson.toJson(tsp);
         String jsonGame = gson.toJson(game);
-        editor.putString("b_game", jsonGame);
-        editor.putString("b_tsp", jsonTsp);
+        editor.putString(CodeX.bestGameKey, jsonGame);
+        editor.putString(CodeX.bestTspKey, jsonTsp);
         editor.apply();
         editor.commit();
+        bestGame = new GameShare(tsp, game);
+        Snackbar.make(plotGame, getString(R.string.b_played),
+                Snackbar.LENGTH_INDEFINITE).setAction(R.string.share
+                , v -> {
 
-        Snackbar.make(plotGame,"Best played so far",
-                BaseTransientBottomBar.LENGTH_INDEFINITE).setAction("Share"
-                , new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                    }
-                }).show();  }
+                }).show();
+    }
 
     private void dialogLoose(Game game, String result) {
         if (game.getTryAgain() > 3) {
             dialogGameOver(game);
             return;
         }
-        StyleDialog ad = new StyleDialog(this);
-        ad.setContentView(R.layout.pop_game_end);
-        ((TextView) ad.findViewById(R.id.msg)).setText(result);
+        if (dialog == null) dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.pop_game_end);
+        ((TextView) dialog.findViewById(R.id.msg)).setText(result);
 
-        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
-            ad.cancel();
-            activatePlayButton(game, result, null);
+        dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+            dialog.cancel();
+            activatePlay_Win_lose(game, result, null);
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-        ad.findViewById(R.id.try_again).setOnClickListener(v -> {
-            ad.cancel();
+        dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
+            dialog.cancel();
             game.tryAgain();
             gameViewModel.tryAgain(game, gameSettings.getBoolean("timing", false));
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
 
         });
-        ad.setCancelable(false);
-        ad.show();
+        dialog.setCancelable(false);
+        dialog.show();
         if (gameSettings.getBoolean("k_sound", true))
             soundPool.play(soundIds[4], 1, 1, 1, 0, 1.0f);
     }
 
-    private void activatePlayButton(Game game, String result, Tsp tsp) {
+    private void playActive(View v, boolean b) {
+        if (v == null) v = findViewById(R.id.btn_play);
+        if (b) {
+            v.setVisibility(View.VISIBLE);
+            optionsContainer.setVisibility(View.INVISIBLE);
+            answersContainer.setVisibility(View.INVISIBLE);
+            plotGame.setEnabled(false);
+        } else {
+            v.setVisibility(View.GONE);
+            optionsContainer.setVisibility(View.VISIBLE);
+            answersContainer.setVisibility(View.VISIBLE);
+            plotGame.setEnabled(true);
+        }
+    }
+
+    private void activatePlay_Win_lose(Game game, String result, Tsp tsp) {
         Button b = findViewById(R.id.btn_play);
-        b.setVisibility(View.VISIBLE);
+        playActive(b, true);
         b.setOnClickListener(v -> {
-            b.setVisibility(View.GONE);
+            playActive(v, false);
             if (tsp == null) {
                 if (result == null) {
-                    if (game == null) {
-                    } else {
+                    if (game != null) {
                         if (gameViewModel.getGameLiveData().getValue() == null)
-                            gameViewModel.newGame();
+                            selectNewGame();
                     }
                 } else dialogLoose(game, result);
             } else dialogWin(game, result, tsp);
-        });
 
+
+        });
     }
 
 
-    private void activatePlayR(Game game,Tsp tsp) {
+    private void activatePlayResume(Game game, Tsp tsp) {
         Button b = findViewById(R.id.btn_play);
-        b.setVisibility(View.VISIBLE);
+        playActive(b, true);
         b.setOnClickListener(v -> {
-            b.setVisibility(View.GONE);
-                        dialogResume(tsp,game);
+            playActive(v, false);
+            if (game == null && tsp == null) dialogResume();
+            dialogResume(tsp, game);
         });
 
+
     }
- @NonNull
-    private  GameShare openGame( String tspKey, String gameKey){
+
+    @NonNull
+    private GameShare openGame(String tspKey, String gameKey) {
         Gson gson = new Gson();
         String jsonTsp = gameSettings.getString(tspKey, null);
         String jsonGame = gameSettings.getString(gameKey, null);
         if (jsonGame != null && jsonTsp != null)
-            return  new GameShare(gson.fromJson(jsonTsp, Tsp.class),gson.fromJson(jsonGame, Game.class)) ;
+            return new GameShare(gson.fromJson(jsonTsp, Tsp.class), gson.fromJson(jsonGame, Game.class));
 
-      return  new GameShare(null,null) ;
+        return new GameShare(null, null);
     }
 
 
-
-
-
-
     private void dialogGameOver(Game game) {
-        StyleDialog ad = new StyleDialog(this);
-        ad.setContentView(R.layout.pop_game_ended);
-        ((TextView) ad.findViewById(R.id.title)).setText("Game Over");
-        ((TextView) ad.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
-        ((TextView) ad.findViewById(R.id.scores)).setText(String.valueOf(game.getLevel()));
-        ((TextView) ad.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
-        ((TextView) ad.findViewById(R.id.try_again)).setText("New");
-        ad.findViewById(R.id.return_btn).setOnClickListener(v -> {
-            ad.cancel();
-            activatePlayButton(game, null, null);
+        if (dialog == null) dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.pop_game_ended);
+        ((TextView) dialog.findViewById(R.id.title)).setText(getString(R.string.game_over));
+        ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
+        ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getLevel()));
+        ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
+        ((TextView) dialog.findViewById(R.id.try_again)).setText(getString(R.string.new_));
+        dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+            dialog.cancel();
+            activatePlay_Win_lose(game, null, null);
 
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-        ad.show();
-        ad.findViewById(R.id.try_again).setOnClickListener(v -> {
-            ad.cancel();
-            gameViewModel.newGame();
+        dialog.show();
+        dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
+            dialog.cancel();
+            selectNewGame();
 
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-        ad.setCancelable(false);
-        ad.show();
+        dialog.setCancelable(false);
+        dialog.show();
         if (gameSettings.getBoolean("k_sound", true))
             soundPool.play(soundIds[5], 1, 1, 1, 0, 1.0f);
     }
 
     private void dialogResume(Tsp tsp, Game game) {
-        activatePlayR(game,tsp);
-     if(dialog==null)dialog = new StyleDialog(this);
-            dialog.setContentView(R.layout.pop_game_ended);
-            dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    onBackPressed();
-                }
+        if (dialog == null) dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.pop_game_ended);
+        dialog.setOnCancelListener(dialog -> onBackPressed());
+        ((TextView) dialog.findViewById(R.id.title)).setText(getString(R.string.welcome));
+        if (game != null && tsp != null) {
+            ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
+            ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getScores()));
+            ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
+
+            ((TextView) dialog.findViewById(R.id.try_again)).setText(R.string.resume);
+            ((TextView) dialog.findViewById(R.id.return_btn)).setText(R.string.new_);
+
+            dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+                dialog.setOnCancelListener(null);
+                dialog.cancel();
+                findViewById(R.id.btn_play).setVisibility(View.GONE);
+                selectNewGame();
+                if (gameSettings.getBoolean("k_sound", true))
+                    soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+
             });
-            ((TextView) dialog.findViewById(R.id.title)).setText("Welcome");
-                if (game != null && tsp != null) {
-                    ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
-                   ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getScores()));
-                    ((TextView) dialog.findViewById(R.id.time)).setText(String.valueOf(S.timeDisplay(game.getGameLifeTime())));
+            dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
+                findViewById(R.id.btn_play).setVisibility(View.GONE);
+                dialog.setOnCancelListener(null);
+                dialog.cancel();
+                gameViewModel.resumeGame(tsp, game);
+                if (gameSettings.getBoolean("k_sound", true))
+                    soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+            });
+        } else {
+            ((TextView) dialog.findViewById(R.id.try_again)).setText(R.string.new_);
+            dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
+                dialog.setOnCancelListener(null);
+                dialog.cancel();
+                findViewById(R.id.btn_play).setVisibility(View.GONE);
+                selectNewGame();
 
-                    ((TextView) dialog.findViewById(R.id.try_again)).setText("Resume");
-                    ((TextView) dialog.findViewById(R.id.return_btn)).setText("New");
+                if (gameSettings.getBoolean("k_sound", true))
+                    soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
 
-                    dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
-                        dialog.setOnCancelListener(null);
-                        dialog.cancel();
-                        findViewById(R.id.btn_play).setVisibility(View.GONE);
-                        gameViewModel.newGame();
-                        if (gameSettings.getBoolean("k_sound", true))
-                            soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+            });
+            dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+                dialog.cancel();
+                activatePlayResume(game, tsp);
 
-                    });
-                    dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
-                        findViewById(R.id.btn_play).setVisibility(View.GONE);
-                        dialog.setOnCancelListener(null);
-                        dialog.cancel();
-                        gameViewModel.resumeGame(tsp, game);
-                        if (gameSettings.getBoolean("k_sound", true))
-                            soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
-                    });
-                } else {
-                    ((TextView) dialog.findViewById(R.id.try_again)).setText("New");
-                    dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
-                        dialog.setOnCancelListener(null);
-                        dialog.cancel();
-                        findViewById(R.id.btn_play).setVisibility(View.GONE);
-                        gameViewModel.newGame();
-
-                        if (gameSettings.getBoolean("k_sound", true))
-                            soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
-
-                    });
-                    dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
-                        dialog.cancel();
-                         activatePlayR(game,tsp);
-
-                    });
-                }
+            });
+        }
 
 
-
-            dialog.show();
-            dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+        dialog.setCanceledOnTouchOutside(false);
 
     }
 
@@ -583,14 +618,14 @@ if(game==null)Log.e(CodeX.tag," game null");
         if (countUPTimer != null) countUPTimer.cancel();
         if (countDownTimer != null) countDownTimer.cancel();
         countUPTimer = null;
-        countDownTimer= null;
+        countDownTimer = null;
         Game game = gameViewModel.getGame();
         Tsp tsp = gameViewModel.getTsp();
         if (game != null && tsp != null) {
-            game.pause(startTime);
+            game.pause(System.currentTimeMillis() - startTime);
             gameViewModel.setGameLiveData(game);
             saveGave(tsp, game);
-        } else{
+        } else {
             Log.e(CodeX.tag, "Null Game or Tsp Cannot pause or save");
         }
 
@@ -601,7 +636,7 @@ if(game==null)Log.e(CodeX.tag," game null");
         Log.d(CodeX.tag, "  resume ... ");
         startTime = System.currentTimeMillis();
         if (gameSettings.getBoolean("timing", false)) {
-            Log.d(CodeX.tag, game.getTiming()+" timing, used time"+game.getUsedTime());
+            Log.d(CodeX.tag, game.getTiming() + " timing, used time" + game.getUsedTime());
             countUPTimer = null;
             countDownTimer = new CountDownTimer(game.getTiming() - game.getUsedTime(), 1000) {
                 @Override
@@ -622,7 +657,7 @@ if(game==null)Log.e(CodeX.tag," game null");
         } else {
             countDownTimer = null;
             countUPTimer = new CountUpTimer(1000 * 60 * 60,
-                    1000) {
+                    1000, game.getUsedTime()) {
                 @Override
                 public void onTickDown(long timeCount) {
                     Log.d(CodeX.tag, "  count up output ... " + timeCount);
@@ -647,8 +682,8 @@ if(game==null)Log.e(CodeX.tag," game null");
         ((AnimationDrawable) time.getBackground()).start();
     }
 
-    private void dialogMenu(Tsp tsp,Game game ) {
-        if(dialog==null)dialog = new StyleDialog(this);
+    private void dialogMenu(Tsp tsp, Game game) {
+        if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_game_menu);
         SharedPreferences.Editor editor = gameSettings.edit();
         Switch timing = dialog.findViewById(R.id.timing);
@@ -667,20 +702,17 @@ if(game==null)Log.e(CodeX.tag," game null");
             ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getScores()));
             ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
 
-            dialog.findViewById(R.id.time).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Gson gson= new Gson();
-                    GameShare gs = new GameShare(tsp, game);
-                    String text = gson.toJson(gs, GameShare.class);
-                    Intent sendIntent = new Intent();
-                    sendIntent.setAction(Intent.ACTION_SEND);
-                    sendIntent.setType("text/*");
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, text);
-                    sendIntent.putExtra(Intent.EXTRA_TITLE, "Send to");
-                    startActivity(Intent.createChooser(sendIntent, "Share with"));
+            dialog.findViewById(R.id.time).setOnClickListener(v -> {
+                Gson gson = new Gson();
+                GameShare gs = new GameShare(tsp, game);
+                String text = gson.toJson(gs, GameShare.class);
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.setType("text/*");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+                sendIntent.putExtra(Intent.EXTRA_TITLE, "Send to");
+                startActivity(Intent.createChooser(sendIntent, "Share with"));
 
-                }
             });
         }
         timing.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -729,8 +761,10 @@ if(game==null)Log.e(CodeX.tag," game null");
             dialog.cancel();
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
-            if (gameViewModel.getGameLiveData().getValue() != null)
+            if (gameViewModel.getGameLiveData().getValue() != null) {
+                Log.d(CodeX.tag, " resume Timer  in cancel menu" + plotGame.getZoom());
                 resumeTimer(gameViewModel.getGameLiveData().getValue());
+            }
         });
         dialog.show();
     }
@@ -762,21 +796,83 @@ if(game==null)Log.e(CodeX.tag," game null");
     }
 
 
-    abstract static class CountUpTimer extends CountDownTimer {
-        private long duration;
+    abstract class CountUpTimer extends CountDownTimer {
+        private final long duration;
+        private final long usedTime;
 
-        public CountUpTimer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-            this.duration = millisInFuture;
+        public CountUpTimer(long millisInFuture,
+                            long countDownInterval, long usedTime) {
+            super(millisInFuture - usedTime, countDownInterval);
+            this.duration = millisInFuture - usedTime;
+            this.usedTime = usedTime;
         }
 
         @Override
         public void onTick(long millisUntilFinished) {
-            onTickDown(duration - millisUntilFinished);
+            onTickDown((duration - millisUntilFinished) + usedTime);
         }
 
         public abstract void onTickDown(long timeCountMillis);
 
+    }
+
+    protected void selectNewGame() {
+        if (dialog == null) dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.pop_progress);
+        dialog.show();
+
+        if (bestGame != null)
+            if (bestGame.getGame() != null && bestGame.getTsp() != null) {
+                selectNewGame(dialog, bestGame.getGame());
+                return;
+            }
+        dialog.setOnCancelListener(null);
+        taskManager.runTask(() -> {
+            bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
+            runOnUiThread(() -> selectNewGame(dialog, bestGame.getGame()));
+        });
+    }
+
+    protected void selectNewGame(StyleDialog dialog, Game highestGame) {
+        dialog.setContentView(R.layout.pop_game_resume);
+        if (highestGame != null) {
+            ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(highestGame.getLevel()));
+            ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(highestGame.getScores()));
+            ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(highestGame.getGameLifeTime()));
+        } else {
+            gameViewModel.newGame(0);
+        }
+
+        dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+            dialog.cancel();
+            activatePlayResume(null, null);
+        });
+        dialog.show();
+        dialog.setCancelable(false);
+        dialog.show();
+        RecyclerView recycler = dialog.findViewById(R.id.levels);
+        String name = "Level";
+        LevelAdapter levelAdapter = new LevelAdapter(this, name);
+        recycler.setAdapter(levelAdapter);
+
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+
+        int spanCount = dm.densityDpi / 50;
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, spanCount);
+        List<Integer> l = new ArrayList<>();
+        for (int i = 0; i < (highestGame.getNodes() > 20 ? highestGame.getNodes() : 20); i++)
+            l.add(i);
+
+        recycler.setLayoutManager(gridLayoutManager);
+        levelAdapter.changeSize(highestGame.getLevel(), l);
+        levelAdapter.setPointClickListener(i -> {
+            gameViewModel.newGame(i);
+            playActive(null, false);
+            dialog.cancel();
+        });
     }
 }
 

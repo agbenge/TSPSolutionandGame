@@ -10,11 +10,16 @@ import softcare.util.S;
 public class Game {
     private int level;
     private int scores;
-   private  final int TIME_LIMIT= 3000;// 7second
+   private  final int TIME_LIMIT= 5000;
     private  int min;
     private double cost;
     private  long usedTime;
     private long gameLifeTime;
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public Game() {
         this.level = 0 ;
         direction = new ArrayList<>();
@@ -53,7 +58,7 @@ public class Game {
     }
 
     public int getTiming() {
-        return getNodes()*1000+TIME_LIMIT;
+        return getLevel()*2000+TIME_LIMIT;
     }
 
     public double getCost() {
@@ -76,16 +81,20 @@ public class Game {
         direction.remove(dir) ;
     }
 
-    public void next(boolean betterThanAlg, long _usedTime) {
-        long usedTime= this.usedTime+_usedTime;
-        // add mechanism for increasing level
-        scores= scores +level+ (int)(((getTiming()/1000)*level)/usedTime)+   ( betterThanAlg?getNodes():0);
-
-        level++;
+    public void next( ) {
         tryAgain=0;
         direction = new ArrayList<>();
-        gameLifeTime+=usedTime;
-       this. usedTime=0L;
+        this. usedTime=0L;
+    }
+    public void win(boolean betterThanAlg, long _usedTime) {
+        long allTimeAtLevelX= this.usedTime+_usedTime;
+        level++;
+        // add mechanism for increasing level
+        scores= scores +level+ (int)(((getTiming()/1000)*level)
+                /allTimeAtLevelX)+   ( betterThanAlg?getNodes():0);
+
+        gameLifeTime+=allTimeAtLevelX;
+        this. usedTime=0L;
     }
 
     public void tryAgain() {
@@ -130,7 +139,8 @@ public class Game {
     }
 
 
-    public void pause(long startTime) {
-        usedTime+=(System.currentTimeMillis()-startTime);
+    public void pause(long _usedTime) {
+        usedTime+=_usedTime;
     }
+
 }

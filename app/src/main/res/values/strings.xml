@@ -3,7 +3,6 @@
     <string name="title_activity_solution">Find My Path</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
-
         "A material metaphor is the unifying theory of a rationalized space and a system of motion."
         "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
         "technologically advanced and open to imagination and magic.\n"
@@ -104,4 +103,73 @@
     <string name="addByLoadingMap">Add by Loading Map</string>
     <string name="addByLocation">Add by Location</string>
     <string name="select_input_method">Select Input Method</string>
+    <string name="empty_fields">Empty fields</string>
+    <string name="latitude">\"Latitude \"</string>
+    <string name="longitude">\"Longitude \"</string>
+    <string name="name_is_empty">Name is empty</string>
+    <string name="okay">Okay</string>
+    <string name="empty">"Empty "</string>
+    <string name="not_a_number">Not a number</string>
+    <string name="win">Win</string>
+    <string name="next">Next</string>
+    <string name="game_over">Game Over</string>
+    <string name="new_">New</string>
+    <string name="welcome">Welcome</string>
+    <string name="resume">Resume</string>
+    <string name="shortest_path">"Shortest path "</string>
+    <string name="Level">\"Level \"</string>
+    <string name="finished">Finished</string>
+    <string name="cities_small">Cities too small to be a program</string>
+    <string name="un_init">Unable to initialised, add distances or locations</string>
+    <string name="cities_not_added">Cities are not added</string>
+    <string name="input_empty_start_problem">Inputs empty start a new problem</string>
+    <string name="error">\"Error \"</string>
+    <string name="city_name">City Name</string>
+    <string name="go">Go</string>
+    <string name="menu">menu</string>
+    <string name="level">Level</string>
+    <string name="time">Time</string>
+    <string name="play">Play</string>
+    <string name="zoom_out">zoom out</string>
+    <string name="zoom_in">zoom in</string>
+    <string name="scores">Scores</string>
+    <string name="donate">Donate</string>
+    <string name="find_my_path">Find My Path</string>
+    <string name="play_game">Play Game</string>
+    <string name="solution_model">Solution model</string>
+    <string name="sound_toggle">Sound toggle</string>
+    <string name="total_distances_cost">Total distances(cost)</string>
+    <string name="locations">Locations</string>
+    <string name="matrix_representation_of_distances">Matrix representation of distances</string>
+    <string name="visualised">Visualised</string>
+    <string name="refresh">refresh</string>
+    <string name="add">add</string>
+    <string name="solve">solve</string>
+    <string name="city">City</string>
+    <string name="empty_field">empty field</string>
+    <string name="close">Close</string>
+    <string name="you_lose">You lose</string>
+    <string name="return_">Return</string>
+    <string name="refresh_points_always">Refresh points always</string>
+    <string name="actions_sounds">Actions Sounds</string>
+    <string name="keys">Keys</string>
+    <string name="background_sound">Background Sound</string>
+    <string name="highest_score">Highest score</string>
+    <string name="timing">Timing</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="ad_photo">Add Photo!</string>
+    <string name="permission_msg">Oh you have not accepted permission for the App to access your storage</string>
+    <string name="accept_now">Accept now</string>
+    <string name="permission_not_set">Permission not set</string>
+    <string name="level_lock">This level is locked</string>
+    <string name="load_map">Load map</string>
+    <string name="undo">undo</string>
+    <string name="ad_some_points">"Add some points "</string>
+    <string name="saveByLocation">Save locations</string>
+    <string name="saveByDistances">save distances</string>
+    <string name="openByLocation">Open Tsp Locations</string>
+    <string name="openByDistances">Open Tsp distances</string>
+    <string name="b_played">Best played so far</string>
+    <string name="share">Share</string>
 </resources>

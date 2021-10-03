@@ -86,7 +86,7 @@ public class PlotGame extends PlotTSP {
         try {
             //get the text and colors specified using the names in attrs.xml
             highlightColor = a.getInteger(R.styleable.PlotGame_highlightColor, Color.MAGENTA);
-positionColor =a.getInteger(R.styleable.PlotGame_positionColor, Color.BLUE);
+            positionColor = a.getInteger(R.styleable.PlotGame_positionColor, Color.BLUE);
         } finally {
             a.recycle();
         }
@@ -98,7 +98,7 @@ positionColor =a.getInteger(R.styleable.PlotGame_positionColor, Color.BLUE);
                 if (onPointListener != null) {
                     int index = onPointXY(event.getX(), event.getY());
                     if (index > -1) onPointListener.onPoint(index);
-                    Log.d(CodeX.tag, "index view e "+index);
+                    Log.d(CodeX.tag, "index view e " + index);
                 }
                 return false;
             }
@@ -124,14 +124,14 @@ positionColor =a.getInteger(R.styleable.PlotGame_positionColor, Color.BLUE);
 
     @Override
     protected void drawWithZoom(Canvas canvas) {
-        if (zoom < 1) zoom = 1;
-        float x = 0;
-        float y = 0;
+        if (zoom <= 0) zoom = initZoom;
+        float x;
+        float y;
         int i = 0;
         if (pointXY != null)
             for (PointXY p : pointXY) {
-                x = (float) (((p.x + invertNegavative + 1) * zoom) - 1 * zoom) + padding + 40;
-                y = (float) ((p.y + invertNegavative + 1) * zoom - 1 * zoom) + padding + 40;
+                x = getXZoom(p.x);
+                y = getYZoom(p.y);
                 canvas.drawCircle(x, y, circleRadius, circlePaint);
                 canvas.drawText(cities.get(i), x, y, labelPaint);
                 i++;
@@ -141,32 +141,32 @@ positionColor =a.getInteger(R.styleable.PlotGame_positionColor, Color.BLUE);
     }
 
     protected void drawPath(Canvas canvas) {
+        if (zoom < 1) zoom = initZoom;
         if (path == null) return;
-        if(path.size()>0){
-            float x = (float) (((pointXY.get(path.get(0)).x + invertNegavative + 1) * zoom) - 1 * zoom) + padding + 40;
-            float y = (float) (((pointXY.get(path.get(0)).y + invertNegavative + 1) * zoom) - 1 * zoom) + padding + 40;
-
+        float x;
+        float y;
+        if (path.size() > 0) {
+            x = getXZoom(pointXY.get(path.get(0)).x);
+            y = getYZoom(pointXY.get(path.get(0)).y);
             canvas.drawCircle(x, y, circleRadius, highlightPaint);
+        }else return;
 
-        }
-        if (path.size()< 2) return;
-        if (zoom < 1) zoom = 1;
         Path gc = new Path();
         gc.reset();
-        float x = (float) (((pointXY.get(path.get(0)).x + invertNegavative + 1) * zoom) - 1 * zoom) + padding + 40;
-        float y = (float) (((pointXY.get(path.get(0)).y + invertNegavative + 1) * zoom) - 1 * zoom) + padding + 40;
+        x = getXZoom(pointXY.get(path.get(0)).x);
+        y = getYZoom(pointXY.get(path.get(0)).y);
         gc.moveTo(x, y);
         float i_x = x, i_y = y;
-       // canvas.drawCircle(x, y, circleRadius, highlightPaint);
         for (int k = 1; k < path.size(); k++) {
-            Integer i = path.get(k);
-            x = (float) (((pointXY.get(i).x + invertNegavative + 1) * zoom) - 1 * zoom) + padding + 40;
-            y = (float) ((pointXY.get(i).y + invertNegavative + 1) * zoom - 1 * zoom) + padding + 40;
+            int i = path.get(k);
+            x = getXZoom(pointXY.get(i).x);
+            y = getYZoom(pointXY.get(i).y);
             gc.lineTo(x, y);
             canvas.drawCircle(x, y, circleRadius, highlightPaint);
         }
-        if (pointXY.size() == path.size()) gc.lineTo(i_x, i_y);
-        else{
+        if (pointXY.size() == path.size())
+            gc.lineTo(i_x, i_y);
+        else {
             highlightPaint.setColor(positionColor);
             canvas.drawCircle(x, y, circleRadius, highlightPaint);
 
@@ -216,24 +216,16 @@ positionColor =a.getInteger(R.styleable.PlotGame_positionColor, Color.BLUE);
     }
 
     private int onPointXY(float x, float y) {
-        for (int i=0; i<pointXY.size();i++) {
-            float xp = (float) (((pointXY.get(i).x + invertNegavative + 1) * zoom) - 1 * zoom) + padding + 40;
-            float yp = (float) (((pointXY.get(i).y + invertNegavative + 1) * zoom) - 1 * zoom) + padding + 40;
+        for (int i = 0; i < pointXY.size(); i++) {
+            float xp = getXZoom(pointXY.get(i).x);
+            float yp = getYZoom(pointXY.get(i).y);
 
-            if ((xp-circleRadius <= x && xp + circleRadius >= x) &&
-                    (yp-circleRadius <= y && yp + circleRadius >= y))
+            if ((xp - circleRadius <= x && xp + circleRadius >= x) &&
+                    (yp - circleRadius <= y && yp + circleRadius >= y))
                 return i;
-         //   Log.d(CodeX.tag, (xp-circleRadius)+" >= x  <= "+xp + circleRadius +"  actual X "+x);
-         //   Log.d(CodeX.tag, (yp-circleRadius)+" >= x <= "+yp + circleRadius +"  actual Y "+y);
         }
         return -1;
     }
 
-    @Override
-    protected void calculateZoom(int contentHeight, int contentWidth) {
-        float max= contentHeight>contentWidth? contentHeight:contentWidth;
-        DisplayMetrics dm= new DisplayMetrics();
-        ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-        setZoom((int)(dm.widthPixels-100)/max) ;  }
 }
