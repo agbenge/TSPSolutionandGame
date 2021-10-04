@@ -162,6 +162,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 if (bestGame.getGame() == null || bestGame.getTsp() == null)
                     bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
             } else bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
+            if(dialog!=null)
+                if(dialog.isShowing())
             runOnUiThread(() -> dialogResume(gameShare.getTsp(), gameShare.getGame()));
         });
     }
@@ -182,6 +184,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         dialog.setOnCancelListener(null);
         taskManager.runTask(() -> {
             bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
+            if(dialog!=null)
+                if(dialog.isShowing())
             runOnUiThread(() -> dialogMenu(bestGame.getTsp(), bestGame.getGame()));
         });
 

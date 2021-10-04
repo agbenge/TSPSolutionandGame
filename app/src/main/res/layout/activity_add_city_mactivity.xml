@@ -1,31 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".AddCityMapActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.TSPSolutionAndGame.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/Theme.TSPSolutionAndGame.PopupOverlay"
-            app:title="@string/title_activity_addL" />
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fitsSystemWindows="true"
         tools:context=".AddCityMapActivity">
 
         <softcare.gui.PlotImage
@@ -41,30 +21,57 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/finish"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_baseline_check_circle_24"
-
-            app:layout_anchorGravity="bottom|end"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
         <Switch
             android:id="@+id/adding"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:checked="false"
             android:text="Add"
+            app:tint="@color/blueLight"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/finish"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/undo"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/loadMap"
+            app:layout_constraintTop_toTopOf="@+id/finish" />
+
+        <ImageView
+            android:id="@+id/undo"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:onClick="undo"
+            app:tint="@color/blueLight"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/finish"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/adding"
+            app:layout_constraintTop_toTopOf="@+id/finish"
+            app:srcCompat="@drawable/ic_baseline_undo_24" />
+
+        <ImageView
+            android:id="@+id/loadMap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:onClick="loadMap"
+            app:tint="@color/blueLight"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/adding"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/finish"
-            app:layout_constraintVertical_bias="1" />
+            app:srcCompat="@android:drawable/ic_menu_mapmode" />
+
+        <ImageView
+            android:id="@+id/finish"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:src="@drawable/ic_baseline_check_circle_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:onClick="finish"
+            app:tint="@color/blueLight"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/undo"
+            app:srcCompat="@drawable/ic_baseline_check_24" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>

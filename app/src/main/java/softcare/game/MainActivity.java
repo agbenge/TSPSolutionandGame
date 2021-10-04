@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -110,5 +111,23 @@ public class MainActivity extends AppCompatActivity {
     }
     public  void solution(View v){
  startActivity(new Intent(this, SolutionActivity.class));
+    }
+
+    public void help(View v ) {
+        StyleDialog dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.help);
+        dialog.show();
+        dialog.findViewById(R.id.return_btn).setOnClickListener(k-> dialog.cancel());
+        dialog.findViewById(R.id.contact_us).setOnClickListener(k-> {
+            String subject = getString(R.string.app_name);
+            String[] addresses = getResources().getStringArray(R.array.email_addresses);
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);}
+
+        });
     }
 }

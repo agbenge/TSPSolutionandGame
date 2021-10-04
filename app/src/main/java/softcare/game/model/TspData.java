@@ -17,6 +17,7 @@ public class TspData  implements Parcelable {
         this.locations = locations;
     }
 
+
     protected TspData(Parcel in) {
         cities = in.createStringArrayList();
         locations = in.createTypedArrayList(PointXY.CREATOR);

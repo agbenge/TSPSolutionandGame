@@ -7,23 +7,21 @@
     android:background="@drawable/bg"
     tools:context=".GameActivity">
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/playGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <ImageView
         android:id="@+id/menu"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/btn_y"
-        android:contentDescription="@string/menu"
         android:src="@drawable/ic_baseline_menu_24"
-        app:layout_constraintBottom_toBottomOf="@+id/level"
+        app:layout_constraintBottom_toTopOf="@+id/level"
+
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/level"
-        app:srcCompat="@drawable/ic_baseline_menu_24" />
+        app:layout_constraintEnd_toEndOf="@+id/level"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:srcCompat="@drawable/ic_baseline_menu_24"
+        android:contentDescription="@string/menu" />
 
     <TextView
         android:id="@+id/level"
@@ -31,9 +29,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constrainedWidth="false"
+        app:layout_constraintBottom_toTopOf="@+id/scores"
         app:layout_constraintDimensionRatio="w,h 1:1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:text="8" />
 
     <TextView
@@ -41,20 +39,23 @@
         style="@style/BoardItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/level"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/_time"
+        app:layout_constraintStart_toStartOf="@+id/level"
         tools:text="88" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/playGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/time"
         style="@style/BoardItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/menu"
-        app:layout_constraintHorizontal_bias="0"
-        app:layout_constraintStart_toEndOf="@+id/scores"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="45s" />
+        tools:text="45s"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/scores" />
 
     <TextView
         android:id="@+id/_level"
@@ -85,22 +86,25 @@
         app:layout_constraintEnd_toEndOf="@id/time"
         app:layout_constraintStart_toStartOf="@id/time"
         app:layout_constraintTop_toTopOf="@id/time" />
+
     <HorizontalScrollView
         android:id="@+id/answer_h_scroll"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scores"
-        app:layout_constraintStart_toStartOf="parent"
-       >
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:rotationX="0"
+        android:rotationY="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/time"
+        app:layout_constraintTop_toTopOf="parent">
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
-        <LinearLayout
-            android:id="@+id/answersContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" /> </ScrollView>
+
+            <LinearLayout
+                android:id="@+id/answersContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" /> </ScrollView>
     </HorizontalScrollView>
 
 
@@ -109,27 +113,29 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/fab_margin"
-        app:layout_constraintBottom_toTopOf="@+id/options_h_scroll"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/answer_h_scroll"
-        app:layout_constraintVertical_bias="0.0">
+        android:overScrollMode="ifContentScrolls"
+        android:scrollbarStyle="outsideOverlay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/options_h_scroll"
+        app:layout_constraintStart_toEndOf="@+id/answer_h_scroll"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:paddingBottom="100dp">
+            android:paddingBottom="100dp"
+            android:scrollbarStyle="outsideOverlay">
+
             <softcare.gui.PlotGame
                 android:id="@+id/plotGame"
-                android:padding="@dimen/medium_dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg"
                 app:circleColor="@color/blueLight"
                 app:labelColor="@color/white"
                 app:lineColor="@color/magenta"
+                android:padding="@dimen/plot_padding"
                 app:zoomValue="60" />
         </ScrollView>
     </HorizontalScrollView>
@@ -141,17 +147,18 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1">
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
-        <LinearLayout
-            android:id="@+id/optionsContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
 
-            android:orientation="horizontal"
-            /></ScrollView>
+            <LinearLayout
+                android:id="@+id/optionsContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical" /></ScrollView>
     </HorizontalScrollView>
 
     <Button
@@ -163,17 +170,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
     <ImageView
         android:id="@+id/zoom_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/fab_margin"
         android:background="@drawable/btn_b"
         android:onClick="zoomOut"
         android:padding="@dimen/fab_margin"
 
-        app:layout_constraintBottom_toTopOf="@+id/options_h_scroll"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/options_h_scroll"
         app:srcCompat="@drawable/ic_baseline_zoom_out_24"
         app:tint="@color/white"
         android:contentDescription="@string/zoom_out" />
@@ -187,7 +194,7 @@
         android:onClick="zoomIn"
         android:padding="@dimen/fab_margin"
         app:layout_constraintBottom_toTopOf="@+id/zoom_out"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/options_h_scroll"
         app:srcCompat="@drawable/ic_baseline_zoom_in_24"
         app:tint="@color/white"
         android:contentDescription="@string/zoom_in" />

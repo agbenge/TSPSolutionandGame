@@ -178,7 +178,18 @@ public class SolutionActivity extends AppCompatActivity {
                 public void onActivityResult(ActivityResult result) {
                     int resultCode = result.getResultCode();
                     Log.d(CodeX.tag, " location --------- " + (resultCode == RESULT_OK));
+
                     if (resultCode == RESULT_OK) {
+                        Intent data = result.getData();
+                        assert data != null;
+                        TspData dat = data.getParcelableExtra("data");
+                        imgpath = data.getStringExtra("img");
+                        if (dat != null)
+                            solutionViewModel.addMapData(dat);
+
+                    }
+                 /*   if (resultCode == RESULT_OK) {
+
                         Intent data = result.getData();
 
                         assert data != null;
@@ -186,7 +197,7 @@ public class SolutionActivity extends AppCompatActivity {
                         double x = data.getDoubleExtra("x", 0);
                         double y = data.getDoubleExtra("y", 0);
                         solutionViewModel.addCityXY(name, new PointXY(x, y));
-                    }
+                    }*/
                 }
             }
     );

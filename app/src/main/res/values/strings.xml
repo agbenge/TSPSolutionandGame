@@ -2,92 +2,31 @@
     <string name="app_name">Path Finder</string>
     <string name="title_activity_solution">Find My Path</string>
     <string name="large_text">
-        "Material is the metaphor.\n\n"
-        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
-        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
-        "technologically advanced and open to imagination and magic.\n"
-        "Surfaces and edges of the material provide visual cues that are grounded in reality. The "
-        "use of familiar tactile attributes helps users quickly understand affordances. Yet the "
-        "flexibility of the material creates new affordances that supercede those in the physical "
-        "world, without breaking the rules of physics.\n"
-        "The fundamentals of light, surface, and movement are key to conveying how objects move, "
-        "interact, and exist in space and in relation to each other. Realistic lighting shows "
-        "seams, divides space, and indicates moving parts.\n\n"
+        https://raphaelraymondproduct@gmail.com
+        Path Finder
+1.	Introduction
+Path Finder is a game and a problem solving tool for TSP (Transportation Sales Problem).
+Shortest Path Game provide some points (let say stations) for you to find the shortest path to move round (to all point) the points. Imagine a problem of vaccine to be distributed at various airports and back to the main station, with aim of trying to minimize the cost. Tip: when playing the game aim at for a cyclic path, it will provide shortest path on this way.
+Find My Path (Solving tool for TSP) you will provide either the locations or distances between the locations (or cost) and the App will give you the shortest path to fellow. If have an image of the map of locations you can easily load the map (snap or gallery) and point at desired location to which want to find the shortest path.
+Choosing input method:
+•	Choose location by typing if you have the coordinate and the distance (cost) equals the displacement (or going by road is equal going by air) --- location important, graph important.
+•	Choose location by image when you have the map image with location. Note location generated are equivalent to actual location.
+•	Choose distance when the distances or cost are known and coordinate are unknown.  Cost is important, graph is not important. The graph
 
-        "Bold, graphic, intentional.\n\n"
+2.	Operation (User guide)
+Open app donate to support the developer.
+A.	Playing the game.
+Firstly open the app, if don’t like sound disable it at top right side icon. Press Shortest Path (game model) Select new for game in the popup as new user and the initial level will be start. If you are not a new user pressing new will take to place where you can start from level that you have unlock.  Press resume to continue from previously played game. When game is over you can only start new but have the chance of choosing higher level than initial but the scores will not  can only be gain.
+There are Alphabet indicating various cities. Click on them directly to indicate interest of starting or moving to them. The one clicked on will have a different circle color round it. Click the next destination and a path with be drawn. Continue to your desire points until you exhaust the points. After exhausting the points you will prompt with win or lose; when loose up to three times game over will be replace with lose. When you win, you can go to next or you can return to see your path before moving. When you lose, you try again or return like as in win.  Click play button if you wish to resume after pressing return in lose, win or game over. Note the current location will always have its own distinct color apart from already visited. Click or already visited city to undo ( that means attempting to select already selected city will cause it to deselect).
+Menu (menu icon) have the preference setting about sound, keyboard, refreshing point on try again, and using timing. It also contain highest score ever played.
 
-        "The foundational elements of print based design typography, grids, space, scale, color, "
-        "and use of imagery guide visual treatments. These elements do far more than please the "
-        "eye. They create hierarchy, meaning, and focus. Deliberate color choices, edge to edge "
-        "imagery, large scale typography, and intentional white space create a bold and graphic "
-        "interface that immerse the user in the experience.\n"
-        "An emphasis on user actions makes core functionality immediately apparent and provides "
-        "waypoints for the user.\n\n"
+B.	Solving a TSP problem
+Open the App choose Find My Path to the solution model will be visible for to work on. Select your input method by click on the current input method which now help you to toggle between “add by location”, “add by loading map” and “add by distance”. After changing the desire input method click of plus icon (top right) to add. You can always clear all by clicking on clear icon (top left). After adding the problem click on the bottom right icon to get the shortest path.
+Adding by image is not incremental, that means when you add an image you are require to finish adding all the location before clicking finish icon. Also note you load an image and toggle add and using the add switch (bottom left). When you are done adding the point you can then press bottom right icon as finish or the one in action bar menu. Once you click add (plus icon) when “add by Loading map” is active the exiting data will be discarded.
+Adding Location select it to be active the click the add icon. The next view will require you to put latitude and longitude plus the location and the location name. Click finish when done adding the first location (it will take you back to previous view but the location been added) Now click add again to add another location. Same process continues till you exhaust your points (locations). ( if there exist any data clear it to start fresh problem when adding a new problem). Once again when you are done adding the point you can then press bottom right icon as finish or the one in action bar menu.
+Adding by distances or cost, select add by distance. Next, click add icon and type only city name in the next view and click finish when done just like in add by location. The next will require you to add the city name and it distance to the first.  The third will require you to add city name and its distance to the first and second. Repeatedly you add all the cities and their distances as the number distances increment.
+Note a problem must have up three cities at minimum.
 
-        "Motion provides meaning.\n\n"
-
-        "Motion respects and reinforces the user as the prime mover. Primary user actions are "
-        "inflection points that initiate motion, transforming the whole design.\n"
-        "All action takes place in a single environment. Objects are presented to the user without "
-        "breaking the continuity of experience even as they transform and reorganize.\n"
-        "Motion is meaningful and appropriate, serving to focus attention and maintain continuity. "
-        "Feedback is subtle yet clear. Transitions are efﬁcient yet coherent.\n\n"
-
-        "3D world.\n\n"
-
-        "The material environment is a 3D space, which means all objects have x, y, and z "
-        "dimensions. The z-axis is perpendicularly aligned to the plane of the display, with the "
-        "positive z-axis extending towards the viewer. Every sheet of material occupies a single "
-        "position along the z-axis and has a standard 1dp thickness.\n"
-        "On the web, the z-axis is used for layering and not for perspective. The 3D world is "
-        "emulated by manipulating the y-axis.\n\n"
-
-        "Light and shadow.\n\n"
-
-        "Within the material environment, virtual lights illuminate the scene. Key lights create "
-        "directional shadows, while ambient light creates soft shadows from all angles.\n"
-        "Shadows in the material environment are cast by these two light sources. In Android "
-        "development, shadows occur when light sources are blocked by sheets of material at "
-        "various positions along the z-axis. On the web, shadows are depicted by manipulating the "
-        "y-axis only. The following example shows the card with a height of 6dp.\n\n"
-
-        "Resting elevation.\n\n"
-
-        "All material objects, regardless of size, have a resting elevation, or default elevation "
-        "that does not change. If an object changes elevation, it should return to its resting "
-        "elevation as soon as possible.\n\n"
-
-        "Component elevations.\n\n"
-
-        "The resting elevation for a component type is consistent across apps (e.g., FAB elevation "
-        "does not vary from 6dp in one app to 16dp in another app).\n"
-        "Components may have different resting elevations across platforms, depending on the depth "
-        "of the environment (e.g., TV has a greater depth than mobile or desktop).\n\n"
-
-        "Responsive elevation and dynamic elevation offsets.\n\n"
-
-        "Some component types have responsive elevation, meaning they change elevation in response "
-        "to user input (e.g., normal, focused, and pressed) or system events. These elevation "
-        "changes are consistently implemented using dynamic elevation offsets.\n"
-        "Dynamic elevation offsets are the goal elevation that a component moves towards, relative "
-        "to the component’s resting state. They ensure that elevation changes are consistent "
-        "across actions and component types. For example, all components that lift on press have "
-        "the same elevation change relative to their resting elevation.\n"
-        "Once the input event is completed or cancelled, the component will return to its resting "
-        "elevation.\n\n"
-
-        "Avoiding elevation interference.\n\n"
-
-        "Components with responsive elevations may encounter other components as they move between "
-        "their resting elevations and dynamic elevation offsets. Because material cannot pass "
-        "through other material, components avoid interfering with one another any number of ways, "
-        "whether on a per component basis or using the entire app layout.\n"
-        "On a component level, components can move or be removed before they cause interference. "
-        "For example, a floating action button (FAB) can disappear or move off screen before a "
-        "user picks up a card, or it can move if a snackbar appears.\n"
-        "On the layout level, design your app layout to minimize opportunities for interference. "
-        "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
-        "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
     <string name="action_save">Save</string>
@@ -172,4 +111,8 @@
     <string name="openByDistances">Open Tsp distances</string>
     <string name="b_played">Best played so far</string>
     <string name="share">Share</string>
+    <string name="current_game">Current Game</string>
+    <string name="start_from_level">Start From Level</string>
+    <string name="start_game">Start Game</string>
+    <string name="help">Help</string>
 </resources>

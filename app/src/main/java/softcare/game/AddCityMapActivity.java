@@ -53,8 +53,8 @@ public class AddCityMapActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_city_mactivity);
         plotImage = findViewById(R.id.plotImage);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+       // Toolbar toolbar = findViewById(R.id.toolbar);
+       // setSupportActionBar(toolbar);
         ((Switch)  findViewById(R.id.adding)).setOnCheckedChangeListener((buttonView, isChecked) -> plotImage.setAddingPoint(isChecked));
         findViewById(R.id.finish).setOnClickListener(v -> finish(plotImage));
     }
@@ -207,7 +207,7 @@ String img;
 
 
 
-    public void selectImage( View v) {
+    public void loadMap( View v) {
         if ( askPermission(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.CAMERA,
                 Manifest.permission.READ_EXTERNAL_STORAGE} )) {
@@ -305,7 +305,7 @@ public void undo(View v){
 
 }
 
-    private void finish(View v){
+    public void finish(View v){
       if(plotImage.getNames().size()>=3) {
           Intent intent = new Intent(this, SolutionActivity.class);
           TspData data = new TspData(plotImage.getNames(), plotImage.getLocations());
@@ -328,16 +328,5 @@ public void undo(View v){
     }
 
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int menuId = item.getItemId();
-        if (menuId == R.id.action_undo) {
-            undo(plotImage);
-            return true;
-        } else  if (menuId == R.id.action_load) {
-            selectImage(plotImage);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 }

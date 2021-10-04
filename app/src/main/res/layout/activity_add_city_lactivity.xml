@@ -1,94 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/fab_margin">
+    android:fitsSystemWindows="true"
+    tools:context=".AddCityLActivity">
 
-
-    <Button
-        android:id="@+id/go"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-android:layout_marginTop="@dimen/fab_margin"
-        android:text="go"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/msg" />
-
-    <TextView
-        android:id="@+id/textView8"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/locations"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="City Name"
-        app:layout_constraintBottom_toBottomOf="@+id/city_name"
-        app:layout_constraintEnd_toStartOf="@+id/city_name"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/city_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:focusable="true"
-        android:inputType="textPersonName"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/finish"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Latitude"
-        app:layout_constraintBottom_toBottomOf="@+id/city_lat"
-        app:layout_constraintEnd_toStartOf="@+id/city_lat"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city_name" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="43"
+        tools:listitem="@layout/item_location" />
 
-    <EditText
-        android:id="@+id/city_lat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city_name" />
-
-    <TextView
-        android:id="@+id/textView10"
+    <ImageView
+        android:id="@+id/undo"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="longitude"
-        app:layout_constraintBottom_toBottomOf="@+id/city_log"
-        app:layout_constraintEnd_toStartOf="@+id/city_log"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city_lat" />
+        android:layout_height="56dp"
+        android:onClick="undo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/finish"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/loadMap"
+        app:srcCompat="@drawable/ic_baseline_undo_24"
+        app:tint="@color/blueLight" />
 
-    <EditText
-        android:id="@+id/city_log"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city_lat" />
-
-    <TextView
-        android:id="@+id/textView11"
+    <ImageView
+        android:id="@+id/loadMap"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Status"
-        app:layout_constraintEnd_toStartOf="@+id/msg"
+        android:layout_height="56dp"
+        android:onClick="add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/undo"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/msg" />
+        app:srcCompat="@drawable/ic_baseline_add_24"
+        app:tint="@color/blueLight" />
 
-    <TextView
-        android:id="@+id/msg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-
-        android:text="okay"
+    <ImageView
+        android:id="@+id/finish"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:onClick="finish"
+        android:src="@drawable/ic_baseline_check_circle_24"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city_log" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/undo"
+        app:srcCompat="@drawable/ic_baseline_check_24"
+        app:tint="@color/blueLight" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -140,6 +140,7 @@ android:visibility="gone"
         android:layout_margin="@dimen/fab_margin"
         android:contentDescription="@string/refresh"
         android:src="@drawable/ic_baseline_refresh_24"
+        android:tint="@color/blueLight"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|start" />
 
@@ -151,6 +152,7 @@ android:visibility="gone"
         android:layout_margin="@dimen/fab_margin"
         android:contentDescription="@string/add"
         android:src="@drawable/ic_baseline_add_24"
+        android:tint="@color/blueLight"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end" />
 
@@ -160,9 +162,10 @@ android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:contentDescription="@string/solve"
         android:clickable="true"
+        android:contentDescription="@string/solve"
         android:focusable="true"
-        android:src="@drawable/ic_round_arrow_right_alt_24" />
+        android:src="@drawable/ic_round_arrow_right_alt_24"
+        android:tint="@color/blueLight" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

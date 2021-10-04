@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Pop"
     android:layout_width="match_parent"
+
     android:layout_height="wrap_content">
 
     <TextView
@@ -11,7 +12,7 @@
         style="@style/PopMenuSub"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Highest score"
+        android:text="@string/highest_score"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -21,7 +22,7 @@
         style="@style/BoardItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Game"
+        android:text="@string/start_game"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,7 +45,7 @@
         style="@style/PopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Return"
+        android:text="@string/return_"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -53,7 +54,7 @@
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start From Level"
+        android:text="@string/start_from_level"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/levels"
         app:layout_constraintTop_toBottomOf="@+id/lst_sub" />
