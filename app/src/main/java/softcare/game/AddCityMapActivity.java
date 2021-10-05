@@ -70,37 +70,7 @@ public class AddCityMapActivity extends AppCompatActivity {
         }
         return true;
     }
-    public  boolean  reinstallOn(int day, int month, int year){
-        Date now= new Date();
-        now.setTime(System.currentTimeMillis());
-        Calendar c = Calendar.getInstance();
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        int minute = c.get(Calendar.MINUTE);
-        Date end= S.getDateFromString(day + "/" + (month + 1) + "/" + year + " " + hour + ":" + minute);
-        if(end.before(now)){
-            System.out.println("Time is over");
-            return true;
-        }else{
-            System.out.println("Time  remains ");
-            return false;
-        }
-    }
 
-    public  boolean reinstallOn(AppCompatActivity activity,int day, int month, int year){
-        boolean res=reinstallOn(day,month,year);
-        SharedPreferences s =activity.getApplicationContext().getSharedPreferences(prefName,
-                Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = s.edit();
-        editor.putBoolean("grace", !res);
-        editor.apply();
-        editor.commit();
-        if(res){
-            //reinstall popup
-            //new DialogPopup(activity).showUpdateApp();
-        }
-
-        return res;
-    }
     public boolean askPermission(String[] permissions) {
         if (!hasPermissions(this, permissions)) {
             Snackbar.make(plotImage,
@@ -119,21 +89,6 @@ public class AddCityMapActivity extends AppCompatActivity {
         return false;
     }
 
-
-    final private String prefName = "SoftCare";
-
-    public void isNewUser(Context context, boolean update  ) {
-        SharedPreferences s = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = s.edit();
-        editor.putBoolean("newUser", update);
-        editor.apply();
-        editor.commit();
-        return ;
-    }
-    public boolean isNewUser(Context context  ) {
-        SharedPreferences s = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE);
-        return s.getBoolean("newUser", true);
-    }
 
 
     ActivityResultLauncher<Intent> camara = registerForActivityResult(

@@ -2,6 +2,7 @@ package softcare.game.model;
 
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -361,12 +362,17 @@ public class SolutionViewModel extends ViewModel {
 
     }
 
+    @Nullable
     public String getSave_temp() {
         String res = "";
         Tsp tsp = tspLiveData.getValue();
+        if(tsp==null){
+            errorCodeLiveData.postValue(ErrorCode.NOT_READ_OR_UPDATED);
+            return null;
+        }
         if (TspCode.READ != tsp.getTspActions() && TspCode.UPDATE != tsp.getTspActions()) {
             errorCodeLiveData.postValue(ErrorCode.NOT_READ_OR_UPDATED);
-            return "";
+            return null;
         }
         for (int i = 0; i < tsp.getCities().size(); i++) {
             res += tsp.getCities().get(i) + ",";
@@ -552,6 +558,7 @@ public class SolutionViewModel extends ViewModel {
 
                     } catch (Exception e) {
                         errorCodeLiveData.setValue(ErrorCode.FIlE_NOT_OPEN);
+                        e.printStackTrace();
                     }
                 }
 
@@ -563,20 +570,19 @@ public class SolutionViewModel extends ViewModel {
 
 
     public void saveFile(OutputStream out, TaskManager taskManager, boolean isLocation) {
-        taskManager.runTask(new Runnable() {
-            @Override
-            public void run() {
+        taskManager.runTask(() -> {
 
-                String text = isLocation ? getSave() : getSave_temp();
-                if (out != null) {
-                    try {
-                        out.write(text.getBytes());
-                        out.flush();
-                        out.close();
-                        errorCodeLiveData.postValue(ErrorCode.FILE_SAVE);
-                    } catch (Exception e) {
-                        errorCodeLiveData.postValue(ErrorCode.FIlE_NOT_SAVE);
-                    }
+            String text = isLocation ? getSave() : getSave_temp();
+            if(text!=null && !text.isEmpty())
+            if (out != null) {
+                try {
+                    out.write(text.getBytes());
+                    out.flush();
+                    out.close();
+                    errorCodeLiveData.postValue(ErrorCode.FILE_SAVE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    errorCodeLiveData.postValue(ErrorCode.FIlE_NOT_SAVE);
                 }
             }
         });

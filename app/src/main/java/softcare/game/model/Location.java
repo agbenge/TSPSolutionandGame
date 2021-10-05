@@ -12,6 +12,11 @@ public  class Location    {
     List<String> names= new ArrayList<>();
     List<PointXY> locations= new ArrayList<>();
 
+    public Location(List<String> cities, List<PointXY> locations) {
+        names.addAll(cities);
+        locations.addAll(locations);
+    }
+
     public List<String> getNames() {
         return names;
     }
@@ -40,5 +45,14 @@ public  class Location    {
             return  true;
         }
         return  false;
+    }
+
+    public boolean delete(int position) {
+        if(locations.size()>position) {
+            locations.remove(position);
+            names.remove(position);
+            return  true;
+        }
+        return false;
     }
 }

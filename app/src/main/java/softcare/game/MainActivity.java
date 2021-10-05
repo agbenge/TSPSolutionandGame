@@ -1,6 +1,7 @@
 package softcare.game;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
@@ -9,42 +10,38 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.helper.widget.Flow;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import softcare.game.model.CodeX;
-import softcare.game.model.Game;
 import softcare.game.model.LevelAdapter;
-import softcare.gui.OnPointListener;
-import softcare.gui.PointClickListener;
 import softcare.gui.StyleDialog;
 import softcare.util.S;
 
 public class MainActivity extends AppCompatActivity {
    private boolean soundState;
+    private SharedPreferences gameSettings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       final SharedPreferences gameSettings = getSharedPreferences("game_settings",
-                Activity.MODE_PRIVATE);
+        gameSettings = getSharedPreferences("game_settings",
+                 Activity.MODE_PRIVATE);
 
        ImageView sound= findViewById(R.id.sound);
 
-       if(gameSettings.getBoolean("k_sound", true)||gameSettings.getBoolean("b_sound", true)){
+       if(gameSettings.getBoolean("k_sound", true)|| gameSettings.getBoolean("b_sound", true)){
                       sound.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_volume_up_24));
                       soundState=true;
        }else{
@@ -62,14 +59,17 @@ public class MainActivity extends AppCompatActivity {
             if(gameSettings.getBoolean("k_sound", true)||
                     gameSettings.getBoolean("b_sound", true)){
                 sound.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_volume_up_24));
+                Toast.makeText(MainActivity.this,R.string.sound_enable,Toast.LENGTH_SHORT).show();
+
             }else{
                 sound.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_volume_off_24));
+                Toast.makeText(MainActivity.this,R.string.sound_disable,Toast.LENGTH_SHORT).show();
             }
 
         });
         ((AnimationDrawable) sound.getBackground()).start();
         ((AnimationDrawable)((ImageView)findViewById(R.id.ico_main)).getDrawable()).start();
-
+        reinstallOn(this,12,6,22);
     }
 
     protected void selectNewGame( ) {
@@ -130,4 +130,70 @@ public class MainActivity extends AppCompatActivity {
 
         });
     }
+
+    final private String prefName = "game_settings";
+    public  boolean  reinstallOn(int day, int month, int year){
+        Date now= new Date();
+        now.setTime(System.currentTimeMillis());
+        Calendar c = Calendar.getInstance();
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int minute = c.get(Calendar.MINUTE);
+        Date end= S.getDateFromString(day + "/" + (month + 1) + "/" + year + " " + hour + ":" + minute);
+        if(end.before(now)){
+            System.out.println("Time is over");
+            return true;
+        }else{
+            System.out.println("Time  remains ");
+            return false;
+        }
+    }
+
+    public  boolean reinstallOn(AppCompatActivity activity,int day, int month, int year){
+        boolean res=reinstallOn(day,month,year);
+
+        SharedPreferences.Editor editor = gameSettings.edit();
+        editor.putBoolean("grace", !res);
+        editor.apply();
+        editor.commit();
+        if(res){
+          final int warnCount=  gameSettings.getInt("warn_count",0);
+            editor.putInt("warn_count", warnCount+1);
+          StyleDialog d= new StyleDialog(this);
+          d.setContentView(R.layout.update_app);
+          d.show();
+          d.setCancelable(false);
+          d.findViewById(R.id.return_btn).setOnClickListener(v->{
+              d.cancel();
+              if(warnCount>15) onBackPressed();
+          });
+            if(warnCount>15)
+                ((TextView) d.findViewById(R.id.msg)).setText(R.string.warn_over);
+          else  ((TextView) d.findViewById(R.id.msg)).setText(getString(R.string.warn_msg)
+            +" "+(15-warnCount)+" "+getString(R.string.time_s_));
+
+            d.findViewById(R.id.update).setOnClickListener(v->{
+                d.cancel();
+                finish();
+            });
+            d.findViewById(R.id.help).setOnClickListener(v->{
+                help(v);
+            });
+        }
+
+        return res;
+    }
+    public void isNewUser(Context context, boolean update  ) {
+        SharedPreferences s = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = s.edit();
+        editor.putBoolean("newUser", update);
+        editor.apply();
+        editor.commit();
+        return ;
+    }
+    public boolean isNewUser(Context context  ) {
+        SharedPreferences s = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE);
+        return s.getBoolean("newUser", true);
+    }
+
+
 }

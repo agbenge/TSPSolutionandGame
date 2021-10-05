@@ -11,10 +11,11 @@
         style="@style/BoardItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/you_lose"
+        android:text="Update"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -25,6 +26,7 @@
         app:layout_constraintBottom_toTopOf="@+id/return_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight="wrap_content_constrained"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title">
 
@@ -33,10 +35,9 @@
             style="@style/PopText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/large_text"
+            android:text="@string/warn_msg"
             android:textSize="24sp" />
     </ScrollView>
-
 
     <Button
         android:id="@+id/return_btn"
@@ -46,26 +47,34 @@
 
         android:text="@string/return_"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/try_again"
+        app:layout_constraintEnd_toStartOf="@+id/update"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/try_again"
+        android:id="@+id/update"
         style="@style/PopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Try Again"
+        android:text="@string/update_now"
         app:layout_constraintBottom_toBottomOf="@+id/return_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/return_btn" />
-    <ImageButton
-        android:id="@+id/share_img_btn"
+
+    <TextView
+        android:id="@+id/help"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_share" />
+        android:layout_height="0dp"
+        android:background="@drawable/btn_y"
+        android:text="@string/help"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/title"
+        app:layout_constraintEnd_toStartOf="@+id/title"
+        app:layout_constraintHorizontal_bias="0.193"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/title"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

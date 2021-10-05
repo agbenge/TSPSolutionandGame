@@ -9,4 +9,6 @@ public class CodeX {
     public static String bestTspKey="b_tsp";
     public static int addD=0;
     public static int addL=1;
+    public static String tspSharedKey="s_tsp";
+    public static String gameSharedKey="s_game";
 }

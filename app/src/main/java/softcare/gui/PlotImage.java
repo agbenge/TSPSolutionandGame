@@ -50,7 +50,8 @@ public class PlotImage  extends androidx.appcompat.widget.AppCompatImageView {
         highlightPaint.setStyle(Paint.Style.STROKE);
         highlightPaint.setAntiAlias(true);
         highlightPaint.setColor(highlightColor);
-        highlightPaint.setStrokeWidth(5f);
+        highlightPaint.setStrokeWidth(3f);
+        highlightPaint.setTextSize(20f);
         int i=0;
             if (locations != null)
                 for (PointXY p : locations) {
@@ -96,9 +97,7 @@ public class PlotImage  extends androidx.appcompat.widget.AppCompatImageView {
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.PlotTSP, 0, 0);
 
-        try {
-            //get the text and colors specified using the names in attrs.xml
-            highlightColor = a.getInteger(R.styleable.PlotGame_highlightColor, Color.MAGENTA);
+        try {    highlightColor = a.getInteger(R.styleable.PlotGame_highlightColor, Color.MAGENTA);
 
         } finally {
             a.recycle();

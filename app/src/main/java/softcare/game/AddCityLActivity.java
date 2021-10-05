@@ -1,5 +1,6 @@
 package softcare.game;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,9 +46,14 @@ public class AddCityLActivity extends AppCompatActivity implements View.OnKeyLis
         setContentView(R.layout.activity_add_city_lactivity);
         context=this;
         locations = new Location();
+            TspData dat = getIntent().getParcelableExtra("data");
+            if(dat!=null)
+           locations =new Location(dat.getCities(),dat.getLocations());
+
         RecyclerView recycler=   findViewById(R.id.locations);
 
         locationAdapter = new LocationAdapter(this);
+
         recycler.setAdapter(locationAdapter);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
@@ -205,9 +212,36 @@ addCity(dialog);
             }
         });
     }
-
     public void edit(int i){
-        StyleDialog dialog= new StyleDialog(this);
+        if(locations.getNames().size()>i) {
+            final CharSequence[] options = {
+                    getString(R.string.edit),
+                    getString(R.string.delete),
+                    getString(R.string.cancel)};
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.edit) +locations.getNames().get(i));
+            builder.setItems(options, (dialog, item) -> {
+                if (options[item].equals(getString(R.string.edit))) {
+                    edit(i,new StyleDialog(AddCityLActivity.this));
+                    dialog.dismiss();
+                } else if (options[item].equals(getString(R.string.delete))) {
+                     if(locations.delete(i)) {
+                         locationAdapter.changeData(locations);
+                         dialog.dismiss();
+                         Toast.makeText(AddCityLActivity.this,"Deleted", Toast.LENGTH_LONG).show();
+
+                     }else  Toast.makeText(AddCityLActivity.this,"Error ", Toast.LENGTH_LONG).show();
+                }   else if (options[item].equals(getString(R.string.cancel))) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        }else {
+            Snackbar.make(x_input, "Cannot edit the point ", Snackbar.LENGTH_LONG).show();
+        }
+
+    }
+    public void edit(int i, StyleDialog dialog){
         dialog.setContentView(R.layout.pop_add_city_l);
         dialog.show();
         dialog.setCanceledOnTouchOutside(false);
@@ -219,7 +253,10 @@ addCity(dialog);
                     if( locations.editPoint(getName(),getPointX(),getPointY(),i)) {
                         locationAdapter.changeData(locations);
                         dialog.cancel();
-                    }
+                        Toast.makeText(AddCityLActivity.this,"Edited ", Toast.LENGTH_LONG).show();
+
+                    }else  Toast.makeText(AddCityLActivity.this,"Error ", Toast.LENGTH_LONG).show();
+
 
                 }else{
                     Snackbar.make(x_input, "Please file data currently", Snackbar.LENGTH_LONG).show();

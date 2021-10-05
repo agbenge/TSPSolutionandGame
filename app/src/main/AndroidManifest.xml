@@ -28,6 +28,18 @@
         android:roundIcon="@drawable/tsp_ico"
         android:supportsRtl="true"
         android:theme="@style/Theme.TSPSolutionAndGame">
+
+        <activity
+            android:name=".SharedGame"
+            android:theme="@style/Theme.TSPSolutionAndGame"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+        </activity>
+
         <activity android:name=".PlotTspActivity"></activity>
         <activity
             android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar"

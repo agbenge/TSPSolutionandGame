@@ -115,4 +115,15 @@ Note a problem must have up three cities at minimum.
     <string name="start_from_level">Start From Level</string>
     <string name="start_game">Start Game</string>
     <string name="help">Help</string>
+    <string name="edit">"edit "</string>
+    <string name="delete">delete</string>
+    <string name="highestStageGame">Highest stage game</string>
+    <string name="currentStageGame">Current stage Game</string>
+    <string name="unable_to_share">Unable to share</string>
+    <string name="warn_over">To continue using the app, Please update</string>
+    <string name="update_now">Update Now</string>
+    <string name="warn_msg">Update app or you won\'t be able to use it after using the app </string>
+    <string name="time_s_">time(s)</string>
+    <string name="sound_enable">Sound enable</string>
+    <string name="sound_disable">Sound disable</string>
 </resources>

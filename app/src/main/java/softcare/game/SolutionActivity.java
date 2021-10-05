@@ -370,6 +370,13 @@ public class SolutionActivity extends AppCompatActivity {
     public void addL(View view) {
         imgpath = null;
         Intent intent = new Intent(SolutionActivity.this, AddCityLActivity.class);
+Tsp tsp= solutionViewModel.getTsp();
+if(tsp!=null)   { if(tsp.getCities()!=null&&tsp.getCities().size()>0) {
+        TspData data = new TspData(tsp.getCities(), tsp.getPointXY());
+        intent.putExtra("data", data);
+        intent.setFlags(RESULT_OK);
+        setResult(RESULT_OK, intent);
+    }  }
         addL.launch(intent);
         //Snackbar.make(view, "Unable to intiallsed", Snackbar.LENGTH_LONG) .setAction("Action", null).show();
     }

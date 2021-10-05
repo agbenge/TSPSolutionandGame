@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.Group;
 import androidx.lifecycle.ViewModelProvider;
@@ -33,6 +34,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,7 @@ import softcare.game.model.Game;
 import softcare.game.model.GameShare;
 import softcare.game.model.GameViewModel;
 import softcare.game.model.LevelAdapter;
+import softcare.game.model.Location;
 import softcare.game.model.TaskManager;
 import softcare.game.model.Tsp;
 import softcare.game.model.TspCode;
@@ -64,8 +67,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     private int bSoundStreamId = -1;
     private CountUpTimer countUPTimer;
     private CountDownTimer countDownTimer;
-    private StyleDialog dialog;
-    private TaskManager taskManager;
+    protected StyleDialog dialog;
+    protected TaskManager taskManager;
     private Group playGroup;
     private GameShare bestGame;
 
@@ -151,13 +154,19 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
     }
 
-    private void dialogResume() {
+    protected GameShare getCurrentGame(String tspKey,String gameKey){
+         return  openGame(tspKey, gameKey);
+    }
+    protected GameShare getBestGame(String tspKey,String gameKey){
+        return  openGame(tspKey, gameKey);
+    }
+    protected void dialogResume() {
         if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_progress);
         dialog.show();
         dialog.setOnCancelListener(dialog -> onBackPressed());
         taskManager.runTask(() -> {
-            GameShare gameShare = openGame(CodeX.tspKey, CodeX.gameKey);
+            GameShare gameShare = getCurrentGame(CodeX.tspKey, CodeX.gameKey);
             if (bestGame != null) {
                 if (bestGame.getGame() == null || bestGame.getTsp() == null)
                     bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
@@ -168,7 +177,28 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         });
     }
 
+  private void dialogSharing(Tsp tsp) {
+         StyleDialog dialogS = new StyleDialog(this);
+      dialogS.setContentView(R.layout.pop_progress);
+      dialogS.show();
+      dialogS.setCancelable(false);
+      taskManager.runTask(() -> {
+          Gson gson = new Gson();
+          Location gs= new Location(tsp.getCities(), tsp.getPointXY());
+          String text = gson.toJson(gs, Location.class);
+          Intent sendIntent = new Intent();
+          sendIntent.setAction(Intent.ACTION_SEND);
+          sendIntent.setType("text/*");
+          sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+          sendIntent.putExtra(Intent.EXTRA_TITLE, "Share Game");
+          if(dialogS.isShowing())
+              runOnUiThread(() -> {dialog.cancel();
+                  startActivity(Intent.createChooser(sendIntent, "Share with"));
+              });
+      });
 
+
+  }
     private void dialogMenu() {
         pauseTimer();
         if (dialog == null) dialog = new StyleDialog(this);
@@ -191,6 +221,13 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
 
     }
+    protected void saveGave(String tspKey, String gameKey,
+                            SharedPreferences.Editor editor, String jsonTsp, String jsonGame) {
+        editor.putString(gameKey, jsonGame);
+        editor.putString(tspKey, jsonTsp);
+        editor.apply();
+        editor.commit();
+    }
 
     protected void saveGave(Tsp tsp, Game game) {
         taskManager.runTask(() -> {
@@ -199,12 +236,11 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             String jsonTsp = gson.toJson(tsp);
             String jsonGame = gson.toJson(game);
             Log.d(CodeX.tag, (tsp == null) + " is saving " + (tsp == null));
-            editor.putString("game", jsonGame);
-            editor.putString("tsp", jsonTsp);
-            editor.apply();
-            editor.commit();
 
-        });
+            saveGave(CodeX.tspKey, CodeX.gameKey,
+                     editor,  jsonTsp, jsonGame );
+
+            });
     }
 
 
@@ -336,7 +372,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-
+        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> {
+            share( );
+        });
         dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
             dialog.cancel();
             next(tsp, game);
@@ -432,6 +470,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         }
         if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_game_end);
+        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> {
+            share( );
+        });
         ((TextView) dialog.findViewById(R.id.msg)).setText(result);
 
         dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
@@ -528,6 +569,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         dialog.show();
+        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> {
+            share( );
+        });
         dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
             dialog.cancel();
             selectNewGame();
@@ -544,6 +588,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     private void dialogResume(Tsp tsp, Game game) {
         if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_game_ended);
+        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> {
+            share( );
+        });
         dialog.setOnCancelListener(dialog -> onBackPressed());
         ((TextView) dialog.findViewById(R.id.title)).setText(getString(R.string.welcome));
         if (game != null && tsp != null) {
@@ -706,17 +753,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getScores()));
             ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
 
-            dialog.findViewById(R.id.time).setOnClickListener(v -> {
-                Gson gson = new Gson();
-                GameShare gs = new GameShare(tsp, game);
-                String text = gson.toJson(gs, GameShare.class);
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.setType("text/*");
-                sendIntent.putExtra(Intent.EXTRA_TEXT, text);
-                sendIntent.putExtra(Intent.EXTRA_TITLE, "Send to");
-                startActivity(Intent.createChooser(sendIntent, "Share with"));
-
+            dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> {
+                share( );
             });
         }
         timing.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -799,6 +837,11 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         }
     }
 
+    public void setShare(Location share) {
+        gameViewModel.startGameShare(share);
+    }
+
+
 
     abstract class CountUpTimer extends CountDownTimer {
         private final long duration;
@@ -833,6 +876,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         dialog.setOnCancelListener(null);
         taskManager.runTask(() -> {
             bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
+            if(dialog!=null)if(dialog.isShowing())
             runOnUiThread(() -> selectNewGame(dialog, bestGame.getGame()));
         });
     }
@@ -877,6 +921,41 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             playActive(null, false);
             dialog.cancel();
         });
+    }
+    private void share( ) {
+        final CharSequence[] options = {
+                getString(R.string.highestStageGame),
+                getString(R.string.currentStageGame),
+                getString(R.string.cancel)};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.share));
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals(getString(R.string.highestStageGame))) {
+                Tsp tsp = null;
+                if(bestGame!=null) tsp=bestGame.getTsp();
+                if(tsp!=null) {
+                    dialogSharing(tsp);
+                    dialog.dismiss();
+                } else{
+                    Toast.makeText(GameActivity.this,
+                            getText(R.string.unable_to_share),Toast.LENGTH_LONG).show();
+                }
+                 dialog.dismiss();
+            } else if (options[item].equals(getString(R.string.currentStageGame))) {
+              Tsp tsp = gameViewModel.getTsp();
+              if(tsp!=null) {
+                  dialogSharing(tsp);
+                  dialog.dismiss();
+              } else{
+                  Toast.makeText(GameActivity.this,
+                          getText(R.string.unable_to_share),Toast.LENGTH_LONG).show();
+              }
+            } else if (options[item].equals(getString(R.string.cancel))) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+
     }
 }
 

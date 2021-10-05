@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -316,5 +317,23 @@ public class GameViewModel extends ViewModel {
     public void resumeGame(Tsp tsp, Game game) {
         getGameLiveData().setValue(game );
         getTspLiveData().setValue(tsp);
+    }
+
+    public void startGameShare(@NonNull Location share) {
+        Game game= new Game();
+        game.setLevel(share.getNames().size());
+        Tsp tsp = new Tsp();
+        tsp.setCities(share.getNames());
+        tsp.setPointXY(share.getLocations());
+        tsp.countDistancesAndUpdateMatrix();
+        if(share.getNames().size()<20){
+            tsp.setAlg(Alg.DYN);
+        }else {
+            tsp.setAlg(Alg.KNN);
+        }
+        if(share.getNames().size()>2)
+            startAgl(tsp);
+        else
+            errorCodeLiveData.setValue(ErrorCode.NOT_SOLVED);
     }
 }

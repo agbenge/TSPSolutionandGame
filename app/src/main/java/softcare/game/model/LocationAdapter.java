@@ -30,7 +30,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LevelV
     @NonNull
     @Override
     public LevelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_level, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_location, parent, false);
         return new LevelViewHolder(view);
     }
 
@@ -56,7 +56,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LevelV
 
 
     public void changeData(Location location) {
-        this.locations=locations;
+        this.locations=location;
         notifyDataSetChanged();
     }
 
