@@ -1,9 +1,7 @@
 package softcare.game;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.Constraints;
 
-import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -11,12 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import softcare.game.model.CodeX;
-import softcare.game.model.TspData;
 import softcare.game.model.TspResult;
 import softcare.gui.PlotTSP;
 import softcare.util.S;
@@ -34,7 +27,8 @@ public class PlotTspActivity extends AppCompatActivity {
         if(tspResult!=null) {
             plotTSP.plot(tspResult.getLocations(), tspResult.getCities(),  tspResult.getPath());
             ( (TextView)findViewById(R.id.scores)).setText(String.valueOf(S.formDouble(tspResult.getCost())));
-            ( (TextView)findViewById(R.id.time)).setText(S.timeDisplay2(tspResult.getTime()));
+            String t=tspResult.getTime() + getString(R.string.milli_sec_);
+            ( (TextView)findViewById(R.id.time)).setText(t);
             ( (TextView)findViewById(R.id.result)).setText(tspResult.getResult()  );
             if( tspResult.getImagePath()!=null) {
                  setPic(tspResult.getImagePath());
@@ -46,7 +40,8 @@ public class PlotTspActivity extends AppCompatActivity {
         }else{
             Log.e(CodeX.tag ,"Null Data Received");
         }
-
+        findViewById(R.id.zoom_in).setOnClickListener(this::zoomIn);
+        findViewById(R.id.zoom_out).setOnClickListener(this::zoomOut);
     }
 
 

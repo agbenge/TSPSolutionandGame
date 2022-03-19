@@ -15,26 +15,23 @@ import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.constraintlayout.widget.Group;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -90,24 +87,6 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
     private SoundPool soundPool;
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (soundPool != null) soundPool.release();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (gameViewModel.getGameLiveData().getValue() == null) {
-            dialogResume();
-        } else {
-            if (dialog != null) if (dialog.isShowing()) return;
-            resumeTimer(gameViewModel.getGameLiveData().getValue());
-        }
-    }
-
-
     private void startSound() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -151,7 +130,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         answersContainer = findViewById(R.id.answersContainer);
         optionsContainer = findViewById(R.id.optionsContainer);
         gameViewModel = new ViewModelProvider(this).get(GameViewModel.class);
-
+        findViewById(R.id.zoom_in).setOnClickListener(this::zoomIn);
+        findViewById(R.id.zoom_out).setOnClickListener(this::zoomOut);
     }
 
     protected GameShare getCurrentGame(String tspKey,String gameKey){
@@ -164,7 +144,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_progress);
         dialog.show();
-        dialog.setOnCancelListener(dialog -> onBackPressed());
+        dialog.setCancelable(false);
+        //dialog.setOnCancelListener(dialog -> super.onBackPressed());
         taskManager.runTask(() -> {
             GameShare gameShare = getCurrentGame(CodeX.tspKey, CodeX.gameKey);
             if (bestGame != null) {
@@ -177,7 +158,53 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         });
     }
 
-  private void dialogSharing(Tsp tsp) {
+
+    private void dialogBack( Game game ) {
+        if (dialog == null) dialog = new StyleDialog(this);
+           if(game!=null) pauseTimer();
+        dialog.setContentView(R.layout.pop_game_end);
+        ((TextView) dialog.findViewById(R.id.title)).setText(getString(R.string.exit_game_msg));
+        ((TextView) dialog.findViewById(R.id.msg)).setText(getString(R.string.exit_game_msg_));
+        ((TextView) dialog.findViewById(R.id.try_again)).setText(R.string.yes);
+        ((TextView) dialog.findViewById(R.id.return_btn)).setText(R.string.no);
+
+        dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+            dialog.cancel();
+            if(game!=null) resumeTimer(game);
+        });
+        dialog.findViewById(R.id.share_img_btn).setVisibility(View.GONE);
+        dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
+            dialog.cancel();
+            if(taskManager!=null) taskManager.shutdownNow();
+            super.onBackPressed();
+        });
+        dialog.setCancelable(false);
+        dialog.show();
+
+    }
+    private void dialogBack(Tsp tsp, Game game ) {
+        if (dialog == null) dialog = new StyleDialog(this);
+        if(game!=null) pauseTimer();
+        dialog.setContentView(R.layout.pop_game_end);
+        ((TextView) dialog.findViewById(R.id.title)).setText(getString(R.string.exit_game_msg));
+        ((TextView) dialog.findViewById(R.id.msg)).setText(getString(R.string.exit_game_msg_));
+        ((TextView) dialog.findViewById(R.id.try_again)).setText(R.string.yes);
+        ((TextView) dialog.findViewById(R.id.return_btn)).setText(R.string.no);
+
+        dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+            dialogResume(tsp,game);
+        });
+        dialog.findViewById(R.id.share_img_btn).setVisibility(View.GONE);
+        dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
+            dialog.cancel();
+            if(taskManager!=null) taskManager.shutdownNow();
+            super.onBackPressed();
+        });
+        dialog.setCancelable(false);
+        dialog.show();
+
+    }
+    private void dialogSharing(Tsp tsp) {
          StyleDialog dialogS = new StyleDialog(this);
       dialogS.setContentView(R.layout.pop_progress);
       dialogS.show();
@@ -192,7 +219,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
           sendIntent.putExtra(Intent.EXTRA_TEXT, text);
           sendIntent.putExtra(Intent.EXTRA_TITLE, "Share Game");
           if(dialogS.isShowing())
-              runOnUiThread(() -> {dialog.cancel();
+              runOnUiThread(() -> {dialogS.cancel();
                   startActivity(Intent.createChooser(sendIntent, "Share with"));
               });
       });
@@ -235,7 +262,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             Gson gson = new Gson();
             String jsonTsp = gson.toJson(tsp);
             String jsonGame = gson.toJson(game);
-            Log.d(CodeX.tag, (tsp == null) + " is saving " + (tsp == null));
+            Log.d(CodeX.tag, (tsp != null) + " is saving " + (game != null));
 
             saveGave(CodeX.tspKey, CodeX.gameKey,
                      editor,  jsonTsp, jsonGame );
@@ -286,11 +313,11 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             Game game = gameViewModel.getGame();
             if (tsp != null && game != null) {
                 answersContainer.removeAllViews();
-                Log.d(CodeX.tag, " getTspLiveData().observe ");
+                Log.d(CodeX.tag, " getTspLiveData().observe  Resume timer ");
                 resumeTimer(game);
                 level.setText(String.valueOf(game.getLevel()));
                 scores.setText(String.valueOf(game.getScores()));
-
+                time.setText(S.timeDisplay(game.getUsedTime()));
                 if (tsp.getTspActions() == TspCode.SOLVED) {
                     final int size = tsp.getCities().size() + 1;
                     int[] playId = new int[size];
@@ -301,9 +328,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
                         Button b = new Button(GameActivity.this);
                         b.setId(i);
-                        playId[0 + i] = i;
+                        playId[i] = i;
                         b.setText(city);
-                        b.setBackground(getResources().getDrawable(R.drawable.btn_b));
+                        b.setBackground(getResources().getDrawable(R.drawable.btn_b ));
                         b.setTextColor(getResources().getColor(R.color.white));
                         if (game.getDirection().contains(i))
                             addAnswer(b, i);
@@ -324,7 +351,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 if (tsp == null) Log.e(CodeX.tag, " Tsp null");
             }
         });
-        gameViewModel.getErrorCodeLiveData().observe(this, errorCode -> Snackbar.make(plotGame, "Error " + errorCode.toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show());
+        gameViewModel.getUpdateCodeLiveData().observe(this, errorCode -> Snackbar.make(plotGame, "Error " + errorCode.toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show());
         gameViewModel.getProgressXLiveData().observe(this, progressX -> Log.d("game", progressX.toString()));
         gameViewModel.getGameLiveData().observe(this, game -> {
 
@@ -343,7 +370,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         Game game = gameViewModel.getGameLiveData().getValue();
         if (tsp != null) {
             if (game != null) {
-                String result = game.getResult(tsp);
+                String result = game.getResult(tsp, this);
                 if (S.formDouble(tsp.getCost()) >=
                         S.formDouble(game.getCost())) {
                     dialogWin(game, result, tsp);
@@ -361,23 +388,22 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         ((TextView) dialog.findViewById(R.id.title)).setText(getString(R.string.win));
         ((TextView) dialog.findViewById(R.id.msg)).setText(result);
         ((TextView) dialog.findViewById(R.id.try_again)).setText(R.string.next);
-        game.win(tsp.getCost() > game.getCost(),
-                System.currentTimeMillis() - startTime);
-        gameViewModel.setGameLiveData(game);
-        level.setText(String.valueOf(game.getLevel()));
-        scores.setText(String.valueOf(game.getScores()));
+       // game.win(tsp.getCost() > game.getCost(), System.currentTimeMillis() - startTime);
+      //  gameViewModel.setGameLiveData(game);
+        level.setText(String.valueOf(game.getLevel()+1));
+        scores.setText(String.valueOf(game.getWinScores(tsp.getCost() > game.getCost(),
+                System.currentTimeMillis() - startTime)));
         dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
             dialog.cancel();
             activatePlay_Win_lose(game, result, tsp);
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
-        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> {
-            share( );
-        });
+        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> share( ));
         dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
             dialog.cancel();
-            next(tsp, game);
+            next(tsp.getCost() > game.getCost(),
+                    System.currentTimeMillis() - startTime,tsp, game);
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
 
@@ -393,8 +419,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     }
 
 
-    protected void next(Tsp tsp, Game game) {
-        game.next();
+    protected void next( boolean b, long l,Tsp tsp, Game game) {
+        game.next(b,l);
         gameViewModel.next(game);
 
     }
@@ -409,7 +435,6 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             String jsonTsp = gameSettings.getString("b_tsp", null);
             String jsonGame = gameSettings.getString("b_game", null);
             if (jsonGame != null && jsonTsp != null) {
-                // Tsp tspStored = gson.fromJson(jsonTsp, Tsp.class);
                 if (bestGame == null)
                     bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
 
@@ -418,10 +443,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                     return;
                 }
 
-                editBest(game, tsp, editor, gson);
 
-
-            } else editBest(game, tsp, editor, gson);
+            }
+            editBest(game, tsp, editor, gson);
 
         });
 
@@ -457,9 +481,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         editor.commit();
         bestGame = new GameShare(tsp, game);
         Snackbar.make(plotGame, getString(R.string.b_played),
-                Snackbar.LENGTH_INDEFINITE).setAction(R.string.share
+                Snackbar.LENGTH_LONG).setAction(R.string.share
                 , v -> {
-
+share();
                 }).show();
     }
 
@@ -470,9 +494,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         }
         if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_game_end);
-        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> {
-            share( );
-        });
+        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> share( ));
         ((TextView) dialog.findViewById(R.id.msg)).setText(result);
 
         dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
@@ -484,8 +506,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
             dialog.cancel();
             game.tryAgain();
-            gameViewModel.tryAgain(game, gameSettings.getBoolean("timing", false));
-            if (gameSettings.getBoolean("k_sound", true))
+            gameViewModel.tryAgain(game, gameSettings.getBoolean("timing", false)||gameSettings.getBoolean("refresh_points", false));
+
+             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
 
         });
@@ -569,9 +592,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         dialog.show();
-        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> {
-            share( );
-        });
+        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> share( ));
         dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
             dialog.cancel();
             selectNewGame();
@@ -588,10 +609,10 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     private void dialogResume(Tsp tsp, Game game) {
         if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_game_ended);
-        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> {
-            share( );
-        });
-        dialog.setOnCancelListener(dialog -> onBackPressed());
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> share( ));
+        dialog.setOnCancelListener(dialog -> dialogBack(tsp,game));
         ((TextView) dialog.findViewById(R.id.title)).setText(getString(R.string.welcome));
         if (game != null && tsp != null) {
             ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
@@ -643,7 +664,43 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (soundPool != null) soundPool.release();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(CodeX.tag, "onResume()" );
+        if (gameViewModel.getGameLiveData().getValue() == null) {
+            dialogResume();
+        } else {
+            if (dialog != null) {
+                if (dialog.isShowing()) {
+                    Log.d(CodeX.tag, " Dialog is showing" );
+                    return;
+
+                }
+            }
+            if(countDownTimer==null&&countUPTimer==null){
+                Log.d(CodeX.tag, " Resume timer in onResume");
+                resumeTimer(gameViewModel.getGameLiveData().getValue());
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        try {
+            Game game = gameViewModel.getGame();
+            dialogBack(game);
+        }catch (Exception e){
+            Log.d(CodeX.tag,"error "+e.getMessage());
+            dialogBack(null);
+        }
+    }
     @Override
     protected void onStop() {
         super.onStop();
@@ -651,8 +708,10 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
     @Override
     protected void onPause() {
+        Log.d(CodeX.tag, "onPause()" );
         pauseTimer();
         super.onPause();
+
 
     }
 
@@ -661,15 +720,13 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         Button b = optionsContainer.findViewById(index);
         if (b == null) b = answersContainer.findViewById(index);
         if (b != null) b.callOnClick();
+       else
         Log.e(CodeX.tag, "Index  button error " + index);
     }
 
 
     private void pauseTimer() {
-        if (countUPTimer != null) countUPTimer.cancel();
-        if (countDownTimer != null) countDownTimer.cancel();
-        countUPTimer = null;
-        countDownTimer = null;
+        stopTime();
         Game game = gameViewModel.getGame();
         Tsp tsp = gameViewModel.getTsp();
         if (game != null && tsp != null) {
@@ -682,17 +739,26 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
     }
 
+    private void stopTime() {
+        if (countUPTimer != null) countUPTimer.cancel();
+        if (countDownTimer != null) countDownTimer.cancel();
+        countUPTimer= null;
+        countDownTimer = null;
+    }
+
 
     private void resumeTimer(Game game) {
+        stopTime();
         Log.d(CodeX.tag, "  resume ... ");
         startTime = System.currentTimeMillis();
         if (gameSettings.getBoolean("timing", false)) {
             Log.d(CodeX.tag, game.getTiming() + " timing, used time" + game.getUsedTime());
+
             countUPTimer = null;
             countDownTimer = new CountDownTimer(game.getTiming() - game.getUsedTime(), 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    Log.d(CodeX.tag, " time change " + S.timeDisplay(millisUntilFinished));
+                   // Log.d(CodeX.tag, " time change " + S.timeDisplay(millisUntilFinished));
                     time.setText(S.timeDisplay(millisUntilFinished));
                 }
 
@@ -700,7 +766,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 public void onFinish() {
                     optionsContainer.removeAllViews();
                     answersContainer.removeAllViews();
-                    dialogLoose(game, "You time finish try again pints will be refresh");
+                    dialogLoose(game, getString(R.string.time_up_msg));
 
                 }
             };
@@ -711,7 +777,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                     1000, game.getUsedTime()) {
                 @Override
                 public void onTickDown(long timeCount) {
-                    Log.d(CodeX.tag, "  count up output ... " + timeCount);
+                   // Log.d(CodeX.tag, "  count up output ... " + timeCount);
                     time.setText(S.timeDisplay(timeCount));
                 }
 
@@ -737,11 +803,11 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_game_menu);
         SharedPreferences.Editor editor = gameSettings.edit();
-        Switch timing = dialog.findViewById(R.id.timing);
-        Switch kSound = dialog.findViewById(R.id.k_sound);
-        Switch bSound = dialog.findViewById(R.id.b_sound);
-        Switch refreshingPoints = dialog.findViewById(R.id.refresh_points);
-        Switch keys = dialog.findViewById(R.id.keys);
+        SwitchCompat timing = dialog.findViewById(R.id.timing);
+        SwitchCompat kSound = dialog.findViewById(R.id.k_sound);
+        SwitchCompat bSound = dialog.findViewById(R.id.b_sound);
+        SwitchCompat refreshingPoints = dialog.findViewById(R.id.refresh_points);
+        SwitchCompat keys = dialog.findViewById(R.id.keys);
         timing.setChecked(gameSettings.getBoolean("timing", false));
         kSound.setChecked(gameSettings.getBoolean("k_sound", true));
         bSound.setChecked(gameSettings.getBoolean("b_sound", false));
@@ -753,9 +819,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getScores()));
             ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
 
-            dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> {
-                share( );
-            });
+            dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> share( ));
         }
         timing.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("timing", isChecked);
@@ -837,13 +901,13 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         }
     }
 
-    public void setShare(Location share) {
+    public void postShareGame(Location share) {
         gameViewModel.startGameShare(share);
     }
 
 
 
-    abstract class CountUpTimer extends CountDownTimer {
+    abstract static class CountUpTimer extends CountDownTimer {
         private final long duration;
         private final long usedTime;
 
@@ -887,40 +951,43 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(highestGame.getLevel()));
             ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(highestGame.getScores()));
             ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(highestGame.getGameLifeTime()));
+
+            dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
+                dialog.cancel();
+                activatePlayResume(null, null);
+            });
+            dialog.show();
+            dialog.setCancelable(false);
+            dialog.show();
+            RecyclerView recycler = dialog.findViewById(R.id.levels);
+            String name = "Level";
+            LevelAdapter levelAdapter = new LevelAdapter(this, name);
+            recycler.setAdapter(levelAdapter);
+
+
+            DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+
+            int spanCount = dm.densityDpi / 50;
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, spanCount);
+            List<Integer> l = new ArrayList<>();
+            for (int i = 0; i < (Math.max(highestGame.getNodes(), 20)); i++)
+                l.add(i);
+
+            recycler.setLayoutManager(gridLayoutManager);
+            levelAdapter.changeSize(highestGame.getLevel(), l);
+            levelAdapter.setPointClickListener(i -> {
+                gameViewModel.newGame(i);
+                playActive(null, false);
+                dialog.cancel();
+            });
         } else {
+            if(dialog!=null) dialog.cancel();
             gameViewModel.newGame(0);
         }
 
-        dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
-            dialog.cancel();
-            activatePlayResume(null, null);
-        });
-        dialog.show();
-        dialog.setCancelable(false);
-        dialog.show();
-        RecyclerView recycler = dialog.findViewById(R.id.levels);
-        String name = "Level";
-        LevelAdapter levelAdapter = new LevelAdapter(this, name);
-        recycler.setAdapter(levelAdapter);
 
-
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-
-        int spanCount = dm.densityDpi / 50;
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, spanCount);
-        List<Integer> l = new ArrayList<>();
-        for (int i = 0; i < (highestGame.getNodes() > 20 ? highestGame.getNodes() : 20); i++)
-            l.add(i);
-
-        recycler.setLayoutManager(gridLayoutManager);
-        levelAdapter.changeSize(highestGame.getLevel(), l);
-        levelAdapter.setPointClickListener(i -> {
-            gameViewModel.newGame(i);
-            playActive(null, false);
-            dialog.cancel();
-        });
     }
     private void share( ) {
         final CharSequence[] options = {

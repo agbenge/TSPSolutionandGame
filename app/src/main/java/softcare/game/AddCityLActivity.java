@@ -1,11 +1,8 @@
 package softcare.game;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -14,21 +11,14 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import softcare.game.model.CodeX;
-import softcare.game.model.LevelAdapter;
 import softcare.game.model.Location;
 import softcare.game.model.LocationAdapter;
 import softcare.game.model.TspData;
-import softcare.gui.PointXY;
 import softcare.gui.StyleDialog;
 import softcare.util.S;
 
@@ -46,20 +36,23 @@ public class AddCityLActivity extends AppCompatActivity implements View.OnKeyLis
         setContentView(R.layout.activity_add_city_lactivity);
         context=this;
         locations = new Location();
-            TspData dat = getIntent().getParcelableExtra("data");
-            if(dat!=null)
-           locations =new Location(dat.getCities(),dat.getLocations());
-
         RecyclerView recycler=   findViewById(R.id.locations);
+        findViewById(R.id.add).setOnClickListener(this::add);
+        findViewById(R.id.undo).setOnClickListener(this::undo);
+        findViewById(R.id.finish).setOnClickListener(this::finish);
 
         locationAdapter = new LocationAdapter(this);
 
         recycler.setAdapter(locationAdapter);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        locationAdapter.setPointClickListener(i -> {
+        locationAdapter.setPointClickListener(this::edit);
 
-        });
+        TspData dat = getIntent().getParcelableExtra("data");
+        if(dat!=null) {
+            locations = new Location(dat.getCities(), dat.getLocations());
+            locationAdapter.changeData(locations);
+        }
     }
 
 
@@ -99,7 +92,6 @@ public class AddCityLActivity extends AppCompatActivity implements View.OnKeyLis
         if(city.getText().toString().isEmpty()) {
             ok=false;
             msg.setText(getString(R.string.name_is_empty));
-            return;
         }else {
             ok= true;
             msg.setText( getString(R.string.okay));
@@ -110,13 +102,12 @@ public class AddCityLActivity extends AppCompatActivity implements View.OnKeyLis
     }
 
     private boolean test( EditText numS, String msgText){
-        Intent i= new Intent();
-        double d [][]= null;
 
         try {
             if(numS.getText().toString().isEmpty()) {
                 msg.setTextColor(context.getResources().getColor(R.color.red));
-                msg.setText(getString(R.string.empty)+msgText);
+                String s=getString(R.string.empty)+msgText;
+                msg.setText(s);
                 return false;
             }else {
                 Double.parseDouble(numS.getText().toString());
@@ -191,26 +182,18 @@ dialog.setContentView(R.layout.pop_add_city_l);
 dialog.show();
         dialog.setCanceledOnTouchOutside(false);
 addCity(dialog);
-        dialog.findViewById(R.id.go).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isOkay()){
-                    dialog.cancel();
-                    locations.addPoint(getName(),getPointX(),getPointY());
-                    locationAdapter.changeData(locations);
-                }else{
-                    Snackbar.make(x_input, "Please file data currently", Snackbar.LENGTH_LONG) .setAction("Action", null).show();
+        dialog.findViewById(R.id.go).setOnClickListener(v12 -> {
+            if(isOkay()){
+                dialog.cancel();
+                locations.addPoint(getName(),getPointX(),getPointY());
+                locationAdapter.changeData(locations);
+            }else{
+                Snackbar.make(x_input, "Please file data currently", Snackbar.LENGTH_LONG) .setAction("Action", null).show();
 
-                }
             }
         });
 
-        dialog.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    dialog.cancel();
-            }
-        });
+        dialog.findViewById(R.id.cancel).setOnClickListener(v1 -> dialog.cancel());
     }
     public void edit(int i){
         if(locations.getNames().size()>i) {
@@ -219,7 +202,7 @@ addCity(dialog);
                     getString(R.string.delete),
                     getString(R.string.cancel)};
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getString(R.string.edit) +locations.getNames().get(i));
+            builder.setTitle(getString(R.string.more_action_on) +locations.getNames().get(i));
             builder.setItems(options, (dialog, item) -> {
                 if (options[item].equals(getString(R.string.edit))) {
                     edit(i,new StyleDialog(AddCityLActivity.this));
@@ -246,34 +229,30 @@ addCity(dialog);
         dialog.show();
         dialog.setCanceledOnTouchOutside(false);
         addCity(dialog);
-        dialog.findViewById(R.id.go).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isOkay()){
-                    if( locations.editPoint(getName(),getPointX(),getPointY(),i)) {
-                        locationAdapter.changeData(locations);
-                        dialog.cancel();
-                        Toast.makeText(AddCityLActivity.this,"Edited ", Toast.LENGTH_LONG).show();
+        city.setText(locations.getNames().get(i));
+        y_input.setText( S.doubleToString( locations.getLocations().get(i).y));
+        x_input.setText(S.doubleToString( locations.getLocations().get(i).x));
+        dialog.findViewById(R.id.go).setOnClickListener(v -> {
+            if(isOkay()){
+                if( locations.editPoint(getName(),getPointX(),getPointY(),i)) {
+                    locationAdapter.changeData(locations);
+                    dialog.cancel();
+                    Toast.makeText(AddCityLActivity.this,"Edited ", Toast.LENGTH_LONG).show();
 
-                    }else  Toast.makeText(AddCityLActivity.this,"Error ", Toast.LENGTH_LONG).show();
+                }else  Toast.makeText(AddCityLActivity.this,"Error ", Toast.LENGTH_LONG).show();
 
 
-                }else{
-                    Snackbar.make(x_input, "Please file data currently", Snackbar.LENGTH_LONG).show();
+            }else{
+                Snackbar.make(x_input, "Please file data currently", Snackbar.LENGTH_LONG).show();
 
-                }
             }
         });
 
-        dialog.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
+        dialog.findViewById(R.id.cancel).setOnClickListener(v -> dialog.cancel());
     }
     public void undo(View v){
 locations.undo();
+        locationAdapter.changeData(locations);
     }
 
 

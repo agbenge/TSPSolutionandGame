@@ -1,20 +1,8 @@
 package softcare.game;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.FileProvider;
-
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -26,25 +14,30 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
+
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Calendar;
-import java.util.Date;
 
 import softcare.game.model.CodeX;
 import softcare.game.model.TspData;
 import softcare.gui.PlotImage;
-import softcare.util.S;
 
 public class AddCityMapActivity extends AppCompatActivity {
           PlotImage  plotImage;
@@ -55,8 +48,11 @@ public class AddCityMapActivity extends AppCompatActivity {
         plotImage = findViewById(R.id.plotImage);
        // Toolbar toolbar = findViewById(R.id.toolbar);
        // setSupportActionBar(toolbar);
-        ((Switch)  findViewById(R.id.adding)).setOnCheckedChangeListener((buttonView, isChecked) -> plotImage.setAddingPoint(isChecked));
-        findViewById(R.id.finish).setOnClickListener(v -> finish(plotImage));
+        ((SwitchCompat)  findViewById(R.id.adding)).setOnCheckedChangeListener((buttonView, isChecked) -> plotImage.setAddingPoint(isChecked));
+        findViewById(R.id.loadMap).setOnClickListener(this::loadMap);
+        findViewById(R.id.undo).setOnClickListener(this::undo);
+        findViewById(R.id.finish).setOnClickListener(this::finish);
+
     }
 
 
@@ -75,12 +71,7 @@ public class AddCityMapActivity extends AppCompatActivity {
         if (!hasPermissions(this, permissions)) {
             Snackbar.make(plotImage,
                    getString(  R.string.permission_msg),Snackbar.LENGTH_INDEFINITE)
-                    .setAction( getString(R.string.accept_now), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ActivityCompat.requestPermissions(AddCityMapActivity.this, permissions, 1);
-                        }
-                    }).show();
+                    .setAction( getString(R.string.accept_now), v -> ActivityCompat.requestPermissions(AddCityMapActivity.this, permissions, 1)).show();
 
         } else {
             return true;
@@ -92,13 +83,10 @@ public class AddCityMapActivity extends AppCompatActivity {
 
 
     ActivityResultLauncher<Intent> camara = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    int resultCode = result.getResultCode();
-                    Log.d(CodeX.tag, " camara  " + (resultCode == RESULT_OK));
-                   setPic();
-                }
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                int resultCode = result.getResultCode();
+                Log.d(CodeX.tag, " camara  " + (resultCode == RESULT_OK));
+               setPic();
             }
     );
     ActivityResultLauncher<Intent> gallery = registerForActivityResult(
@@ -108,7 +96,10 @@ public class AddCityMapActivity extends AppCompatActivity {
                     int resultCode = result.getResultCode();
                     Log.d(CodeX.tag, " gallery --------- " + (resultCode == RESULT_OK));
                     if (resultCode == RESULT_OK) {
-                        Uri selectedImage = result.getData().getData();
+                        Uri selectedImage = null;
+                        if (result.getData() != null) {
+                            selectedImage = result.getData().getData();
+                        }
                         String[] filePath = {MediaStore.Images.Media.DATA};
                         Cursor c = getContentResolver().query(selectedImage, filePath, null, null, null);
                         c.moveToFirst();
@@ -126,8 +117,8 @@ public class AddCityMapActivity extends AppCompatActivity {
      
 String img;
   private   void setGalleryPic( String picturePath) {
-        OutputStream outFile = null;
-        File file = null;
+        OutputStream outFile;
+        File file;
         try {
             file = createImageFile();
         } catch (IOException e) {
@@ -145,14 +136,10 @@ String img;
             bitmap.compress(Bitmap.CompressFormat.JPEG, 85, outFile);
             outFile.flush();
             outFile.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
+      Bitmap thumbnail = (BitmapFactory.decodeFile(picturePath));
 
         img= picturePath;
         Log.d(CodeX.tag, "path of image from gallery..." + picturePath + "");
@@ -276,11 +263,7 @@ public void undo(View v){
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_add_i, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
+
 
 
 

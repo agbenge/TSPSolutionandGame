@@ -19,10 +19,10 @@ import softcare.game.R;
 import softcare.gui.PointClickListener;
 
 public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHolder> {
-    private Context mContext;
+    private final Context mContext;
     private List<Integer>  game;
     private int unlock;
-    private String name;
+    private final String name;
 
     public LevelAdapter(Context context, String name) {
         this.mContext = context;
@@ -50,7 +50,6 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
             holder.title.setText(name);
             holder.level.setText(String.valueOf(posi ));
             if (unlock >= posi) {
-                Log.d( CodeX.tag," Unlock  posi" +posi+"  position "+position+" ");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     holder.level.setForeground(null);
                 }
@@ -63,12 +62,19 @@ public class LevelAdapter extends RecyclerView.Adapter<LevelAdapter.LevelViewHol
                 Log.d( CodeX.tag," Lock  posi" +posi+"  position "+position+" ");
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)      holder.title.setBackground(null);
-                holder.container.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(mContext, mContext.getString(R.string.level_lock), Toast.LENGTH_LONG).show();
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    holder.level.setForeground(mContext.getDrawable(R.drawable.ic_baseline_lock_24));
+                    holder.title.setBackground(null);
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.title.setBackground(mContext.getDrawable(R.drawable.ic_baseline_lock_24));
+                    }else{
+                      ///  holder.title.setBackground( R.drawable.ic_baseline_lock_24));
+
                     }
-                });
+                }
+                holder.container.setOnClickListener(v -> Toast.makeText(mContext, mContext.getString(R.string.level_lock), Toast.LENGTH_LONG).show());
             }
         }
 

@@ -1,4 +1,5 @@
 package softcare.game;
+
 import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -22,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,7 +38,6 @@ import softcare.game.model.TspCode;
 import softcare.game.model.TspData;
 import softcare.game.model.TspResult;
 import softcare.gui.PlotTSP;
-import softcare.gui.PointXY;
 
 public class SolutionActivity extends AppCompatActivity {
 
@@ -72,7 +73,7 @@ public class SolutionActivity extends AppCompatActivity {
 
         if (snackbar != null) {
             snackbar.setText(getString(R.string.finished));
-            snackbar.setDuration(Snackbar.LENGTH_LONG);
+            snackbar.dismiss();
         }
 
     }
@@ -129,7 +130,7 @@ public class SolutionActivity extends AppCompatActivity {
 
             }
         });
-        solutionViewModel.getErrorCodeLiveData().observe(this, errorCode -> Snackbar.make(binding.getRoot(), getString(R.string.error) + errorCode.toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show());
+        solutionViewModel.getUpdateCodeLiveData().observe(this, errorCode -> Snackbar.make(binding.getRoot(), "" + errorCode.toString(), Snackbar.LENGTH_LONG).setAction("Action", null).show());
         solutionViewModel.getProgressXLiveData().observe(this, progressX -> Log.d("game", progressX.toString()));
 
 
@@ -147,13 +148,33 @@ public class SolutionActivity extends AppCompatActivity {
                         assert data != null;
                         TspData dat = data.getParcelableExtra("data");
                         imgpath = data.getStringExtra("img");
-                        if (dat != null)
-                            solutionViewModel.addMapData(dat);
+                        if (dat != null) {
+                            solutionViewModel.addMapData(dat, getTitle(true, dat.getCities().size()));
+                        }
 
                     }
                 }
             });
 
+    private String getTitle(boolean isMap, int size) {
+
+
+        String resH;
+        //  String separator = "\\s+";
+        // boolean res = true;
+        String name = getString(R.string.tsp) + (size);
+        String comment = isMap ? getString(R.string.comment_map_tsp) :
+                getString(R.string.comment_tsp_location);
+        String type = getString(R.string.tsp);
+        String edgeType = getString(R.string.euc_2d);
+        resH = name + "\n";
+        resH += getString(R.string.type) + type + "\n";
+        resH += getString(R.string.comment) + comment + "\n";
+        resH += getString(R.string.dimenssion_) + (size) + "\n";
+        resH += getString(R.string.edge_weight_type) + edgeType + "\n";
+        resH += getString(R.string.node_coord_section);
+        return resH;
+    }
 
     ActivityResultLauncher<Intent> addD = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -185,7 +206,7 @@ public class SolutionActivity extends AppCompatActivity {
                         TspData dat = data.getParcelableExtra("data");
                         imgpath = data.getStringExtra("img");
                         if (dat != null)
-                            solutionViewModel.addMapData(dat);
+                            solutionViewModel.addLocData(dat, getTitle(false, dat.getCities().size()));
 
                     }
                  /*   if (resultCode == RESULT_OK) {
@@ -236,21 +257,23 @@ public class SolutionActivity extends AppCompatActivity {
     }
 
     ActivityResultLauncher<Intent> saveLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    int resultCode = result.getResultCode();
-                    Log.d(CodeX.tag, " gallery --------- " + (resultCode == RESULT_OK));
-                    if (resultCode == RESULT_OK) {
-                        try {
-                            Intent data = result.getData();
-                            Uri uri = data.getData();
-                            OutputStream outputStream=
-                                    SolutionActivity.this.getContentResolver().openOutputStream(uri);
-                            save(outputStream);
-                        } catch (Exception e) {
-
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                int resultCode = result.getResultCode();
+                Log.d(CodeX.tag, " gallery --------- " + (resultCode == RESULT_OK));
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Intent data = result.getData();
+                        Uri uri = null;
+                        if (data != null) {
+                            uri = data.getData();
                         }
+                        OutputStream outputStream =
+                                SolutionActivity.this.getContentResolver().openOutputStream(uri);
+                        save(outputStream);
+                    } catch (Exception e) {
+                        Toast.makeText(SolutionActivity.this, R.string.error, Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+
                     }
                 }
             }
@@ -258,21 +281,20 @@ public class SolutionActivity extends AppCompatActivity {
 
 
     ActivityResultLauncher<Intent> openFileLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    int resultCode = result.getResultCode();
-                    Log.d(CodeX.tag, " gallery --------- " + (resultCode == RESULT_OK));
-                    if (resultCode == RESULT_OK) {
-                        try {
-                            Intent data = result.getData();
-                            Uri uri = data.getData();
-                           InputStream inputStream=
-                                   SolutionActivity.this.getContentResolver().openInputStream(uri);
-                           open(inputStream);
-                        } catch (Exception e) {
-
-                        }
+            new ActivityResultContracts.StartActivityForResult(), result -> {
+                int resultCode = result.getResultCode();
+                Log.d(CodeX.tag, " gallery --------- " + (resultCode == RESULT_OK));
+                if (resultCode == RESULT_OK) {
+                    try {
+                        Intent data = result.getData();
+                        assert data != null;
+                        Uri uri = data.getData();
+                        InputStream inputStream =
+                                SolutionActivity.this.getContentResolver().openInputStream(uri);
+                        open(inputStream);
+                    } catch (Exception e) {
+                        Toast.makeText(SolutionActivity.this, R.string.error, Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
                     }
                 }
             }
@@ -287,10 +309,10 @@ public class SolutionActivity extends AppCompatActivity {
         builder.setTitle(getString(R.string.select_input_method));
         builder.setItems(options, (dialog, item) -> {
             if (options[item].equals(getString(R.string.saveByLocation))) {
-                solutionViewModel.saveFile(outputStream, taskManager, true);
+                solutionViewModel.saveFile(outputStream, taskManager, binding.outputLocations.getText().toString());
                 dialog.dismiss();
             } else if (options[item].equals(getString(R.string.saveByDistances))) {
-                solutionViewModel.saveFile(outputStream, taskManager, false);
+                solutionViewModel.saveFile(outputStream, taskManager, binding.outputMatrix.getText().toString());
                 dialog.dismiss();
             } else if (options[item].equals(getString(R.string.cancel))) {
                 dialog.dismiss();
@@ -368,17 +390,20 @@ public class SolutionActivity extends AppCompatActivity {
     }
 
     public void addL(View view) {
+        Log.d(CodeX.tag, "AddL pressed  ");
         imgpath = null;
         Intent intent = new Intent(SolutionActivity.this, AddCityLActivity.class);
-Tsp tsp= solutionViewModel.getTsp();
-if(tsp!=null)   { if(tsp.getCities()!=null&&tsp.getCities().size()>0) {
-        TspData data = new TspData(tsp.getCities(), tsp.getPointXY());
-        intent.putExtra("data", data);
-        intent.setFlags(RESULT_OK);
-        setResult(RESULT_OK, intent);
-    }  }
+        Tsp tsp = solutionViewModel.getTsp();
+        if (tsp != null) {
+            if (tsp.getCities() != null && tsp.getCities().size() > 0) {
+                TspData data = new TspData(tsp.getCities(), tsp.getPointXY());
+                intent.putExtra("data", data);
+                Log.d(CodeX.tag, tsp.getCities().get(0) + "sending tsp init input" + tsp.getCities().size());
+
+            } else Log.d(CodeX.tag, "  tsp cities 00 init input");
+        } else Log.d(CodeX.tag, "null tsp init input");
         addL.launch(intent);
-        //Snackbar.make(view, "Unable to intiallsed", Snackbar.LENGTH_LONG) .setAction("Action", null).show();
+
     }
 
     public void launchAlg(int length) {

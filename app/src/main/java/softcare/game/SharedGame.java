@@ -2,9 +2,8 @@ package softcare.game;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 
@@ -33,7 +32,7 @@ public class SharedGame extends GameActivity {
     }
 
     @Override
-    protected void next( Tsp tsp,Game game) {
+    protected void next( boolean b, long l, Tsp tsp,Game game) {
         ///super.next(game, tsp);
         Toast.makeText(this,
                 "You cannot continue from where your fried stopped, Screen short and share",
@@ -45,7 +44,7 @@ public class SharedGame extends GameActivity {
        String textReceived = getIntent().getStringExtra(Intent.EXTRA_TEXT);
         if (textReceived!=null){
             if (dialog == null) dialog = new StyleDialog(this);
-            dialog.setContentView(R.layout.pop_progress);
+            dialog.setContentView(R.layout.pop_progress_2);
             dialog.show();
 
 
@@ -54,15 +53,20 @@ public class SharedGame extends GameActivity {
                 try {
 
                     Location gameShare = openGame(textReceived);
+                    if (dialog != null) dialog.cancel();
                     if(gameShare!=null) {
-
                             if (dialog != null) if (dialog.isShowing())
-                                    SharedGame.super.setShare(gameShare);
+                                    SharedGame.super.postShareGame(gameShare);
                     } else   runOnUiThread(() -> Toast.makeText(this, "Unrecognised Format 2",Toast.LENGTH_LONG).show());
 
 
                 }catch (Exception e) {
-                    runOnUiThread(() -> Toast.makeText(this, "Error",Toast.LENGTH_LONG).show());
+                    Log.e(CodeX.tag, e.getLocalizedMessage());
+                    e.printStackTrace();
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, " Error: Unrecognised Format 3", Toast.LENGTH_LONG).show();
+                        onBackPressed();
+                    });
 
                 }
 

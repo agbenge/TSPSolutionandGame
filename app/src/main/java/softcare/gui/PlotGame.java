@@ -216,6 +216,7 @@ public class PlotGame extends PlotTSP {
     }
 
     private int onPointXY(float x, float y) {
+        if(pointXY!=null)
         for (int i = 0; i < pointXY.size(); i++) {
             float xp = getXZoom(pointXY.get(i).x);
             float yp = getYZoom(pointXY.get(i).y);

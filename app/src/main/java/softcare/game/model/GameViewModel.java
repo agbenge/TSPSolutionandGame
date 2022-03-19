@@ -1,6 +1,5 @@
 package softcare.game.model;
 
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
@@ -9,10 +8,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
 
 import softcare.algorithm.SalesmanGenome;
 import softcare.algorithm.Salesmensch;
@@ -26,16 +23,16 @@ public class GameViewModel extends ViewModel {
 
     private MutableLiveData<Tsp> tspLiveData;
     private MutableLiveData<ProgressX> progressXLiveData;
-    private MutableLiveData<ErrorCode> errorCodeLiveData;
+    private MutableLiveData<UpdateCode> updateCodeLiveData;
     private MutableLiveData<Game> gameLiveData;
     public MutableLiveData<Tsp> getTspLiveData() {
         if (tspLiveData == null) tspLiveData = new MutableLiveData<>();
         return tspLiveData;
     }
 
-    public MutableLiveData<ErrorCode> getErrorCodeLiveData() {
-        if (errorCodeLiveData == null) errorCodeLiveData = new MutableLiveData<>();
-        return errorCodeLiveData;
+    public MutableLiveData<UpdateCode> getUpdateCodeLiveData() {
+        if (updateCodeLiveData == null) updateCodeLiveData = new MutableLiveData<>();
+        return updateCodeLiveData;
     }
 
     public MutableLiveData<Game> getGameLiveData() {
@@ -55,16 +52,14 @@ public class GameViewModel extends ViewModel {
     }
 
     public MutableLiveData<ProgressX> getProgressXLiveData() {
-        if (progressXLiveData == null) progressXLiveData = new MutableLiveData();
+        if (progressXLiveData == null) progressXLiveData = new MutableLiveData<>();
         return progressXLiveData;
     }
 
-    boolean stop;
 
-
-    public long startAgl(Tsp tsp) {
+    public void startAgl(Tsp tsp) {
         long start = System.currentTimeMillis();
-        long duration = 0L;
+        long duration;
         long end;
 
         switch (tsp.getAlg()) {
@@ -86,7 +81,7 @@ public class GameViewModel extends ViewModel {
                     tspLiveData.postValue(tsp);
                 } else {
                     System.out.println("error size is " + tsp.getCities().size());
-                    errorCodeLiveData.postValue(ErrorCode.DYN_MAX_REACHED);
+                    updateCodeLiveData.postValue(UpdateCode.DYN_MAX_REACHED);
                 }
 
                 break;
@@ -121,9 +116,8 @@ public class GameViewModel extends ViewModel {
                 //mDirection = dyn.getTour();
                 //	System.out.println(dyn.getTourCost());
                 //mCost = dyn.getTourCost();
-                System.out.println();
-                System.out.println("  cosst +>> " + String.valueOf(knn.getCost()));
-                System.out.println("  direction +>> " + String.valueOf(knn.getTour()));
+                //System.out.println("  cost +>> " + String.valueOf(knn.getCost()));
+               // System.out.println("  direction +>> " + String.valueOf(knn.getTour()));
                 end = System.currentTimeMillis();
                 System.out.println();
                 tsp.setDirection(knn.getTour());
@@ -137,67 +131,12 @@ public class GameViewModel extends ViewModel {
                 break;
             }
             case EMPTY: {
-                errorCodeLiveData.postValue(ErrorCode.NO_ALG);
+                updateCodeLiveData.postValue(UpdateCode.NO_ALG);
                 break;
             }
             default:
                 throw new IllegalStateException("Unexpected value: " + tsp.getAlg());
         }
-
-        return duration;
-    }
-
-
-    protected String geFullResult() { /// presenting path as result
-        Tsp tsp = tspLiveData.getValue();
-        if (TspCode.SOLVED != tsp.getTspActions()) {
-            errorCodeLiveData.postValue(ErrorCode.NOT_SOLVED);
-            return "";
-        }
-        double cost = 0;
-        if (tsp.getDirection() != null) {
-            if (tsp.getDirection().size() < 2) {
-                return "Action have no defined output yet...";
-            }
-        } else return "Action have no defined output yet... Null Error";
-        String res = "Movement\n";
-        res += "\tPath: ";
-        double dist[] = new double[tsp.getDirection().size()];
-        int prevouse = tsp.getDirection().get(0);
-
-        for (int x = 1; x < tsp.getDirection().size(); x++) {
-            int i = tsp.getDirection().get(x);
-            res += tsp.getDirection().get(prevouse) + "\t";
-            res += "\t" + S.doubleToString( tsp.getMatrix()[prevouse][i] )+ "\tto\t";
-
-            dist[prevouse] = tsp.getMatrix()[prevouse][i];
-            cost = cost + tsp.getMatrix()[prevouse][i];
-            prevouse = i;
-        }
-
-        res += tsp.getCities().get(prevouse) + "\t";
-        if (tsp.getCost() == 0) {
-            tsp.setCost(cost);
-        }
-        res += "\n Total distances \t" + tsp.getCost();
-        if (tsp.getDuration() > 0L) {
-            double time = (double) tsp.getDuration() / (double) 1000;
-            if (time != 1)
-                res += "\n Total time in seconds\t" + time + " seconds";
-            else
-                res += "\n Total time  in seconds\t" + time + " second";
-
-        } else {
-            res += "\n Total time in seconds\t" + " is zero seconds";
-        }
-        //res += "\n Total time \t" + d;
-        res += "\n\n  Path: ";
-        prevouse = tsp.getDirection().get(0);
-        for (int x = 0; x < tsp.getDirection().size(); x++) {
-            int i = tsp.getDirection().get(x);
-            res += tsp.getCities().get(i) + "\t";
-        }
-        return res;
 
     }
 
@@ -209,9 +148,7 @@ public class GameViewModel extends ViewModel {
        int y= r.nextInt(game.getBound());
       PointXY pxy= new PointXY(x,y);
        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-           if(p.stream().anyMatch(pointXY -> {
-               return (pointXY.x == pxy.x) && (pointXY.y == pxy.y);
-           })){
+           if(p.stream().anyMatch(pointXY -> (pointXY.x == pxy.x) && (pointXY.y == pxy.y))){
                x= r.nextInt(game.getBound());
                y= r.nextInt(game.getBound());
            }
@@ -255,36 +192,8 @@ public class GameViewModel extends ViewModel {
         if(n.size()>2)
         startAgl(tsp);
         else
-        errorCodeLiveData.setValue(ErrorCode.NOT_SOLVED);
+        updateCodeLiveData.setValue(UpdateCode.NOT_SOLVED);
     }
-
-   public void storeGame(SharedPreferences.Editor editor) {
-        Game game=  getGameLiveData().getValue();
-        if(game!=null&getTsp()!=null) {
-            String tsp=null;
-            Set<String> g=null;
-        int i=0;
-        if(!(game.getTryAgain()>=2)) {
-            for (PointXY p : getTsp().getPointXY()) {
-                tsp += getTsp().getCities().get(i) + p.getStore();
-                i++;
-            }
-            if(game.getDirection()!=null){
-
-                g = new HashSet<String>();
-                for (int s: game.getDirection() ) {
-                    g.add(String.valueOf(s));
-                }
-            }
-        }
-            editor.putString("tsp",tsp);
-            editor.putStringSet("game",g);
-            editor.apply();
-            editor.commit();
-        }
-    }
-
-
 
 
 
@@ -321,11 +230,12 @@ public class GameViewModel extends ViewModel {
 
     public void startGameShare(@NonNull Location share) {
         Game game= new Game();
-        game.setLevel(share.getNames().size());
+        game.setLevel(share.getNames().size()-game.defaultLevelToNode);
         Tsp tsp = new Tsp();
         tsp.setCities(share.getNames());
         tsp.setPointXY(share.getLocations());
         tsp.countDistancesAndUpdateMatrix();
+        getGameLiveData().postValue(game);
         if(share.getNames().size()<20){
             tsp.setAlg(Alg.DYN);
         }else {
@@ -334,6 +244,6 @@ public class GameViewModel extends ViewModel {
         if(share.getNames().size()>2)
             startAgl(tsp);
         else
-            errorCodeLiveData.setValue(ErrorCode.NOT_SOLVED);
+            updateCodeLiveData.setValue(UpdateCode.NOT_SOLVED);
     }
 }

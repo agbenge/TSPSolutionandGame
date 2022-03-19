@@ -1,26 +1,21 @@
 package softcare.game.model;
 
 import android.content.Context;
-import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
 
 import softcare.game.R;
 import softcare.gui.PointClickListener;
 import softcare.util.S;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LevelViewHolder> {
-    private Context mContext;
+    private final Context mContext;
     private  Location  locations;
 
     public LocationAdapter(Context context ) {
@@ -46,7 +41,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LevelV
         if(locations!=null) {
             holder.title.setText(locations.getNames().get(position));
             holder.lati.setText(S.doubleToString(locations.getLocations().get(position).x));
-            holder.logi.setText(S.doubleToString(locations.getLocations().get(position).x));
+            holder.logi.setText(S.doubleToString(locations.getLocations().get(position).y));
         holder.container.setOnClickListener(v->{
             if(pointClickListener!=null) pointClickListener.click(position);
         });

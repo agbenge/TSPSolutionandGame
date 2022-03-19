@@ -61,21 +61,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
-                android:text="@string/close" />
+                android:text="@string/close"
+                style="?android:attr/buttonBarButtonStyle" />
 
             <Button
                 android:id="@+id/zoom_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
-                android:text="@string/zoom_out" />
+                android:text="@string/zoom_out"
+                style="?android:attr/buttonBarButtonStyle" />
 
             <Button
                 android:id="@+id/zoom_in"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
-                android:text="@string/zoom_in" />
+                android:text="@string/zoom_in"
+                style="?android:attr/buttonBarButtonStyle" />
 
 
         </LinearLayout>

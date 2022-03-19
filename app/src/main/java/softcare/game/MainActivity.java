@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -69,43 +71,18 @@ public class MainActivity extends AppCompatActivity {
         });
         ((AnimationDrawable) sound.getBackground()).start();
         ((AnimationDrawable)((ImageView)findViewById(R.id.ico_main)).getDrawable()).start();
-        reinstallOn(this,12,6,22);
+
+        findViewById(R.id.solution_btn).setOnClickListener(this::solution);
+        findViewById(R.id.game_btn).setOnClickListener(this::game);
+        findViewById(R.id.help_btn).setOnClickListener(this::help);
+        if(isNewUser())
+            isNewUser(false);
+            else reinstallOn2( 12,6,2022);
+
     }
 
-    protected void selectNewGame( ) {
-        StyleDialog dialog = new StyleDialog(this);
-        dialog.setContentView(R.layout.pop_progress);
-        dialog.show();  selectNewGame(dialog ) ;
-    }
-    protected void selectNewGame(StyleDialog dialog ) {
-        dialog.setContentView(R.layout.pop_game_resume);
-
-        dialog.show();
-        dialog.setCancelable(false);
-        dialog.show();
-        RecyclerView recycler=  dialog.findViewById(R.id.levels);
-        String name="Level";
-        LevelAdapter levelAdapter= new LevelAdapter(this,name);
-        recycler.setAdapter(levelAdapter);
 
 
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-
-
-        int  spanCount=  dm.densityDpi/50;
-        Log.d(CodeX.tag,  dm.densityDpi+" s "+spanCount);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,spanCount);
-        List<Integer> l = new ArrayList<>();
-        for(int i=0;i< 50;i++) l.add(i);
-
-        recycler.setLayoutManager(gridLayoutManager );
-        levelAdapter.changeSize(14, l);
-        levelAdapter.setPointClickListener(i -> {
-            Toast.makeText(MainActivity.this," starting level "+i,Toast.LENGTH_LONG).show();
-            dialog.cancel();
-        });
-    }
     public  void game(View v){
         startActivity(new Intent(this, GameActivity.class));
     }
@@ -114,7 +91,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void help(View v ) {
-        StyleDialog dialog = new StyleDialog(this);
+         startActivity(new Intent(this, HelperSlider.class));
+        /*StyleDialog dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.help);
         dialog.show();
         dialog.findViewById(R.id.return_btn).setOnClickListener(k-> dialog.cancel());
@@ -128,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);}
 
-        });
+        });*/
     }
 
     final private String prefName = "game_settings";
@@ -148,9 +126,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public  boolean reinstallOn(AppCompatActivity activity,int day, int month, int year){
+    public  boolean reinstallOn2(int day, int month, int year){
         boolean res=reinstallOn(day,month,year);
-
         SharedPreferences.Editor editor = gameSettings.edit();
         editor.putBoolean("grace", !res);
         editor.apply();
@@ -158,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         if(res){
           final int warnCount=  gameSettings.getInt("warn_count",0);
             editor.putInt("warn_count", warnCount+1);
+            editor.apply();
+            editor.commit();
           StyleDialog d= new StyleDialog(this);
           d.setContentView(R.layout.update_app);
           d.show();
@@ -168,31 +147,48 @@ public class MainActivity extends AppCompatActivity {
           });
             if(warnCount>15)
                 ((TextView) d.findViewById(R.id.msg)).setText(R.string.warn_over);
-          else  ((TextView) d.findViewById(R.id.msg)).setText(getString(R.string.warn_msg)
-            +" "+(15-warnCount)+" "+getString(R.string.time_s_));
+          else {
+             String s=getString(R.string.warn_msg)
+                     +" "+(15-warnCount)+" "+getString(R.string.time_s_);
+                ((TextView) d.findViewById(R.id.msg)).setText(s);
+            }
 
             d.findViewById(R.id.update).setOnClickListener(v->{
                 d.cancel();
+
+                    String url1 =  "market://details?id="    +getApplicationContext().getPackageName() ;
+                    String url2 =  "https://play.google.com/store/apps/details?id=com.softcare.game"    ;
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW,  Uri.parse(url1)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        try {
+                           startActivity(new Intent(Intent.ACTION_VIEW,  Uri.parse(url2)));
+                        } catch ( Exception e2){
+                            Snackbar.make(v, getString(R.string.error_occurred), Snackbar.LENGTH_LONG).show();
+
+
+                            e2.printStackTrace();
+                        }
+
+                    }
+
                 finish();
             });
-            d.findViewById(R.id.help).setOnClickListener(v->{
-                help(v);
-            });
+            d.findViewById(R.id.button).setOnClickListener(this::help);
         }
 
         return res;
     }
-    public void isNewUser(Context context, boolean update  ) {
-        SharedPreferences s = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = s.edit();
+    public void isNewUser(boolean update  ) {
+
+        SharedPreferences.Editor editor = gameSettings.edit();
         editor.putBoolean("newUser", update);
         editor.apply();
         editor.commit();
-        return ;
     }
-    public boolean isNewUser(Context context  ) {
-        SharedPreferences s = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE);
-        return s.getBoolean("newUser", true);
+    public boolean isNewUser() {
+        return gameSettings.getBoolean("newUser", true);
     }
 
 

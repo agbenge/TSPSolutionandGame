@@ -62,14 +62,6 @@
         app:layout_constraintStart_toStartOf="@id/time"
         app:layout_constraintTop_toTopOf="@id/time" />
 
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="405dp"
-        android:layout_height="17dp"
-        android:text="Result"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <HorizontalScrollView
         android:id="@+id/h_scroll"
@@ -79,40 +71,40 @@
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/b">
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="100dp">
+        app:layout_constraintTop_toBottomOf="@+id/b"
+        app:layout_constraintVertical_bias="0.0">
 
-        <softcare.gui.PlotTSP
-            android:id="@+id/plotTSP"
+        <ScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg"
-            android:padding="@dimen/medium_dp"
-            app:circleColor="@color/blueLight"
-            app:labelColor="@color/white"
-            app:lineColor="@color/magenta"
-            app:zoomValue="100" />
-    </ScrollView>
-        </HorizontalScrollView>
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="100dp">
 
+            <softcare.gui.PlotTSP
+                android:id="@+id/plotTSP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg"
+                android:padding="@dimen/medium_dp"
+                app:circleColor="@color/blueLight"
+                app:labelColor="@color/white"
+                app:lineColor="@color/magenta"
+                app:zoomValue="100" />
+        </ScrollView>
+    </HorizontalScrollView>
 
     <ImageView
         android:id="@+id/zoom_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_b"
-        android:onClick="zoomOut"
         android:padding="@dimen/fab_margin"
 android:contentDescription="@string/zoom_out"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_zoom_out_24"
+        android:src="@drawable/ic_baseline_zoom_out_24"
         app:tint="@color/white" />
 
     <ImageView
@@ -121,14 +113,29 @@ android:contentDescription="@string/zoom_out"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/btn_b"
-        android:onClick="zoomIn"
         android:contentDescription="@string/zoom_in"
         android:padding="@dimen/fab_margin"
         app:layout_constraintBottom_toTopOf="@+id/zoom_out"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_zoom_in_24"
+        android:src="@drawable/ic_baseline_zoom_in_24"
         app:tint="@color/white" />
 
+    <ScrollView
+        android:id="@+id/result_scroll"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/zoom_in"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/zoom_in">
+        <TextView
+            android:id="@+id/result"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Result" />
+
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

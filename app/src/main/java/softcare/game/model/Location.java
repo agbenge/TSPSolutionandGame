@@ -13,8 +13,8 @@ public  class Location    {
     List<PointXY> locations= new ArrayList<>();
 
     public Location(List<String> cities, List<PointXY> locations) {
-        names.addAll(cities);
-        locations.addAll(locations);
+        this.names.addAll(cities);
+        this.locations.addAll(locations);
     }
 
     public List<String> getNames() {

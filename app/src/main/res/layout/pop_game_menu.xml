@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/k_sound"
                 style="@style/PopMenuSwitch"
                 android:layout_width="0dp"
@@ -42,7 +42,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/b_sound" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/refresh_points"
                 style="@style/PopMenuSwitch"
                 android:layout_width="0dp"
@@ -52,7 +52,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/k_sound" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/keys"
                 style="@style/PopMenuSwitch"
                 android:layout_width="0dp"
@@ -62,7 +62,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/b_sound"
                 style="@style/PopMenuSwitch"
                 android:layout_width="0dp"
@@ -104,7 +104,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/timing" />
 
 
-            <Switch
+            <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/timing"
                 style="@style/PopMenuSwitch"
                 android:layout_width="0dp"
@@ -135,7 +135,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="@string/return_"
+        android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -145,5 +145,6 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_share" />
+        app:srcCompat="@android:drawable/ic_menu_share"
+        android:contentDescription="@string/share" />
 </androidx.constraintlayout.widget.ConstraintLayout>

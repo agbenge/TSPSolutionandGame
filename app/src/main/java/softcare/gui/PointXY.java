@@ -55,4 +55,12 @@ public class PointXY implements Parcelable {
 		dest.writeDouble(x);
 		dest.writeDouble(y);
 	}
+
+	@Override
+	public String toString() {
+		return "PointXY{" +
+				"x=" + x +
+				", y=" + y +
+				'}';
+	}
 }

@@ -1,6 +1,6 @@
 package softcare.game.model;
 
-public enum ErrorCode {
+public enum UpdateCode {
     DYN_MAX_REACHED, NO_ALG, DATA_FORMAT,NOT_READ_OR_UPDATED,NOT_SOLVED,UNKNOWN
     ,FIlE_NOT_SAVE,FIlE_NOT_OPEN,FILE_OPEN,FILE_SAVE,FILE_TOO_LARGE
 

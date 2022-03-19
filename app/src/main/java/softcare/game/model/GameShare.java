@@ -1,8 +1,8 @@
 package softcare.game.model;
 
 public class GameShare {
-    private  Tsp tsp;
-    private Game game;
+    private final Tsp tsp;
+    private final Game game;
 
     public GameShare(Tsp tsp, Game game) {
         this.tsp = tsp;

@@ -21,12 +21,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Switch
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/adding"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:checked="false"
-            android:text="Add"
+            android:text="@string/add"
             app:tint="@color/blueLight"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -39,27 +39,27 @@
             android:id="@+id/undo"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:onClick="undo"
             app:tint="@color/blueLight"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/finish"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/adding"
             app:layout_constraintTop_toTopOf="@+id/finish"
-            app:srcCompat="@drawable/ic_baseline_undo_24" />
+            android:src="@drawable/ic_baseline_undo_24"
+            android:contentDescription="@string/undo" />
 
         <ImageView
             android:id="@+id/loadMap"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:onClick="loadMap"
             app:tint="@color/blueLight"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/adding"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/finish"
-            app:srcCompat="@android:drawable/ic_menu_mapmode" />
+            app:srcCompat="@android:drawable/ic_menu_mapmode"
+            android:contentDescription="@string/load__snap_map" />
 
         <ImageView
             android:id="@+id/finish"
@@ -68,10 +68,8 @@
             android:src="@drawable/ic_baseline_check_circle_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:onClick="finish"
             app:tint="@color/blueLight"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/undo"
-            app:srcCompat="@drawable/ic_baseline_check_24" />
-
+            android:contentDescription="@string/finish" />
     </androidx.constraintlayout.widget.ConstraintLayout>

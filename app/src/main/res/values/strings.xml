@@ -2,32 +2,31 @@
     <string name="app_name">Path Finder</string>
     <string name="title_activity_solution">Find My Path</string>
     <string name="large_text">
-        https://raphaelraymondproduct@gmail.com
-        Path Finder
-1.	Introduction
-Path Finder is a game and a problem solving tool for TSP (Transportation Sales Problem).
-Shortest Path Game provide some points (let say stations) for you to find the shortest path to move round (to all point) the points. Imagine a problem of vaccine to be distributed at various airports and back to the main station, with aim of trying to minimize the cost. Tip: when playing the game aim at for a cyclic path, it will provide shortest path on this way.
-Find My Path (Solving tool for TSP) you will provide either the locations or distances between the locations (or cost) and the App will give you the shortest path to fellow. If have an image of the map of locations you can easily load the map (snap or gallery) and point at desired location to which want to find the shortest path.
-Choosing input method:
-•	Choose location by typing if you have the coordinate and the distance (cost) equals the displacement (or going by road is equal going by air) --- location important, graph important.
-•	Choose location by image when you have the map image with location. Note location generated are equivalent to actual location.
-•	Choose distance when the distances or cost are known and coordinate are unknown.  Cost is important, graph is not important. The graph
+        PathFinder
+\n\n1.	Introduction
+\nPathFinder is a game and a problem-solving tool for TSP (Travelling salesman problem).
+\nShortest Path Game will provide you with some points (let say stations) for you to find the shortest path to move around the points(to all points). Imagine a problem of vaccines to be distributed at various airports and back to the main station, with aim of trying to minimize the cost of transportation. Tip: when playing the game aim to form a cyclic path.
+\nFind My Path (Solving tool for TSP) you will provide either the locations or distances between the locations (or cost) and the App will give you the shortest path to follow. If have an image of the map of locations you can easily load the map (snap or gallery) and point at the desired location to which want to find the shortest path.
+\nChoosing input method:
+\n•	Choose a location by typing if you have the coordinate and the distance (cost) equals the displacement (or distance by going by road is equal going by air) --- location important, graph important.
+\n•	Choose a location by loading the image when you have the map image with the locations. Note locations generated are only equivalent to the actual location.
+\n•	Choose distance when the distances or costs are known and coordinate are unknown.  Cost is important, the graph is not important.
 
-2.	Operation (User guide)
-Open app donate to support the developer.
-A.	Playing the game.
-Firstly open the app, if don’t like sound disable it at top right side icon. Press Shortest Path (game model) Select new for game in the popup as new user and the initial level will be start. If you are not a new user pressing new will take to place where you can start from level that you have unlock.  Press resume to continue from previously played game. When game is over you can only start new but have the chance of choosing higher level than initial but the scores will not  can only be gain.
-There are Alphabet indicating various cities. Click on them directly to indicate interest of starting or moving to them. The one clicked on will have a different circle color round it. Click the next destination and a path with be drawn. Continue to your desire points until you exhaust the points. After exhausting the points you will prompt with win or lose; when loose up to three times game over will be replace with lose. When you win, you can go to next or you can return to see your path before moving. When you lose, you try again or return like as in win.  Click play button if you wish to resume after pressing return in lose, win or game over. Note the current location will always have its own distinct color apart from already visited. Click or already visited city to undo ( that means attempting to select already selected city will cause it to deselect).
-Menu (menu icon) have the preference setting about sound, keyboard, refreshing point on try again, and using timing. It also contain highest score ever played.
+\n\n2.	Operation (User guide)
+\nA.	Playing the game.
+\nFirstly open the app, if don’t like the sound disable it at the top right side icon. Press Shortest Path (game model) Select new for a game in the popup as a new user and the initial level will be started. If you are not a new user pressing new will take to place where you can start from a level that you have unlocked.  Press resume to continue from the previously played game. When a game is over you can only start new but have the chance of choosing a higher level than initial but the scores will not be gained.
+\nAlphabets are indicating various cities. Click on city directly to indicate the interest in; starting or moving to it. The one clicked on will have a different circle colour round it and it moves from lower keys to top keys or left keys to right keys in the key list. Note the current location will always have its distinct colour apart from already visited.  Click the next destination and a path with being drawn. Click or already visited cities to undo (that means attempting to select an already selected city will cause it to deselect).  Continue to your desire points until you exhaust the points. After exhausting the points you will prompt with a win or lose; when losing up to three times, the game over will be replaced with loose. When you win, you can go to next or you can return to see your path before moving. When you lose, you try again or return like in the win.  Click the play button if you wish to resume after pressing return in lose, win or game over.
+\nMenu (menu icon) have the preference setting about sound, keyboard, refreshing point on try again, and using timing. It also contains the highest score ever played.
+\nSharing a Game Stage: You can share your highest played game or current game to another person by press share in the Lose, game over, resume the game. The shared value will be in form of text. Once the text is received from the next user, he will highlight and share it with the game as it appeared. For example, using the Facebook web.
 
-B.	Solving a TSP problem
-Open the App choose Find My Path to the solution model will be visible for to work on. Select your input method by click on the current input method which now help you to toggle between “add by location”, “add by loading map” and “add by distance”. After changing the desire input method click of plus icon (top right) to add. You can always clear all by clicking on clear icon (top left). After adding the problem click on the bottom right icon to get the shortest path.
-Adding by image is not incremental, that means when you add an image you are require to finish adding all the location before clicking finish icon. Also note you load an image and toggle add and using the add switch (bottom left). When you are done adding the point you can then press bottom right icon as finish or the one in action bar menu. Once you click add (plus icon) when “add by Loading map” is active the exiting data will be discarded.
-Adding Location select it to be active the click the add icon. The next view will require you to put latitude and longitude plus the location and the location name. Click finish when done adding the first location (it will take you back to previous view but the location been added) Now click add again to add another location. Same process continues till you exhaust your points (locations). ( if there exist any data clear it to start fresh problem when adding a new problem). Once again when you are done adding the point you can then press bottom right icon as finish or the one in action bar menu.
-Adding by distances or cost, select add by distance. Next, click add icon and type only city name in the next view and click finish when done just like in add by location. The next will require you to add the city name and it distance to the first.  The third will require you to add city name and its distance to the first and second. Repeatedly you add all the cities and their distances as the number distances increment.
-Note a problem must have up three cities at minimum.
+\n\nB.	Solving a TSP problem
+Open the App and click Find My Path for the solution model will be visible to work on. Select your input method by click on the current input method which now helps you to toggle between “add by location”, “add by loading map” and “add by distance”. After changing the desire input method click on the plus icon (top right) to add. You can always clear all by clicking on the clear icon (top left). After adding the problem click on the bottom right icon to get the shortest path. ). Clear data to start afresh problem when adding a new problem.
+\nAdding by image is not incremental, which means when you add an image you are required to finish adding all the locations before clicking the finish icon (bottom right). Also, note you load an image by press the map icon (bottom left first). Now toggle add switch (bottom left, second icon) to enable adding points. You can click on the desired position on the loaded image to add points. If you made a mistake click on the third icon to remove the previous point. When you are done adding the point you can then press the bottom right icon as the finish or fourth icon from the left, it will take you back to the main TSP solution with location extracted. Note once you click add (plus icon) when “add by Loading map” is active the exiting data will be discarded.
+\nAdding Location select it to be active the click the add icon. Again click add icon (bottom left first). The next view will require you to put the latitude and longitude of the location and the location name. Click add button when done inputting the location. Again click add if you have another point. Once done adding location click the check icon (bottom right). It will take you back to the main where you can click on the right bottom icon to find the shortest path.
+\nAdding by distances or cost, select add by distance. Next, click add icon and type the only city name in the next edit text and click finish when done just like in add by location. The next will require you to add the city name and its distance to the first.  The third will require you to add the city name and its distance to the first and second. Repeatedly you add all the cities and their distances as the number of distances increment.
+\nNote a problem must have up to three cities at minimum.
+  </string>
 
-    </string>
     <string name="action_settings">Settings</string>
     <string name="action_save">Save</string>
     <string name="action_open">Open</string>
@@ -43,8 +42,8 @@ Note a problem must have up three cities at minimum.
     <string name="addByLocation">Add by Location</string>
     <string name="select_input_method">Select Input Method</string>
     <string name="empty_fields">Empty fields</string>
-    <string name="latitude">\"Latitude \"</string>
-    <string name="longitude">\"Longitude \"</string>
+    <string name="latitude">"Latitude   </string>
+    <string name="longitude">Longitude </string>
     <string name="name_is_empty">Name is empty</string>
     <string name="okay">Okay</string>
     <string name="empty">"Empty "</string>
@@ -56,13 +55,13 @@ Note a problem must have up three cities at minimum.
     <string name="welcome">Welcome</string>
     <string name="resume">Resume</string>
     <string name="shortest_path">"Shortest path "</string>
-    <string name="Level">\"Level \"</string>
+    <string name="Level"> Level  </string>
     <string name="finished">Finished</string>
     <string name="cities_small">Cities too small to be a program</string>
     <string name="un_init">Unable to initialised, add distances or locations</string>
     <string name="cities_not_added">Cities are not added</string>
     <string name="input_empty_start_problem">Inputs empty start a new problem</string>
-    <string name="error">\"Error \"</string>
+    <string name="error"> Error occurred </string>
     <string name="city_name">City Name</string>
     <string name="go">Go</string>
     <string name="menu">menu</string>
@@ -88,7 +87,7 @@ Note a problem must have up three cities at minimum.
     <string name="empty_field">empty field</string>
     <string name="close">Close</string>
     <string name="you_lose">You lose</string>
-    <string name="return_">Return</string>
+    <string name="back">Back</string>
     <string name="refresh_points_always">Refresh points always</string>
     <string name="actions_sounds">Actions Sounds</string>
     <string name="keys">Keys</string>
@@ -126,4 +125,86 @@ Note a problem must have up three cities at minimum.
     <string name="time_s_">time(s)</string>
     <string name="sound_enable">Sound enable</string>
     <string name="sound_disable">Sound disable</string>
+    <string name="milli_sec_">  ms </string>
+    <string name="more_action_on">More action on</string>
+    <string name="playingSharedGame">Playing Shared game</string>
+    <string name="add_city">add city</string>
+    <string name="finish">Finish</string>
+    <string name="load__snap_map">Load/snap map</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="status">Status</string>
+    <string name="try_again">Try Again</string>
+    <string name="loading">Loading</string>
+    <string name="please_wait">Please wait</string>
+    <string name="update">Update</string>
+    <string name="tsp">TSP</string>
+    <string name="comment_map_tsp">Raph-Ray TSP solution  from Map Image</string>
+    <string name="comment_tsp_location">Raph-Ray TSP solution  Locations Inputted</string>
+    <string name="euc_2d">EUC_2D</string>
+    <string name="type">TYPE:</string>
+    <string name="comment">"COMMENT: "</string>
+    <string name="dimenssion_">"DIMENSION: "</string>
+    <string name="edge_weight_type">"EDGE_WEIGHT_TYPE: "</string>
+    <string name="node_coord_section">NODE_COORD_SECTION\n</string>
+    <string name="undefined_output">Action have no defined output yet...</string>
+    <string name="path">Path:  </string>
+    <string name="distances_by_u">\nTotal distance(cost) by you \t</string>
+    <string name="distance_by_alg">\nExpected distance(cost) is </string>
+    <string name="exit_game_msg">Exit Game</string>
+    <string name="exit_game_msg_">Are you sure, you want to exit game?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="time_up_msg">Your time is up. Try again points will be refresh</string>
+    <string name="error_occurred">Error  occurred</string>
+  
+  
+  
+  <!-- Intro  Welcome -->
+  
+  <string name="intro_t">Hi</string>
+  <string name="intro_learn_how_to">Learn how to</string>
+  <string name="intro_game">Play Game</string>
+  <string name="intro_tsp">Solve TSP</string>
+  <string name="intro_come_back_msg">You can always come back to this help by pressing help on the first screen of the App</string>
+  <string name="intro_not_disturb_msg">Don\'t show this help on the next time</string>
+  <!-- Intro  Game -->
+  <string name="intro_g1_t">Welcome Game</string>
+  <string name="intro_g1_m">Play a new game or resume your game</string>
+  <string name="intro_g2_t">Select Level</string>
+  <string name="intro_g2_m">Chose a level from the unlock levels. Play more to unlock more</string>
+  <string name="intro_g3_t">Playing the Game</string>
+  <string name="intro_g3_m">To play, connect all points together by touching one after another... Use the plus and the minus button to zoom in and out</string>
+  <string name="intro_g4_t">Player Wining</string>
+  <string name="intro_g4_m">Play to win as you follow the shortest path</string>
+  <string name="intro_g5_t">Player Win</string>
+  <string name="intro_g5_m">You win as your path is the shortest possible to see all the points</string>
+  <string name="intro_g6_t">Player Losing</string>
+  <string name="intro_g6_m">A player may lose if he is unable to shortest path</string>
+  <string name="intro_g7_t">Player Lose</string>
+  <string name="intro_g7_m">Player as he fellow a long path</string>
+  <string name="intro_g9_t">Menu</string>
+  <string name="intro_g9_m">Timing: activate to use a count down. Refresh points will be randomised points after losses.</string>
+  <string name="intro_g10_t">Share Game</string>
+  <string name="intro_g10_m">Share the best game using the share icon in the menu. Share the current game after a win or lose or when resuming</string>
+  <string name="intro_g11_t">Shared Game</string>
+  <string name="intro_g11_m">Select the share text with the App then it will open the shared game.</string>
+  <string name="intro_g12_t">Congrats</string>
+  <string name="intro_g12_m">You finish the game guide. You can always come. You can always come back to this help by pressing help on the first screen of the App</string>
+
+
+  <!-- Intro  TSP -->
+  <string name="intro_s1_t">Welcome TSP</string>
+  <string name="intro_s1_m">Click on plus to add cities using the current input method.  Click the refresh icon to remove all entered input</string>
+  <string name="intro_s2_t">Select Input Method</string>
+  <string name="intro_s2_m">Click on \"Add by Location\"  to change the input method. Click plus icon to add using the selected input.</string>
+  <string name="intro_s3_t">Add by Location</string>
+  <string name="intro_s3_m">Click the plus icon to add a city(pop up add), the centre icon undo and  the check when finished</string>
+  <string name="intro_s4_t">Add by Map</string>
+  <string name="intro_s4_m">Click on the map to load the map image. Toggle the \"add\" to start choosing the location on the map. Click on any location on the map to add the points.  Click the undo icon to undo, check when finished adding points.</string>
+  <string name="intro_s5_t">Add by Distances</string>
+  <string name="intro_s5_m">Type city name click add. Click plus the plus icon in TSP view again and type city name and distance to the first city. Click the plus icon, until your cities got exhausted.</string>
+  <string name="intro_s6_t">Save</string>
+  <string name="intro_s6_m">Click Save in the option to save. remember the saving input method as it will be needed when opening.</string>
+  <string name="intro_s7_t">Open</string>
+  <string name="intro_s7_m">Always open with the saved input type</string>
 </resources>

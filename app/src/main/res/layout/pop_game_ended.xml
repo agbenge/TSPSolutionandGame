@@ -41,7 +41,7 @@ android:layout_height="wrap_content">
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="16dp"
-    android:text="@string/return_"
+    android:text="@string/back"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toStartOf="@+id/try_again"
     app:layout_constraintHorizontal_bias="0.5"
@@ -68,5 +68,6 @@ android:layout_height="wrap_content">
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_share" />
+        app:srcCompat="@android:drawable/ic_menu_share"
+        android:contentDescription="@string/share" />
 </androidx.constraintlayout.widget.ConstraintLayout>

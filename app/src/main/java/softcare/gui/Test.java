@@ -75,7 +75,7 @@ public class Test {
     	 		"X,5.0,\r\n" + 
     	 		"D,6.0,9.0,\r\n" + 
     	 		"";
-       /// Start.readTSP(dat);
+       /// Start.readTSP_D(dat);
         if(true)return;
         int numberOfCities = 5;  // dynamic algorithm  is accepting only size 21 and below because of the comple
         int[][] travelPrices = new int[numberOfCities][numberOfCities];

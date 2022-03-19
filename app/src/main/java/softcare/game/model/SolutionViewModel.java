@@ -2,11 +2,9 @@ package softcare.game.model;
 
 import android.util.Log;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -22,15 +20,15 @@ public class SolutionViewModel extends ViewModel {
 
     private MutableLiveData<Tsp> tspLiveData;
     private MutableLiveData<ProgressX> progressXLiveData;
-    private MutableLiveData<ErrorCode> errorCodeLiveData;
+    private MutableLiveData<UpdateCode> updateCodeLiveData;
     public MutableLiveData<Tsp> getTspLiveData() {
         if (tspLiveData == null) tspLiveData = new MutableLiveData<>();
         return tspLiveData;
     }
 
-    public MutableLiveData<ErrorCode> getErrorCodeLiveData() {
-        if (errorCodeLiveData == null) errorCodeLiveData = new MutableLiveData<>();
-        return errorCodeLiveData;
+    public MutableLiveData<UpdateCode> getUpdateCodeLiveData() {
+        if (updateCodeLiveData == null) updateCodeLiveData = new MutableLiveData<>();
+        return updateCodeLiveData;
     }
 
     public Tsp getTsp() {
@@ -46,67 +44,74 @@ public class SolutionViewModel extends ViewModel {
 
     boolean stop;
 
-    protected boolean readTSP_XY(String tspString) {
+    protected void readTSP_XY(String tspString) {
         ProgressX progressX = new ProgressX("Reading TSP X, Y");
         Tsp tsp = new Tsp();
+        boolean isOkay=false;
         if (tspString != null) {
-            String lines[] = tspString.split("\n");
+            String[] lines = tspString.split("\n");
             int pp = 1;
             for (String li : lines) {
                 tsp.addHeader(li + "\n");
                 if (li.trim().contains("NODE_COORD_SECTION")) {
+                    isOkay=true;
                     break;
                 }
-
                 pp++;
             }
+if(isOkay) {
+    for (int i = pp; i < lines.length - 1; i++) {
+        System.out.println(" Result " + lines[i]);
+        String[] name_X_Y = lines[i].trim().split("\\s+");
+        System.out.println(" Debug size " + name_X_Y.length);
+        if (name_X_Y.length == 3) {
+            tsp.addCity(name_X_Y[0]);
+            try {
+                double x = Double.parseDouble(name_X_Y[1]);
+                double y = Double.parseDouble(name_X_Y[2]);
+                tsp.addPointXY(new PointXY(x, y));
+            } catch (Exception e) {
 
-            for (int i = pp; i < lines.length - 1; i++) {
-                System.out.println(" Result " + lines[i]);
-                String[] name_X_Y = lines[i].trim().split("\\s+");
-                System.out.println(" Debug size " + name_X_Y.length);
-                if (name_X_Y.length == 3) {
-                    tsp.addCity(name_X_Y[0]);
-                    try {
-                        double x = Double.parseDouble(name_X_Y[1]);
-                        double y = Double.parseDouble(name_X_Y[2]);
-                        tsp.addPointXY(new PointXY(x, y));
-                    } catch (Exception e) {
-                        return false;
-                    }
-                } else {
-                    for (String s : name_X_Y) {
-                        System.out.println(" ERR Debug data " + s);
-                    }
-
-                    return false;
-                }
-                //ps.setProgress(0.5 + ((i / lines.length) / 2), " setting " + i + " of " + lines.length);
-
-                progressX.setProgress(i);
-                progressX.setSize(lines.length);
-                progressXLiveData.postValue(progressX);
-                if (stop) {
-                    return false;
-                }
+                updateCodeLiveData.postValue(UpdateCode.DATA_FORMAT);
+                return;
             }
+        } else {
+            for (String s : name_X_Y) {
+                System.out.println(" ERR Debug data " + s);
+            }
+
+            return;
+        }
+        //ps.setProgress(0.5 + ((i / lines.length) / 2), " setting " + i + " of " + lines.length);
+
+        progressX.setProgress(i);
+        progressX.setSize(lines.length);
+        progressXLiveData.postValue(progressX);
+        if (stop) {
+
+            updateCodeLiveData.postValue(UpdateCode.DATA_FORMAT);
+            return;
+        }
+    }
+}else{
+updateCodeLiveData.postValue(UpdateCode.DATA_FORMAT);
+return;
+}
             System.out.println(" read ts  " + (lines.length - 7));
             tsp.setTspActions(TspCode.READ);
+            tsp.countDistancesAndUpdateMatrix();
             tspLiveData.postValue(tsp);
-            return true;
 
         }
-        return false;
     }
 
     public void startAgl(Alg alg, TaskManager taskManager) {
 
         Tsp tsp = tspLiveData.getValue();
-        taskManager.runTask(new Runnable() {
-            @Override
-            public void run() {
+        if (tsp != null){
+            taskManager.runTask(() -> {
                 long start = System.currentTimeMillis();
-                long duration = 0L;
+                long duration;
                 long end;
                 tsp.setAlg(alg);
                 switch (tsp.getAlg()) {
@@ -131,7 +136,7 @@ public class SolutionViewModel extends ViewModel {
 
                         } else {
                             System.out.println("error size is " + tsp.getCities().size());
-                            errorCodeLiveData.postValue(ErrorCode.DYN_MAX_REACHED);
+                            updateCodeLiveData.postValue(UpdateCode.DYN_MAX_REACHED);
                         }
 
                         break;
@@ -175,8 +180,8 @@ public class SolutionViewModel extends ViewModel {
                         //	System.out.println(dyn.getTourCost());
                         //mCost = dyn.getTourCost();
                         System.out.println();
-                        System.out.println("  cosst +>> " + String.valueOf(knn.getCost()));
-                        System.out.println("  direction +>> " + String.valueOf(knn.getTour()));
+                        // System.out.println("  cosst +>> " + String.valueOf(knn.getCost()));
+                        // System.out.println("  direction +>> " + String.valueOf(knn.getTour()));
                         end = System.currentTimeMillis();
                         System.out.println();
                         tsp.setDirection(knn.getTour());
@@ -191,30 +196,28 @@ public class SolutionViewModel extends ViewModel {
                         break;
                     }
                     case EMPTY: {
-                        errorCodeLiveData.postValue(ErrorCode.NO_ALG);
+                        updateCodeLiveData.postValue(UpdateCode.NO_ALG);
                         break;
                     }
                     default:
                         throw new IllegalStateException("Unexpected value: " + tsp.getAlg());
                 }
 
-            }
-        });
-
-
+            });
+    }else{ updateCodeLiveData.postValue(UpdateCode.UNKNOWN); }
     }
 
 
-    public boolean readTSP(String data) {
+    public boolean readTSP_D(String data) {
         System.out.println(data);
         ProgressX progressX = new ProgressX("Reading Tsp x, y ");
-        String resH = "";
+        String resH;
         Tsp tsp = new Tsp();
         String seperator = "\\s+";
-        String lines[] = data.split("\n");
+        String[] lines = data.split("\n");
         boolean res = true;
         String name = "TSP" + (lines.length - 1);
-        String comment = "Faith TSP solution ";
+        String comment = "Raph-Ray TSP solution ";
         String type = "TSP";
         String edgeType = "EUC_2D";
         resH = name + "\n";
@@ -226,66 +229,63 @@ public class SolutionViewModel extends ViewModel {
         tsp.setHeader(resH);
 
         double[][] mMatrix = new double[tsp.getDefaultSize()][tsp.getDefaultSize()];
-        if (lines != null) {
-            int x = -1, y = -1;
-            int k = 0;
-            progressX.setSize(lines.length);
-            for (String line : lines) {
-                String columns[] = line.trim().split(seperator);
-                progressX.setProgressPercent((((double) x / (double) lines.length) / (double) 2));
-                progressX.setProgress(k);
-
-
-                System.out.println(y + " PROCESSING LINE " + line);
-                if (y == -1) {
-                    y++;
-                    continue;
-                }
-                x = -1;
-                if (columns != null & columns.length == lines.length) {
-                    for (String column : columns) {
-                        if (x < y) {
-                            if (x != -1) {
-                                mMatrix[x][y] = Double.parseDouble(column.trim().replace(" ", ""));
-                                mMatrix[y][x] = mMatrix[x][y];
-                                System.out.print("  |" + column + "|  ==> " + mMatrix[x][y]
-                                        + " position " + x + " , " + y);
-                                x++;
-                            } else {
-                                tsp.addCity(column);
-                                x = 0;
-                            }
-                        } else {
-                            break;
-                        }
-                    }
-                } else {
-                    System.out.println(" col null or miss match lenght");
-                    System.out.println(" col    lenght " + columns.length +
-                            "  lines " + lines.length);
-
-                    for (String column : columns) {
-                        System.out.println(" col    data " + column);
-                    }
-
-                    res = false;
-                    break;
-                }
-                System.out.println();
-                System.out.print(y + " LinE ");
-                System.out.println();
+        int x = -1, y = -1;
+        int k = 0;
+        progressX.setSize(lines.length);
+        for (String line : lines) {
+            String[] columns = line.trim().split(seperator);
+            progressX.setProgressPercent((((double) x / (double) lines.length) / (double) 2));
+            progressX.setProgress(k);
+            System.out.println(y + " PROCESSING LINE " + line);
+            if (y == -1) {
                 y++;
+                continue;
             }
+            x = -1;
+            if (columns.length == lines.length) {
+                for (String column : columns) {
+                    if (x < y) {
+                        if (x != -1) {
+                            mMatrix[x][y] = Double.parseDouble(column.trim().replace(" ", ""));
+                            mMatrix[y][x] = mMatrix[x][y];
+                            System.out.print("  |" + column + "|  ==> " + mMatrix[x][y]
+                                    + " position " + x + " , " + y);
+                            x++;
+                        } else {
+                            tsp.addCity(column);
+                            x = 0;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            } else {
+                System.out.println(" col null or miss match lenght");
+                System.out.println(" col    lenght " + columns.length +
+                        "  lines " + lines.length);
 
+                for (String column : columns) {
+                    System.out.println(" col    data " + column);
+                }
 
+                res = false;
+                break;
+            }
+            System.out.println();
+            System.out.print(y + " LinE ");
+            System.out.println();
+            y++;
         }
-        tsp.setMatrix(mMatrix);
-        if (res) {
-            tsp.setTspActions(TspCode.READ);
 
+
+        tsp.setMatrix(mMatrix);
+
+        if (res) {
+            tsp.setLocation();
+            tsp.setTspActions(TspCode.READ);
             tspLiveData.postValue(tsp);
         } else
-            errorCodeLiveData.postValue(ErrorCode.DATA_FORMAT);
+            updateCodeLiveData.postValue(UpdateCode.DATA_FORMAT);
 
         return res;
 
@@ -295,124 +295,56 @@ public class SolutionViewModel extends ViewModel {
     /// preview full Result,
     public String getPreviewXY() {
         Tsp tsp = tspLiveData.getValue();
-        String res = "";
         if (TspCode.READ != tsp.getTspActions() && TspCode.UPDATE != tsp.getTspActions()) {
-            errorCodeLiveData.postValue(ErrorCode.NOT_READ_OR_UPDATED);
+            updateCodeLiveData.postValue(UpdateCode.NOT_READ_OR_UPDATED);
             return "";
         }
 
-        res = tsp.getHeader();
+        StringBuilder  res = new StringBuilder(tsp.getHeader());
         for (int i = 0; i < tsp.getCities().size(); i++) {
-            res = res + tsp.getCities().get(i).replace(" ", "_") +
-                    "    " + S.doubleToString(tsp.getPointXY().get(i).getX()) + "\t\t "
-                    + S.doubleToString(tsp.getPointXY().get(i).getY());
-            res += "\n";
+            res.append(tsp.getCities().get(i).replace(" ", "_")).append("    ").append(S.doubleToString(tsp.getPointXY().get(i).getX())).append("\t\t ").append(S.doubleToString(tsp.getPointXY().get(i).getY()));
+            res.append("\n");
         }
 
-        return res;
+        return res+"EOF";
     }
 
 
     public String getPreview() {
 
         Tsp tsp = tspLiveData.getValue();
-        if (TspCode.READ != tsp.getTspActions() && TspCode.UPDATE != tsp.getTspActions()) {
-            errorCodeLiveData.postValue(ErrorCode.NOT_READ_OR_UPDATED);
-            return "";
-        }
-        String res = "";
-        for (String c : tsp.getCities()) {
-            res = res + "\t" + c;
-        }
-        res += "\n";
-        for (int i = 0; i < tsp.getCities().size(); i++) {
-            res = res + tsp.getCities().get(i);
-            for (int j = 0; j < tsp.getCities().size(); j++) {
-                res = res + "\t" + S.doubleToString(tsp.getMatrix()[i][j]);
-            }
-
-            res += "\n";
-
-        }
-
-        return res;
-
-    }
-
-    public String getSave() {
-        String res = "";
-        Tsp tsp = tspLiveData.getValue();
-        if (TspCode.READ != tsp.getTspActions() && TspCode.UPDATE != tsp.getTspActions()) {
-            errorCodeLiveData.postValue(ErrorCode.NOT_READ_OR_UPDATED);
-            return null;
-        }
-        for (int i = 0; i < tsp.getCities().size(); i++) {
-            res += tsp.getCities().get(i) + ",";
-            res += "\n";
-        }
-        for (int i = 0; i < tsp.getCities().size(); i++) {
-            res += tsp.getCities().get(i) + ",";
-            for (int j = 0; j < tsp.getCities().size(); j++) {
-                res += tsp.getMatrix()[i][j] + ",";
-            }
-            res += "\n";
-        }
-
-        return res;
-
-    }
-
-    @Nullable
-    public String getSave_temp() {
-        String res = "";
-        Tsp tsp = tspLiveData.getValue();
         if(tsp==null){
-            errorCodeLiveData.postValue(ErrorCode.NOT_READ_OR_UPDATED);
-            return null;
-        }
-        if (TspCode.READ != tsp.getTspActions() && TspCode.UPDATE != tsp.getTspActions()) {
-            errorCodeLiveData.postValue(ErrorCode.NOT_READ_OR_UPDATED);
-            return null;
-        }
-        for (int i = 0; i < tsp.getCities().size(); i++) {
-            res += tsp.getCities().get(i) + ",";
-            for (int j = 0; j < i; j++) {
-                res += tsp.getMatrix()[i][j] + ",";
-            }
-            res += "\n";
-        }
-
-        return res;
-
-    }
-
-    private String updatePreview() {
-        String res = "";
-        Tsp tsp = tspLiveData.getValue();
-        if (TspCode.READ != tsp.getTspActions() && TspCode.UPDATE != tsp.getTspActions()) {
-            errorCodeLiveData.postValue(ErrorCode.NOT_READ_OR_UPDATED);
+            updateCodeLiveData.postValue(UpdateCode.NOT_READ_OR_UPDATED);
             return "";
         }
-        for (String c : tsp.getCities()) {
-            res = res + "\t" + c;
+        if (TspCode.READ != tsp.getTspActions() && TspCode.UPDATE != tsp.getTspActions()) {
+            updateCodeLiveData.postValue(UpdateCode.NOT_READ_OR_UPDATED);
+            return "";
         }
-        res += "\n";
+        StringBuilder res = new StringBuilder();
+        for (String c : tsp.getCities()) {
+            res.append("\t").append(c);
+        }
+        res.append("\n");
         for (int i = 0; i < tsp.getCities().size(); i++) {
+            res.append(tsp.getCities().get(i));
             for (int j = 0; j < tsp.getCities().size(); j++) {
-                res = res + "\t" + S.doubleToString(tsp.getMatrix()[i][j]);
+                res.append("\t").append(S.doubleToString(tsp.getMatrix()[i][j]));
             }
-            res += "\n";
+
+            res.append("\n");
+
         }
 
-        System.out.println(res);
-        return res;
+        return res.toString();
 
     }
+
 
     protected String getResult(Tsp tsp) { /// presenting path as result
 
         if (TspCode.SOLVED != tsp.getTspActions()) {
-            errorCodeLiveData.postValue(ErrorCode.NOT_SOLVED);
+            updateCodeLiveData.postValue(UpdateCode.NOT_SOLVED);
             return "";
         }
         double cost = 0;
@@ -421,44 +353,44 @@ public class SolutionViewModel extends ViewModel {
                 return "Action have no defined output yet...";
             }
         } else return "Action have no defined output yet... Null Error";
-        String res = "Movement\n";
-        res += "\tPath: ";
-        double dist[] = new double[tsp.getDirection().size()];
+        StringBuilder res = new StringBuilder("Movement\n");
+        res.append("\tPath: ");
+        double[] dist = new double[tsp.getDirection().size()];
         int prevouse = tsp.getDirection().get(0);
 
         for (int x = 1; x < tsp.getDirection().size(); x++) {
             int i = tsp.getDirection().get(x);
-            res += tsp.getCities().get(prevouse) + "\t";
-            res += "\t" + S.doubleToString(tsp.getMatrix()[prevouse][i]) + "\tto\t";
+            res.append(tsp.getCities().get(prevouse)).append("\t");
+            res.append("\t").append(S.doubleToString(tsp.getMatrix()[prevouse][i])).append("\tto\t");
 
             dist[prevouse] = tsp.getMatrix()[prevouse][i];
             cost = cost + tsp.getMatrix()[prevouse][i];
             prevouse = i;
         }
 
-        res += tsp.getCities().get(prevouse) + "\t";
+        res.append(tsp.getCities().get(prevouse)).append("\t");
         if (tsp.getCost() == 0) {
             tsp.setCost(cost);
         }
-        res += "\n Total distances \t" + S.doubleToString(tsp.getCost());
+        res.append("\n Total distances \t").append(S.doubleToString(tsp.getCost()));
         if (tsp.getDuration() > 0L) {
             double time = (double) tsp.getDuration() / (double) 1000;
             if (time != 1)
-                res += "\n Total time in seconds\t" + time + " seconds";
+                res.append("\n Total time in seconds\t").append(time).append(" seconds");
             else
-                res += "\n Total time  in seconds\t" + time + " second";
+                res.append("\n Total time  in seconds\t").append(time).append(" second");
 
         } else {
-            res += "\n Total time in seconds\t" + " is zero seconds";
+            res.append("\n Total time in seconds\t" + " is zero seconds");
         }
         //res += "\n Total time \t" + d;
-        res += "\n\n  Path: ";
+        res.append("\n\n  Path: ");
         prevouse = tsp.getDirection().get(0);
         for (int x = 0; x < tsp.getDirection().size(); x++) {
             int i = tsp.getDirection().get(x);
-            res += tsp.getCities().get(i) + "\t";
+            res.append(tsp.getCities().get(i)).append("\t");
         }
-        return res;
+        return res.toString();
 
     }
 
@@ -486,7 +418,7 @@ public class SolutionViewModel extends ViewModel {
             tspLiveData.setValue(tsp);
         } else {
             Log.e(CodeX.tag, "data unable to update");
-            errorCodeLiveData.postValue(ErrorCode.UNKNOWN);
+            updateCodeLiveData.postValue(UpdateCode.UNKNOWN);
         }
     }
 
@@ -506,11 +438,28 @@ public class SolutionViewModel extends ViewModel {
             tspLiveData.setValue(null);
     }
 
-    public void addMapData(TspData data) {
+    public void addMapData(TspData data, String title) {
         Tsp tsp = new Tsp();
         tsp.setPointXY(data.getLocations());
         tsp.setCities(data.getCities());
         tsp.countDistancesAndUpdateMatrix();
+        tsp.setTspActions(TspCode.UPDATE);
+        tsp.setHeader(title);
+        tspLiveData.setValue(tsp);
+        int i = 0;
+        for (String name : data.getCities()) {
+            Log.d(CodeX.tag, " Received Name " + name + "   x "
+                    + data.getLocations().get(i).x + "  y" + data.getLocations().get(i).y);
+            i++;
+        }
+    }
+
+    public void addLocData(TspData data, String title) {
+        Tsp tsp = new Tsp();
+        tsp.setPointXY(data.getLocations());
+        tsp.setCities(data.getCities());
+        tsp.countDistancesAndUpdateMatrix();
+        tsp.setHeader(title);
         tsp.setTspActions(TspCode.UPDATE);
         tspLiveData.setValue(tsp);
         int i = 0;
@@ -523,162 +472,71 @@ public class SolutionViewModel extends ViewModel {
 
 
     public void openFile(InputStream inputStream, TaskManager taskManager, boolean isLocation) {
-        taskManager.runTask(new Runnable() {
-            @Override
-            public void run() {
-                stop = false;
-                if (inputStream != null) {
-                    long s = System.currentTimeMillis();
-                    long st = System.currentTimeMillis();
-                    int counter = 0;
-                    try {
-                        StringBuilder text = new StringBuilder();
-                        int cn = inputStream.read();
-                        while (cn != -1 && !stop && counter < 2) {
-                            char c = (char) cn;
-                            text.append(c);
-                            cn = inputStream.read();
-                            if (System.currentTimeMillis() - s > 5000) {  // updating at 10 seconds
-                                s = System.currentTimeMillis();
-                                stop = true;
-                                counter++;
-                            }
-                        }
-                        inputStream.close();
-
-                        if (stop) {
-                            errorCodeLiveData.setValue(ErrorCode.FILE_TOO_LARGE);
-                        } else if (counter == 2) {
-                            errorCodeLiveData.setValue(ErrorCode.FILE_TOO_LARGE);
-
-                        } else {
-                            if (isLocation) readTSP_XY(text.toString());
-                            else readTSP(text.toString());
-                        }
-
-                    } catch (Exception e) {
-                        errorCodeLiveData.setValue(ErrorCode.FIlE_NOT_OPEN);
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-
-
-        });
-    }
-
-
-    public void saveFile(OutputStream out, TaskManager taskManager, boolean isLocation) {
         taskManager.runTask(() -> {
-
-            String text = isLocation ? getSave() : getSave_temp();
-            if(text!=null && !text.isEmpty())
-            if (out != null) {
+            stop = false;
+            if (inputStream != null) {
+                long s = System.currentTimeMillis();
+                int counter = 0;
                 try {
-                    out.write(text.getBytes());
-                    out.flush();
-                    out.close();
-                    errorCodeLiveData.postValue(ErrorCode.FILE_SAVE);
+                    StringBuilder text = new StringBuilder();
+                    int cn = inputStream.read();
+                    while (cn != -1 && !stop && counter < 2) {
+                        char c = (char) cn;
+                        text.append(c);
+                        cn = inputStream.read();
+                        if (System.currentTimeMillis() - s > 5000) {  // updating at 10 seconds
+                            s = System.currentTimeMillis();
+                            stop = true;
+                            counter++;
+                        }
+                    }
+                    inputStream.close();
+
+                    if (stop) {
+                        updateCodeLiveData.setValue(UpdateCode.FILE_TOO_LARGE);
+                    } else if (counter == 2) {
+                        updateCodeLiveData.setValue(UpdateCode.FILE_TOO_LARGE);
+
+                    } else {
+                        if (isLocation) readTSP_XY(text.toString());
+                        else readTSP_D(text.toString());
+                    }
+
                 } catch (Exception e) {
+                    updateCodeLiveData.setValue(UpdateCode.FIlE_NOT_OPEN);
                     e.printStackTrace();
-                    errorCodeLiveData.postValue(ErrorCode.FIlE_NOT_SAVE);
                 }
             }
+
+        });
+    }
+
+
+    public void saveFile(OutputStream out, TaskManager taskManager, String text) {
+        taskManager.runTask(() -> {
+            if(text!=null && !text.isEmpty()) {
+                if (out != null) {
+                    try {
+                        out.write(text.getBytes());
+                        out.flush();
+                        out.close();
+                        updateCodeLiveData.postValue(UpdateCode.FILE_SAVE);
+                    } catch (Exception e) {
+                        Log.e(CodeX.tag, "save error " + e.getLocalizedMessage());
+                        e.printStackTrace();
+                        updateCodeLiveData.postValue(UpdateCode.FIlE_NOT_SAVE);
+                    }
+                }
+            }else updateCodeLiveData.postValue(UpdateCode.FIlE_NOT_SAVE);
+
         });
 
 
-    }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*private void open(File file )   {
-        if (file.isFile()) {
-            Runnable task = () -> {
-                try {
-                    String tspString = readFile(file);
-                    if (ps != null)
-                        ps.setProgress(0.5, "Setting result ");
-                    if (readTSP(tspString)) {
-                        setLocation();
-                        String pv = getPreview();
-                        String pv2 = getPreviewXY();
-                        Platform.runLater(() ->
-                                startInput.setText(pv));
-                        startInputXY.setText(pv2);
-                    } else {
-                        System.out.print(mCities.size());
-                        Platform.runLater(
-                                () -> util.S.notice(stage, "Error", "File type or struct not match",
-                                        "use the interface to add cities or read file format"));
-                        clear();
-                    }
-                    ps.prepareStop();
-                    ;
-
-                    try {
-                        Thread.sleep(waitTime);
-
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-
-                    ps.stop();
-                    ;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Platform.runLater(() -> util.S.notice(stage, "Error", "IOException", e.getMessage()));
-
-                }
-            };
-            // Run the task in a background thread
-            backgroundThread = new Thread(task);
-            ps = new util.ProgressPopUp(backgroundThread);
-            ps.notice(stage, "Loading TSP");
-            // Terminate the running thread if the application exits
-            backgroundThread.setDaemon(true);
-            backgroundThread.start();
-
-        }
 
     }
 
 
 
-      public String readFile(File file) throws IOException {
-        FileInputStream in = new FileInputStream(file);
-        String res = "";
-        BufferedReader buff = new BufferedReader(new FileReader(file));
-        String readLine = "";
-        if (ps != null)
-            ps.setProgress(0, "Reading file");
-        int l = 0;
-        while ((readLine = buff.readLine()) != null) {
-            res += readLine + "\n";
-            l++;
-            if (ps != null)
-                ps.setProgress(l, "Reading file...  " + l + " lines");
-        }
-
-        return res;
-    }
-
-     */
 }

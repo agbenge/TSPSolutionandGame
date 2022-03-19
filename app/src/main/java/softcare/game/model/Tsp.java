@@ -193,8 +193,20 @@ public class Tsp {
             }
         }
     }
+    public  void setLocation() {
 
-    void setLocation( int in) {
+        if (cities != null) {
+            int size = cities.size();
+            {
+                pointXY = new ArrayList<>();
+                pointXY.add(new PointXY(0, 0));
+                pointXY.add(new PointXY(0, matrix[0][1]));
+                for (int i = 2; i < size; i++) {
+                    pointXY.add(getPoint(pointXY.get(0), pointXY.get(1), matrix[0][i],matrix[1][i]));
+                }
+            }
+        }}
+   public void setLocation( int in) {
         if(pointXY==null)
             pointXY = new ArrayList<>();
         if (cities != null) {

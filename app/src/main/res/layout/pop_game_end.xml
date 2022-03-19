@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:text="@string/return_"
+        android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/try_again"
         app:layout_constraintHorizontal_bias="0.5"
@@ -55,7 +55,7 @@
         style="@style/PopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Try Again"
+        android:text="@string/try_again"
         app:layout_constraintBottom_toBottomOf="@+id/return_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -66,6 +66,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_share" />
+        app:srcCompat="@android:drawable/ic_menu_share"
+        android:contentDescription="@string/share" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
