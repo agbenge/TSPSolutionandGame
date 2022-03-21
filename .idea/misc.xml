@@ -3,9 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/btn.xml" value="0.2015625" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout-land/welcoome_slide_fragment.xml" value="0.15696649029982362" />
         <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/activity_main.xml" value="0.18" />
         <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/help.xml" value="0.22" />
-        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/welcoome_slide_fragment.xml" value="0.33" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/welcoome_slide_fragment.xml" value="0.18" />
       </map>
     </option>
   </component>

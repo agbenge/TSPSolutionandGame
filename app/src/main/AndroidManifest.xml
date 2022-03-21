@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="softcare.game">
+    package="softcare.game" >
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -28,15 +28,23 @@
         android:label="@string/app_name"
         android:roundIcon="@drawable/tsp_ico"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TSPSolutionAndGame">
+        android:theme="@style/Theme.TSPSolutionAndGame" >
         <activity
-            android:name=".HelperSlider"
+            android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar"
+            android:name=".IntroMain"
+            android:exported="false" />
+        <activity
+            android:name=".IntroGameSlides"
+            android:exported="false"
             android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar" />
-
+        <activity
+            android:name=".IntroSolveTspSlides"
+            android:exported="false"
+            android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar" />
         <activity
             android:name=".SharedGame"
-            android:label="@string/playingSharedGame"
-            android:exported="false">
+            android:exported="true"
+            android:label="@string/playingSharedGame" >
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -65,8 +73,9 @@
             android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar" />
         <activity
             android:name=".MainActivity"
+            android:exported="true"
             android:screenOrientation="portrait"
-            android:exported="true">
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -78,7 +87,7 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true" >
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_path" />

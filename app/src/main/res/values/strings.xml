@@ -2,7 +2,8 @@
     <string name="app_name">Path Finder</string>
     <string name="title_activity_solution">Find My Path</string>
     <string name="large_text">
-        PathFinder
+        PathFinder\n
+      This App is created by SoftCareTech.. A product of Raphael Raphael Products.
 \n\n1.	Introduction
 \nPathFinder is a game and a problem-solving tool for TSP (Travelling salesman problem).
 \nShortest Path Game will provide you with some points (let say stations) for you to find the shortest path to move around the points(to all points). Imagine a problem of vaccines to be distributed at various airports and back to the main station, with aim of trying to minimize the cost of transportation. Tip: when playing the game aim to form a cyclic path.
@@ -156,55 +157,57 @@ Open the App and click Find My Path for the solution model will be visible to wo
     <string name="no">No</string>
     <string name="time_up_msg">Your time is up. Try again points will be refresh</string>
     <string name="error_occurred">Error  occurred</string>
-  
-  
-  
-  <!-- Intro  Welcome -->
-  
-  <string name="intro_t">Hi</string>
-  <string name="intro_learn_how_to">Learn how to</string>
-  <string name="intro_game">Play Game</string>
-  <string name="intro_tsp">Solve TSP</string>
-  <string name="intro_come_back_msg">You can always come back to this help by pressing help on the first screen of the App</string>
-  <string name="intro_not_disturb_msg">Don\'t show this help on the next time</string>
-  <!-- Intro  Game -->
-  <string name="intro_g1_t">Welcome Game</string>
-  <string name="intro_g1_m">Play a new game or resume your game</string>
-  <string name="intro_g2_t">Select Level</string>
-  <string name="intro_g2_m">Chose a level from the unlock levels. Play more to unlock more</string>
-  <string name="intro_g3_t">Playing the Game</string>
-  <string name="intro_g3_m">To play, connect all points together by touching one after another... Use the plus and the minus button to zoom in and out</string>
-  <string name="intro_g4_t">Player Wining</string>
-  <string name="intro_g4_m">Play to win as you follow the shortest path</string>
-  <string name="intro_g5_t">Player Win</string>
-  <string name="intro_g5_m">You win as your path is the shortest possible to see all the points</string>
-  <string name="intro_g6_t">Player Losing</string>
-  <string name="intro_g6_m">A player may lose if he is unable to shortest path</string>
-  <string name="intro_g7_t">Player Lose</string>
-  <string name="intro_g7_m">Player as he fellow a long path</string>
-  <string name="intro_g9_t">Menu</string>
-  <string name="intro_g9_m">Timing: activate to use a count down. Refresh points will be randomised points after losses.</string>
-  <string name="intro_g10_t">Share Game</string>
-  <string name="intro_g10_m">Share the best game using the share icon in the menu. Share the current game after a win or lose or when resuming</string>
-  <string name="intro_g11_t">Shared Game</string>
-  <string name="intro_g11_m">Select the share text with the App then it will open the shared game.</string>
-  <string name="intro_g12_t">Congrats</string>
-  <string name="intro_g12_m">You finish the game guide. You can always come. You can always come back to this help by pressing help on the first screen of the App</string>
 
 
-  <!-- Intro  TSP -->
-  <string name="intro_s1_t">Welcome TSP</string>
-  <string name="intro_s1_m">Click on plus to add cities using the current input method.  Click the refresh icon to remove all entered input</string>
-  <string name="intro_s2_t">Select Input Method</string>
-  <string name="intro_s2_m">Click on \"Add by Location\"  to change the input method. Click plus icon to add using the selected input.</string>
-  <string name="intro_s3_t">Add by Location</string>
-  <string name="intro_s3_m">Click the plus icon to add a city(pop up add), the centre icon undo and  the check when finished</string>
-  <string name="intro_s4_t">Add by Map</string>
-  <string name="intro_s4_m">Click on the map to load the map image. Toggle the \"add\" to start choosing the location on the map. Click on any location on the map to add the points.  Click the undo icon to undo, check when finished adding points.</string>
-  <string name="intro_s5_t">Add by Distances</string>
-  <string name="intro_s5_m">Type city name click add. Click plus the plus icon in TSP view again and type city name and distance to the first city. Click the plus icon, until your cities got exhausted.</string>
-  <string name="intro_s6_t">Save</string>
-  <string name="intro_s6_m">Click Save in the option to save. remember the saving input method as it will be needed when opening.</string>
-  <string name="intro_s7_t">Open</string>
-  <string name="intro_s7_m">Always open with the saved input type</string>
+    <!-- Intro  Welcome -->
+
+    <string name="intro_t">Welcome</string>
+    <string name="intro_learn_how_to">Learn</string>
+    <string name="intro_game">How to Play Game</string>
+    <string name="intro_tsp">How toSolve TSP</string>
+    <string name="intro_come_back_msg">You can always come back to this help by pressing help on the main screen of this App</string>
+    <string name="intro_not_disturb_msg">Don\'t show help </string>
+    <!-- Intro  Game -->
+    <string name="intro_g1_t">Game</string>
+    <string name="intro_g1_m">Play a new game or resume your game</string>
+    <string name="intro_g2_t">Select Level</string>
+    <string name="intro_g2_m">Chose a level from the unlock levels. Play more to unlock more</string>
+    <string name="intro_g3_t">Playing the Game</string>
+    <string name="intro_g3_m">To play, connect all points together by touching one after another... Use the plus and the minus button to zoom in and out</string>
+    <string name="intro_g4_t">Player Wining</string>
+    <string name="intro_g4_m">Play to win as you follow the shortest path</string>
+    <string name="intro_g5_t">Player Win</string>
+    <string name="intro_g5_m">You win as your path is the shortest possible to see all the points</string>
+    <string name="intro_g6_t">Player Losing</string>
+    <string name="intro_g6_m">A player may lose if he is unable to shortest path</string>
+    <string name="intro_g7_t">Player Lose</string>
+    <string name="intro_g7_m">Player as he fellow a long path</string>
+    <string name="intro_g9_t">Menu</string>
+    <string name="intro_g9_m">Timing: activate to use a count down. Refresh points will be randomised points after losses.</string>
+    <string name="intro_g10_t">Share Game</string>
+    <string name="intro_g10_m">Share the best game using the share icon in the menu. Share the current game after a win or lose or when resuming</string>
+    <string name="intro_g11_t">Shared Game</string>
+    <string name="intro_g11_m">Select the share text with the App then it will open the shared game.</string>
+    <string name="intro_g12_t">Congrats</string>
+    <string name="intro_g12_m">You finish the game guide. You can always come. You can always come back to this help by pressing help on the first screen of the App</string>
+
+
+    <!-- Intro  TSP -->
+    <string name="intro_s1_t">TSP Solution</string>
+    <string name="intro_s1_m">Click on plus to add cities using the current input method.  Click the refresh icon to remove all entered input</string>
+    <string name="intro_s2_t">Select Input Method</string>
+    <string name="intro_s2_m">Click on \"Add by Location\"  to change the input method. Click plus icon to add using the selected input.</string>
+    <string name="intro_s3_t">Add by Location</string>
+    <string name="intro_s3_m">Click the plus icon to add a city(pop up add), the centre icon undo and  the check when finished</string>
+    <string name="intro_s4_t">Add by Distances</string>
+    <string name="intro_s4_m">Type city name click add. Click plus the plus icon in TSP view again and type city name and distance to the first city. Click the plus icon, until your cities got exhausted.</string>
+    <string name="intro_s5_t">Add by Map</string>
+    <string name="intro_s5_m">Click on the map to load the map image. Toggle the \"add\" to start choosing the location on the map. Click on any location on the map to add the points.  Click the undo icon to undo, check when finished adding points.</string>
+    <string name="intro_s6_t">Processing data</string>
+    <string name="intro_s6_m">After data inputs, click on the arrow to select an algorithm that to get the solution, or press the top option menu to save or open a saved TSP </string>
+    <string name="intro_s7_t">Result</string>
+    <string name="intro_s7_m">Here is result from previous input with map</string>
+<string name="intro_s8_t">Save/Open</string>
+    <string name="intro_s8_m"> Click Save in the option to save. Remember the saving input method as it will be needed when opening.Always open with the saved input type</string>
+
 </resources>

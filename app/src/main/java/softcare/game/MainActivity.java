@@ -1,32 +1,23 @@
 package softcare.game;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
-import softcare.game.model.CodeX;
-import softcare.game.model.LevelAdapter;
 import softcare.gui.StyleDialog;
 import softcare.util.S;
 
@@ -77,7 +68,14 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.help_btn).setOnClickListener(this::help);
         if(isNewUser())
             isNewUser(false);
-            else reinstallOn2( 12,6,2022);
+            else reinstallOn2 ( 12,6,2023);
+
+
+            if(!gameSettings.getBoolean("disable_help",false))
+                help(null);
+        findViewById(R.id.ico_main).setOnClickListener(v->{
+            help0();
+        });
 
     }
 
@@ -90,8 +88,25 @@ public class MainActivity extends AppCompatActivity {
  startActivity(new Intent(this, SolutionActivity.class));
     }
 
+    public void help0() { StyleDialog dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.help);
+        dialog.show();
+        dialog.findViewById(R.id.return_btn).setOnClickListener(k-> dialog.cancel());
+        dialog.findViewById(R.id.contact_us).setOnClickListener(k-> {
+            String subject = getString(R.string.app_name);
+            String[] addresses = getResources().getStringArray(R.array.email_addresses);
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("mailto:"));
+            intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);}
+
+        });
+    }
     public void help(View v ) {
-         startActivity(new Intent(this, HelperSlider.class));
+        startActivity(new Intent(this, IntroMain.class));
+
         /*StyleDialog dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.help);
         dialog.show();
@@ -108,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
 
         });*/
     }
-
     final private String prefName = "game_settings";
     public  boolean  reinstallOn(int day, int month, int year){
         Date now= new Date();
