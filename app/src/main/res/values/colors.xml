@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="yellowDark">#FF8202</color>
-    <color name="blueDark">#303F9F</color>
-    <color name="yellowLight">#FAAB38</color>
-    <color name="blueLight">#6A7FF6</color>
+    <color name="yellowDark">#FFD200</color>
+    <color name="blueDark">#005581</color>
+    <color name="yellowLight">#FFE552</color>
+    <color name="blueLight">#72CDF4</color>
 
     <color name="white">#FFFFFFFF</color>
+    <color name="black">#000000</color>
+
     <color name="red">#F44336</color>
     <color name="green">#4CAF50</color>
-    <color name="black">#000000</color>
     <color name="magenta">#ffff00ff</color>
+    <color name="blueLight_40">#9972CDF4</color>
+    <color name="yellowLight_40">#99FFE552</color>
+
+<!--
+b 005581
+lb 72CDF4
+g FFD200
+lg FFE552 
+
+g #FFD200 b #002DFF            bd #001780  gd #806900
+
+
+go #FFD200 gr #00FF52 bl #002DFF m #FF00AD
+
+-->
 </resources>

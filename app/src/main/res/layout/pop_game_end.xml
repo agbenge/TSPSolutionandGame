@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/BoardItem"
+        style="@style/PopTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/you_lose"
@@ -60,13 +60,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/return_btn" />
+
     <ImageButton
         android:id="@+id/share_img_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/share"
+        app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_share"
-        android:contentDescription="@string/share" />
+        app:srcCompat="@android:drawable/ic_menu_share" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

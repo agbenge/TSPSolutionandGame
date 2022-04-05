@@ -19,7 +19,7 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/BoardItem"
+        style="@style/PopTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/start_game"
@@ -78,12 +78,4 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
-    <ImageButton
-        android:id="@+id/share_img_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_share"
-        android:contentDescription="@string/share" />
 </androidx.constraintlayout.widget.ConstraintLayout>

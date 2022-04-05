@@ -27,9 +27,11 @@
                 android:id="@+id/plotTSP"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:padding="@dimen/medium_dp"
                 android:isScrollContainer="true"
-                app:labelColor="@color/green"
+                android:padding="@dimen/medium_dp"
+                app:circleColor="@color/blueLight"
+                app:labelColor="@color/blueDark"
+                app:lineColor="@color/yellowDark"
                 app:zoomValue="100" />
         </HorizontalScrollView>
         <TextView

@@ -16,13 +16,15 @@
         android:id="@+id/menu"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/btn_y"
+        android:background="@drawable/btn_b"
         android:contentDescription="@string/menu"
+
         android:src="@drawable/ic_baseline_menu_24"
         app:layout_constraintBottom_toBottomOf="@+id/level"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/level"   />
+        app:layout_constraintTop_toTopOf="@+id/level"
+        app:tint="@color/yellowLight" />
 
     <TextView
         android:id="@+id/level"
@@ -90,8 +92,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/scores"
-        app:layout_constraintStart_toStartOf="parent"
-       >
+        app:layout_constraintStart_toStartOf="parent" >
 
         <ScrollView
             android:layout_width="wrap_content"
@@ -131,8 +132,10 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg"
                 app:circleColor="@color/blueLight"
-                app:labelColor="@color/white"
-                app:lineColor="@color/magenta"
+                app:labelColor="@color/blueDark"
+                app:lineColor="@color/yellowDark"
+
+
                 app:zoomValue="60" />
         </ScrollView>
     </HorizontalScrollView>
@@ -164,8 +167,10 @@
         android:id="@+id/btn_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/MainButton"
         android:text="@string/play"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -179,7 +184,7 @@
         app:layout_constraintBottom_toTopOf="@+id/options_h_scroll"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/ic_baseline_zoom_out_24"
-        app:tint="@color/white"
+        app:tint="@color/yellowLight"
         android:contentDescription="@string/zoom_out" />
 
     <ImageView
@@ -192,7 +197,7 @@
         app:layout_constraintBottom_toTopOf="@+id/zoom_out"
         app:layout_constraintEnd_toEndOf="parent"
         android:src="@drawable/ic_baseline_zoom_in_24"
-        app:tint="@color/white"
+        app:tint="@color/yellowLight"
         android:contentDescription="@string/zoom_in" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

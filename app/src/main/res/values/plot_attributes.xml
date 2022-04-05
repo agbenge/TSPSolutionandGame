@@ -11,6 +11,7 @@
         <attr name="lineWidth" format="reference|integer" />
         <attr name="zoomValue" format="integer"/>
         <attr name="circleRadiusTsp" format="reference|integer"/>
+        <attr name="circleWidth" format="reference|integer"/>
     </declare-styleable>
 
     <declare-styleable name="PlotGame">

@@ -11,7 +11,7 @@
         android:id="@+id/menu"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@drawable/btn_y"
+        android:background="@drawable/btn_b"
         android:src="@drawable/ic_baseline_menu_24"
         app:layout_constraintBottom_toTopOf="@+id/level"
 
@@ -20,7 +20,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0"
-        android:contentDescription="@string/menu" />
+        android:contentDescription="@string/menu"
+        app:tint="@color/yellowLight"/>
 
     <TextView
         android:id="@+id/level"
@@ -131,9 +132,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg"
+
                 app:circleColor="@color/blueLight"
-                app:labelColor="@color/white"
-                app:lineColor="@color/magenta"
+                app:labelColor="@color/blueDark"
+                app:lineColor="@color/yellowDark"
                 android:padding="@dimen/plot_padding"
                 app:zoomValue="60" />
         </ScrollView>

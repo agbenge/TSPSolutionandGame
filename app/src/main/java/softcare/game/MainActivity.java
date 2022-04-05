@@ -3,7 +3,6 @@ package softcare.game;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +20,7 @@ import java.util.Date;
 import softcare.gui.StyleDialog;
 import softcare.util.S;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
    private boolean soundState;
     private SharedPreferences gameSettings;
 
@@ -32,8 +31,14 @@ public class MainActivity extends AppCompatActivity {
         gameSettings = getSharedPreferences("game_settings",
                  Activity.MODE_PRIVATE);
 
-       ImageView sound= findViewById(R.id.sound);
 
+        findViewById(R.id.solution_btn).setOnClickListener(this::solution);
+        findViewById(R.id.game_btn).setOnClickListener(this::game);
+        findViewById(R.id.contact_us_btn).setOnClickListener(this::contactUs);
+        findViewById(R.id.help_btn).setOnClickListener(this::help);
+        findViewById(R.id.about_btn).setOnClickListener(this::about);
+        ImageView sound= findViewById(R.id.sound_btn);
+        findViewById(R.id.share_btn).setOnClickListener(this::shareApp);
        if(gameSettings.getBoolean("k_sound", true)|| gameSettings.getBoolean("b_sound", true)){
                       sound.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_volume_up_24));
                       soundState=true;
@@ -49,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
             editor.commit();
 
+
             if(gameSettings.getBoolean("k_sound", true)||
                     gameSettings.getBoolean("b_sound", true)){
                 sound.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_volume_up_24));
@@ -60,12 +66,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-        ((AnimationDrawable) sound.getBackground()).start();
-        ((AnimationDrawable)((ImageView)findViewById(R.id.ico_main)).getDrawable()).start();
 
-        findViewById(R.id.solution_btn).setOnClickListener(this::solution);
-        findViewById(R.id.game_btn).setOnClickListener(this::game);
-        findViewById(R.id.help_btn).setOnClickListener(this::help);
+
+
         if(isNewUser())
             isNewUser(false);
             else reinstallOn2 ( 12,6,2023);
@@ -73,12 +76,29 @@ public class MainActivity extends AppCompatActivity {
 
             if(!gameSettings.getBoolean("disable_help",false))
                 help(null);
-        findViewById(R.id.ico_main).setOnClickListener(v->{
-            help0();
-        });
+
 
     }
 
+
+    private void shareApp(View view) {
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.setType("text/*");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "https://play.google.com/store/apps/details?id=softcare.game");
+        sendIntent.putExtra(Intent.EXTRA_TITLE, "Sharing Path Finder link");
+        startActivity(Intent.createChooser(sendIntent, "Sharing App"));
+    }
+
+    private void contactUs(View view) {
+        String subject = getString(R.string.app_name);
+        String[] addresses = getResources().getStringArray(R.array.email_addresses);
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:"));
+        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);}
+    }
 
 
     public  void game(View v){
@@ -88,40 +108,16 @@ public class MainActivity extends AppCompatActivity {
  startActivity(new Intent(this, SolutionActivity.class));
     }
 
-    public void help0() { StyleDialog dialog = new StyleDialog(this);
-        dialog.setContentView(R.layout.help);
+    public void about(View v) {
+
+        StyleDialog dialog = new StyleDialog(this);
+        dialog.setContentView(R.layout.about);
         dialog.show();
         dialog.findViewById(R.id.return_btn).setOnClickListener(k-> dialog.cancel());
-        dialog.findViewById(R.id.contact_us).setOnClickListener(k-> {
-            String subject = getString(R.string.app_name);
-            String[] addresses = getResources().getStringArray(R.array.email_addresses);
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("mailto:"));
-            intent.putExtra(Intent.EXTRA_EMAIL, addresses);
-            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(intent);}
 
-        });
     }
     public void help(View v ) {
         startActivity(new Intent(this, IntroMain.class));
-
-        /*StyleDialog dialog = new StyleDialog(this);
-        dialog.setContentView(R.layout.help);
-        dialog.show();
-        dialog.findViewById(R.id.return_btn).setOnClickListener(k-> dialog.cancel());
-        dialog.findViewById(R.id.contact_us).setOnClickListener(k-> {
-            String subject = getString(R.string.app_name);
-            String[] addresses = getResources().getStringArray(R.array.email_addresses);
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("mailto:"));
-            intent.putExtra(Intent.EXTRA_EMAIL, addresses);
-            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-            if (intent.resolveActivity(getPackageManager()) != null) {
-                startActivity(intent);}
-
-        });*/
     }
     final private String prefName = "game_settings";
     public  boolean  reinstallOn(int day, int month, int year){

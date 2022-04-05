@@ -3,7 +3,12 @@
     <string name="title_activity_solution">Find My Path</string>
     <string name="large_text">
         PathFinder\n
-      This App is created by SoftCareTech.. A product of Raphael Raphael Products.
+      This App is created by SoftCareTech…
+      \nA product of Raphael Raphael Products.
+      \nOwned by Aondoakula Raphael Gbenge
+      \n Email @ raphaelraymondproduct@gmail.com
+      \n\n\n\n
+      Note about the App
 \n\n1.	Introduction
 \nPathFinder is a game and a problem-solving tool for TSP (Travelling salesman problem).
 \nShortest Path Game will provide you with some points (let say stations) for you to find the shortest path to move around the points(to all points). Imagine a problem of vaccines to be distributed at various airports and back to the main station, with aim of trying to minimize the cost of transportation. Tip: when playing the game aim to form a cyclic path.
@@ -119,7 +124,7 @@ Open the App and click Find My Path for the solution model will be visible to wo
     <string name="delete">delete</string>
     <string name="highestStageGame">Highest stage game</string>
     <string name="currentStageGame">Current stage Game</string>
-    <string name="unable_to_share">Unable to share</string>
+    <string name="unable_to_share">Unable to share. Play the game up to level 5 before sharing your scores</string>
     <string name="warn_over">To continue using the app, Please update</string>
     <string name="update_now">Update Now</string>
     <string name="warn_msg">Update app or you won\'t be able to use it after using the app </string>
@@ -183,7 +188,7 @@ Open the App and click Find My Path for the solution model will be visible to wo
     <string name="intro_g7_t">Player Lose</string>
     <string name="intro_g7_m">Player as he fellow a long path</string>
     <string name="intro_g9_t">Menu</string>
-    <string name="intro_g9_m">Timing: activate to use a count down. Refresh points will be randomised points after losses.</string>
+    <string name="intro_g9_m">Keys: let extra buttons available for playing. Refresh points will be randomised points after losses. Timing: activate to use a count down. </string>
     <string name="intro_g10_t">Share Game</string>
     <string name="intro_g10_m">Share the best game using the share icon in the menu. Share the current game after a win or lose or when resuming</string>
     <string name="intro_g11_t">Shared Game</string>
@@ -209,5 +214,6 @@ Open the App and click Find My Path for the solution model will be visible to wo
     <string name="intro_s7_m">Here is result from previous input with map</string>
 <string name="intro_s8_t">Save/Open</string>
     <string name="intro_s8_m"> Click Save in the option to save. Remember the saving input method as it will be needed when opening.Always open with the saved input type</string>
+    <string name="about">About</string>
 
 </resources>

@@ -48,16 +48,21 @@
         <item name="android:textAlignment">center</item>
     </style>
     <style name="PopButton" parent="Widget.AppCompat.Button">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/yellowDark</item>
         <item name="android:textAlignment">center</item>
         <item name="android:layout_marginTop">@dimen/fab_margin</item>
-        <item name="android:background">@drawable/btn_b</item>
+        <item name="android:background">@drawable/btn_b_c</item>
+        <item name="android:shadowColor"> @color/white</item>
+        <item name="android:shadowDx">2</item>
+        <item name="android:shadowDy">2</item>
+        <item name="android:shadowRadius">1</item>
+        <item name="backgroundTint">@null</item>
     </style>
     <style name="PopMenuSwitch" parent="Widget.AppCompat.CompoundButton.Switch">
         <item name="android:textSize">20sp</item>
         <item name="android:layout_margin">@dimen/fab_margin</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/blueDark</item>
+
     </style>
     <style name="PopMenuSub" parent="Widget.AppCompat.TextView">
         <item name="android:layout_margin">2dp</item>
@@ -73,7 +78,39 @@
         <item name="android:paddingStart">@dimen/pop_margin</item>
         <item name="android:paddingEnd">@dimen/pop_margin</item>
         <item name="android:background">@drawable/bg_1</item>
+
     </style>
+
+
+
+    <style name="PopTitle" parent="Widget.AppCompat.TextView">
+    <item name="android:background">@drawable/bg_title</item>
+    <item name="android:layout_margin">2dp</item>
+    <item name="android:textSize">35sp</item>
+    <item name="android:minWidth">70dp</item>
+    <item name="android:textColor">@color/blueDark</item>
+
+    <item name="layout_constraintDimensionRatio">w 1:1</item>
+    <item name="android:textAlignment">center</item>
+        <item name="android:shadowColor"> @color/white</item>
+        <item name="android:shadowDx">3</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowRadius">1</item>
+    </style>
+
+
+    <style name="MainButton" parent="Widget.AppCompat.Button">
+    <item name="android:textColor">@color/yellowLight</item>
+    <item name="android:textAlignment">center</item>
+    <item name="android:layout_marginTop">@dimen/fab_margin</item>
+    <item name="android:background">@drawable/btn_b</item>
+    <item name="android:shadowColor"> @color/white</item>
+    <item name="android:shadowDx">2</item>
+    <item name="android:shadowDy">2</item>
+    <item name="android:shadowRadius">1</item>
+    <item name="backgroundTint">@null</item>
+    </style>
+
 
 
     <dimen name="pop_margin">8dp</dimen>

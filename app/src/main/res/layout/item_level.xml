@@ -13,12 +13,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/ic_baseline_lock_24"
-        android:textColor="@color/white"
+        android:textColor="@color/yellowDark"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text=" Level" />
+        android:shadowColor="@color/white"
+        android:shadowDx="3"
+        android:shadowDy="3"
+        android:shadowRadius="2"
+        tools:text="Level" />
 
     <TextView
         android:id="@+id/level"

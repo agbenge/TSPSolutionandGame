@@ -72,6 +72,7 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
             boardBorderColor = a.getInteger(R.styleable.PlotTSP_lineWidth, Color.BLACK);
             circleRadius=a.getInteger(R.styleable.PlotTSP_circleRadiusTsp, textSize);
             zoom = a.getInteger(R.styleable.PlotTSP_zoomValue, 1);
+            circleBorderWidth = a.getInteger(R.styleable.PlotTSP_circleWidth,5);
         } finally {
             a.recycle();
         }
@@ -97,24 +98,13 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
         circlePaint.setStyle(Paint.Style.STROKE);
         circlePaint.setAntiAlias(true);
         circlePaint.setColor(circleColor);
+        circlePaint.setStrokeWidth(circleBorderWidth);
         labelPaint.setColor(labelColor);
         labelPaint.setTextAlign(Paint.Align.CENTER);
         labelPaint.setTextSize(textSize);
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setColor(lineColor);
         linePaint.setStrokeWidth(lineWidth);
-    }
-
-    private void drawCircle(Canvas canvas) {
-        int viewWidthHalf = this.getMeasuredWidth() / 2;
-        int viewHeightHalf = this.getMeasuredHeight() / 2;
-        int radius = 0;
-        if (viewWidthHalf > viewHeightHalf)
-            radius = viewHeightHalf - 10;
-        else
-            radius = viewWidthHalf - 10;
-        canvas.drawCircle(viewWidthHalf, viewHeightHalf, radius, circlePaint);
-        /// canvas.drawText("circleText", viewWidthHalf, viewHeightHalf, paint);
     }
 
     @Override

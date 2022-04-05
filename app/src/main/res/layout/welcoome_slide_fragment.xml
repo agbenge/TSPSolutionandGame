@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/design_default_color_primary"
+    android:background="@color/blueDark"
     android:padding="@dimen/fab_margin">
 
     <TextView
@@ -16,6 +16,10 @@
         android:textAllCaps="true"
         android:padding="@dimen/medium_dp"
         android:text="@string/intro_t"
+        android:shadowDy="5"
+        android:shadowDx="5"
+        android:shadowRadius="1"
+        android:shadowColor="@color/white"
         android:textColor="@color/yellowDark"
         android:textSize="35sp"
         android:textStyle="bold"
@@ -102,6 +106,7 @@ android:layout_marginTop="@dimen/fab_margin"
         android:layout_height="wrap_content"
         android:text="Get Started"
         app:elevation="5dp"
+        style="@style/PopButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

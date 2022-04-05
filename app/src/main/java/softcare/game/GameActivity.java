@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -143,18 +144,31 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     protected void dialogResume() {
         if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_progress);
+        ProgressBar progressBar= dialog.findViewById(R.id.progressBar);
         dialog.show();
         dialog.setCancelable(false);
         //dialog.setOnCancelListener(dialog -> super.onBackPressed());
         taskManager.runTask(() -> {
             GameShare gameShare = getCurrentGame(CodeX.tspKey, CodeX.gameKey);
+           progressBar.setIndeterminate(false);
+           progressBar.setProgress(50);
             if (bestGame != null) {
                 if (bestGame.getGame() == null || bestGame.getTsp() == null)
                     bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
+                Log.d(CodeX.tag, "Step openGame loaded");
+                progressBar.setProgress(75);
             } else bestGame = openGame(CodeX.bestTspKey, CodeX.bestGameKey);
-            if(dialog!=null)
-                if(dialog.isShowing())
-            runOnUiThread(() -> dialogResume(gameShare.getTsp(), gameShare.getGame()));
+            Log.d(CodeX.tag, "Step openGame 2 loaded");
+            progressBar.setProgress(80);
+            if(dialog!=null) {
+                if (dialog.isShowing()) {
+                    progressBar.setProgress(99);
+                    runOnUiThread(() -> dialogResume(gameShare.getTsp(), gameShare.getGame()));
+                    Log.d(CodeX.tag, "Step openGame loaded");
+                } else   Log.e(CodeX.tag, "Step process interrupted loading 1... Dialog not found");
+
+            }else   Log.e(CodeX.tag, "Step process interrupted loading 2... Dialog not found");
+
         });
     }
 
@@ -191,9 +205,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         ((TextView) dialog.findViewById(R.id.try_again)).setText(R.string.yes);
         ((TextView) dialog.findViewById(R.id.return_btn)).setText(R.string.no);
 
-        dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
-            dialogResume(tsp,game);
-        });
+        dialog.findViewById(R.id.return_btn).setOnClickListener(v -> dialogResume(tsp,game));
         dialog.findViewById(R.id.share_img_btn).setVisibility(View.GONE);
         dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
             dialog.cancel();
@@ -253,7 +265,6 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         editor.putString(gameKey, jsonGame);
         editor.putString(tspKey, jsonTsp);
         editor.apply();
-        editor.commit();
     }
 
     protected void saveGave(Tsp tsp, Game game) {
@@ -263,10 +274,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             String jsonTsp = gson.toJson(tsp);
             String jsonGame = gson.toJson(game);
             Log.d(CodeX.tag, (tsp != null) + " is saving " + (game != null));
-
-            saveGave(CodeX.tspKey, CodeX.gameKey,
-                     editor,  jsonTsp, jsonGame );
-
+            saveGave(CodeX.tspKey, CodeX.gameKey, editor,  jsonTsp, jsonGame );
+            Log.d(CodeX.tag,   " Game fully saved " );
             });
     }
 
@@ -482,9 +491,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         bestGame = new GameShare(tsp, game);
         Snackbar.make(plotGame, getString(R.string.b_played),
                 Snackbar.LENGTH_LONG).setAction(R.string.share
-                , v -> {
-share();
-                }).show();
+                , v -> share()).show();
     }
 
     private void dialogLoose(Game game, String result) {
@@ -630,12 +637,29 @@ share();
                 if (gameSettings.getBoolean("k_sound", true))
                     soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
 
+
             });
             dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
                 findViewById(R.id.btn_play).setVisibility(View.GONE);
                 dialog.setOnCancelListener(null);
                 dialog.cancel();
+                if(tsp.getCities().size()==tsp.getPointXY().size())
                 gameViewModel.resumeGame(tsp, game);
+                else{
+                    Log.e(CodeX.tag, "Game is corrupt; cities not equal points " );
+                    Log.d(CodeX.tag,  tsp.toString());
+                    Toast.makeText(GameActivity.this,
+                             "Game is corrupt; cities not equal points",
+                            Toast.LENGTH_LONG).show();
+                    dialog.setOnCancelListener(null);
+                    dialog.cancel();
+                    findViewById(R.id.btn_play).setVisibility(View.GONE);
+                    selectNewGame();
+                    if (gameSettings.getBoolean("k_sound", true))
+                        soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
+
+
+                }
                 if (gameSettings.getBoolean("k_sound", true))
                     soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
             });
@@ -824,21 +848,18 @@ share();
         timing.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("timing", isChecked);
             editor.apply();
-            editor.commit();
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         kSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("k_sound", isChecked);
             editor.apply();
-            editor.commit();
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         bSound.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("b_sound", isChecked);
             editor.apply();
-            editor.commit();
             if (isChecked)
                 if (bSoundStreamId == -1)
                     bSoundStreamId = soundPool.play(soundIds[0], 1, 1, 2, -1, 1.0f);
@@ -851,14 +872,12 @@ share();
         refreshingPoints.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("refresh_points", isChecked);
             editor.apply();
-            editor.commit();
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
         });
         keys.setOnCheckedChangeListener((buttonView, isChecked) -> {
             editor.putBoolean("keys", isChecked);
             editor.apply();
-            editor.commit();
             setKeys(isChecked);
             if (gameSettings.getBoolean("k_sound", true))
                 soundPool.play(soundIds[6], 1, 1, 1, 0, 1.0f);
@@ -969,7 +988,7 @@ share();
             getWindowManager().getDefaultDisplay().getMetrics(dm);
 
 
-            int spanCount = dm.densityDpi / 50;
+            int spanCount = dm.densityDpi / 70;
             GridLayoutManager gridLayoutManager = new GridLayoutManager(this, spanCount);
             List<Integer> l = new ArrayList<>();
             for (int i = 0; i < (Math.max(highestGame.getNodes(), 20)); i++)
@@ -983,7 +1002,7 @@ share();
                 dialog.cancel();
             });
         } else {
-            if(dialog!=null) dialog.cancel();
+            dialog.cancel();
             gameViewModel.newGame(0);
         }
 

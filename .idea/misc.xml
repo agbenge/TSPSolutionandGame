@@ -3,11 +3,47 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/bg_0.xml" value="0.19846153846153847" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/bg_1.xml" value="0.19846153846153847" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/bg_l_1.xml" value="0.19846153846153847" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/bg_l_2.xml" value="0.19846153846153847" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/bg_l_3.xml" value="0.19846153846153847" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/bg_level.xml" value="0.2015625" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/bg_main.xml" value="0.19846153846153847" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/bg_title.xml" value="0.17083333333333334" />
         <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/btn.xml" value="0.2015625" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/btn_b.xml" value="0.19846153846153847" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/btn_b_c.xml" value="0.17083333333333334" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/drawable/btn_y.xml" value="0.19846153846153847" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout-land/about.xml" value="0.18854166666666666" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout-land/activity_game.xml" value="0.25" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout-land/help.xml" value="0.15696649029982362" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout-land/pop_game_menu.xml" value="0.33" />
         <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout-land/welcoome_slide_fragment.xml" value="0.15696649029982362" />
-        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/activity_main.xml" value="0.18" />
-        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/help.xml" value="0.22" />
-        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/welcoome_slide_fragment.xml" value="0.18" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/about.xml" value="0.13408662900188323" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/activity_add_city_dactivity.xml" value="0.33" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/activity_add_city_lactivity.xml" value="0.5" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/activity_add_city_mactivity.xml" value="0.25" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/activity_game.xml" value="0.33" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/activity_plot_tsp.xml" value="0.5" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/activity_solution.xml" value="0.14221014492753623" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/help.xml" value="0.17" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/item_city_distance.xml" value="0.25" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/item_level.xml" value="0.5" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/item_location.xml" value="0.25" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/lst_sub.xml" value="0.5" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/plot_tsp_result.xml" value="0.5" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/pop_add_city_l.xml" value="0.25" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/pop_game_end.xml" value="0.2" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/pop_game_ended.xml" value="0.25" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/pop_game_menu.xml" value="0.2" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/pop_game_resume.xml" value="0.33" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/pop_progress.xml" value="0.151268115942029" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/pop_progress_2.xml" value="0.151268115942029" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/test.xml" value="0.18541666666666667" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/update_app.xml" value="0.18" />
+        <entry key="..\:/Users/GBENGE AONDOAKULA/AndroidStudioProjects/TSPSolutionandGame/app/src/main/res/layout/welcoome_slide_fragment.xml" value="0.22" />
       </map>
     </option>
   </component>

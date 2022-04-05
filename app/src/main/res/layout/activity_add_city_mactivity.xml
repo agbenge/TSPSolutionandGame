@@ -21,19 +21,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/adding"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:checked="false"
-            android:text="@string/add"
-            app:tint="@color/blueLight"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/undo"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/loadMap"
-            app:layout_constraintTop_toTopOf="@+id/finish" />
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/adding"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:checked="false"
+        android:text="@string/add"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/undo"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/loadMap"
+        app:layout_constraintTop_toTopOf="@+id/finish"
+        app:tint="@color/blueLight" />
 
         <ImageView
             android:id="@+id/undo"
@@ -48,18 +48,18 @@
             android:src="@drawable/ic_baseline_undo_24"
             android:contentDescription="@string/undo" />
 
-        <ImageView
-            android:id="@+id/loadMap"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:tint="@color/blueLight"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/adding"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/finish"
-            app:srcCompat="@android:drawable/ic_menu_mapmode"
-            android:contentDescription="@string/load__snap_map" />
+    <ImageView
+        android:id="@+id/loadMap"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:contentDescription="@string/load__snap_map"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/adding"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/finish"
+        app:srcCompat="@android:drawable/ic_menu_mapmode"
+        app:tint="@color/blueDark" />
 
         <ImageView
             android:id="@+id/finish"
