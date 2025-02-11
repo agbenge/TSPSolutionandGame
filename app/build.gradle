@@ -3,15 +3,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.3"
-
+    compileSdkVersion 35
     defaultConfig {
         applicationId "softcare.game"
-        minSdkVersion 19
-        targetSdkVersion 31
-        versionCode 3
-        versionName "1.2.0"
+        minSdkVersion 21
+        targetSdkVersion 35
+        versionCode 5
+        versionName "1.2.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,21 +26,22 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'softcare.game'
 }
 repositories {
     maven { url "https://jitpack.io" }
 }
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.5.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test:rules:1.4.1-alpha04'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation 'androidx.test:runner:1.6.2'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.6.1'
     implementation 'com.heinrichreimersoftware:material-intro:2.0.0'
     implementation 'com.github.AppIntro:AppIntro:6.2.0'
 }

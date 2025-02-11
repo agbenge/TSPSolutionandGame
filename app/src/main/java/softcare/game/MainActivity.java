@@ -69,9 +69,12 @@ public class MainActivity extends AppCompatActivity{
 
 
 
-        if(isNewUser())
-            isNewUser(false);
-            else reinstallOn2 ( 12,6,2023);
+//        if(isNewUser()) {
+//            isNewUser(false);
+//        }
+//            else {
+//            reinstallOn2(12, 6, 2023);
+//        }
 
 
             if(!gameSettings.getBoolean("disable_help",false))
