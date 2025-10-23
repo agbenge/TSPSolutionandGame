@@ -1,35 +1,25 @@
 package softcare.gui;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import softcare.game.R;
 import softcare.game.model.CodeX;
 
-public class PlotGame extends PlotTSP {
-
-
+public class PlotGame extends PlotTSP implements View.OnTouchListener {
     private Paint highlightPaint;
     private int highlightColor;
     private int positionColor;
@@ -80,29 +70,19 @@ public class PlotGame extends PlotTSP {
         super.init(context, attrs);
 
         highlightPaint = new Paint();
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
-                R.styleable.PlotTSP, 0, 0);
+        try (TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
+                R.styleable.PlotTSP, 0, 0)) {
 
-        try {
-            //get the text and colors specified using the names in attrs.xml
-            highlightColor = a.getInteger(R.styleable.PlotGame_highlightColor, Color.MAGENTA);
-            positionColor = a.getInteger(R.styleable.PlotGame_positionColor, Color.BLUE);
-        } finally {
-            a.recycle();
+            try {
+                //get the text and colors specified using the names in attrs.xml
+                highlightColor = a.getInteger(R.styleable.PlotGame_highlightColor, Color.MAGENTA);
+                positionColor = a.getInteger(R.styleable.PlotGame_positionColor, Color.BLUE);
+            } finally {
+                a.recycle();
+            }
         }
 
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Log.d(CodeX.tag, "motion");
-                if (onPointListener != null) {
-                    int index = onPointXY(event.getX(), event.getY());
-                    if (index > -1) onPointListener.onPoint(index);
-                    Log.d(CodeX.tag, "index view e " + index);
-                }
-                return false;
-            }
-        });
+        setOnTouchListener( this);
 
     }
 
@@ -145,7 +125,7 @@ public class PlotGame extends PlotTSP {
         if (path == null) return;
         float x;
         float y;
-        if (path.size() > 0) {
+        if (!path.isEmpty()) {
             x = getXZoom(pointXY.get(path.get(0)).x);
             y = getYZoom(pointXY.get(path.get(0)).y);
             canvas.drawCircle(x, y, circleRadius, highlightPaint);
@@ -230,4 +210,14 @@ public class PlotGame extends PlotTSP {
     }
 
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        Log.d(CodeX.tag, "motion");
+        if (onPointListener != null) {
+            int index = onPointXY(event.getX(), event.getY());
+            if (index > -1) onPointListener.onPoint(index);
+            Log.d(CodeX.tag, "index view e " + index);
+        }
+        return false;
+    }
 }

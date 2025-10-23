@@ -26,9 +26,7 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
     //circle and text colors
     protected int circleColor, labelColor ,lineColor,
             boardColor, boardBorderWidth, boardBorderColor,
-            textSize, lineWidth, circleBorderWidth;
-
-    int circleRadius ;
+            textSize, lineWidth, circleBorderWidth, circleRadius ;
     protected Paint circlePaint;
     protected Paint linePaint;
     protected Paint labelPaint;
@@ -58,26 +56,27 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
         linePaint = new Paint();
         labelPaint = new Paint();
         this.context=context;
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
-                R.styleable.PlotTSP, 0, 0);
+        try (TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
+                R.styleable.PlotTSP, 0, 0)) {
 
-        try {
-            //get the text and colors specified using the names in attrs.xml
-            circleColor = a.getInt(R.styleable.PlotTSP_circleColor, Color.BLUE);
-            lineColor = a.getInteger(R.styleable.PlotTSP_lineColor, Color.MAGENTA);
-            labelColor = a.getInteger(R.styleable.PlotTSP_labelColor, Color.GREEN);//0 is default
-            textSize = a.getInteger(R.styleable.PlotTSP_textSize, 40);
-            lineWidth = a.getInteger(R.styleable.PlotTSP_lineWidth, 5);
-            boardColor = a.getInteger(R.styleable.PlotTSP_boardColor, Color.LTGRAY);
-            boardBorderColor = a.getInteger(R.styleable.PlotTSP_lineWidth, Color.BLACK);
-            circleRadius=a.getInteger(R.styleable.PlotTSP_circleRadiusTsp, textSize);
-            zoom = a.getInteger(R.styleable.PlotTSP_zoomValue, 1);
-            circleBorderWidth = a.getInteger(R.styleable.PlotTSP_circleWidth,5);
-        } finally {
-            a.recycle();
+            try {
+                //get the text and colors specified using the names in attrs.xml
+                circleColor = a.getInt(R.styleable.PlotTSP_circleColor, Color.BLUE);
+                lineColor = a.getInteger(R.styleable.PlotTSP_lineColor, Color.MAGENTA);
+                labelColor = a.getInteger(R.styleable.PlotTSP_labelColor, Color.GREEN);//0 is default
+                textSize = a.getInteger(R.styleable.PlotTSP_textSize, 40);
+                lineWidth = a.getInteger(R.styleable.PlotTSP_lineWidth, 5);
+                boardColor = a.getInteger(R.styleable.PlotTSP_boardColor, Color.LTGRAY);
+                boardBorderColor = a.getInteger(R.styleable.PlotTSP_lineWidth, Color.BLACK);
+                circleRadius = a.getInteger(R.styleable.PlotTSP_circleRadiusTsp, textSize);
+                zoom = a.getInteger(R.styleable.PlotTSP_zoomValue, 1);
+                circleBorderWidth = a.getInteger(R.styleable.PlotTSP_circleWidth, 5);
+            } finally {
+                a.recycle();
+            }
         }
 
-         spaceX= textSize>circleRadius? textSize:circleRadius;
+        spaceX= Math.max(textSize, circleRadius);
         if (isInEditMode()) initValues();
     }
 
@@ -86,8 +85,6 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
     protected void onDraw(Canvas canvas) {
         //draw the View
         setColorsAndSizes();
-
-
         drawWithZoom(canvas);
 
 
@@ -139,12 +136,12 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
 
     protected  double getYZoomDouble(double value){
 
-        return  (((value+ invertNegavative +1) * zoom) - 1 * zoom) +spaceX+getPaddingTop();
+        return  (((value+ invertNegative +1) * zoom) - 1 * zoom) +spaceX+getPaddingTop();
     }
 
     protected  double getXZoomDouble(double value){
 
-        return  (((value+ invertNegavative +1) * zoom) - 1 * zoom) +spaceX+getPaddingRight();
+        return  (((value+ invertNegative +1) * zoom) - 1 * zoom) +spaceX+getPaddingRight();
     }
     protected  float getYZoom(double value){
         return (float) getYZoomDouble(value);
@@ -166,7 +163,7 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
        // totalHeight= resolveSizeAndState(minh, heightMeasureSpec, MeasureSpec.UNSPECIFIED );
         setMeasuredDimension(minW,minh);
     }
-    protected void drawWithZoom(Canvas canvas) {
+    protected void  drawWithZoom(Canvas canvas) {
         if(zoom<=0)zoom=initZoom;
         Path gc = new Path();
         gc.reset();
@@ -197,7 +194,7 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
         canvas.drawText("    cW "+ Util.doubleToString(minh)  , +textSize, 200, labelPaint);
         canvas.drawText( "    Ty   "+ Util.doubleToString(totalHeight), +200, 300, labelPaint);
         canvas.drawText( "     Tx "+ Util.doubleToString(totalWidth), +200, 400, labelPaint);
-        canvas.drawText( "Text"+initZoom ,  0+textSize, 0+textSize, labelPaint);
+        canvas.drawText( "Text"+initZoom , textSize, textSize, labelPaint);
           canvas.drawCircle(450,500,20,circlePaint);
 
         /*
@@ -226,6 +223,10 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
         return bundle;
     }
 
+    protected void drawPath(Canvas canvas) {
+        // optional base implementation or empty
+    }
+
     @Override
     public void onRestoreInstanceState(Parcelable state) {
         // Checks if the state is the bundle we saved
@@ -233,12 +234,9 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle) state;
             // Load back our custom view state
-
             this.currentShapeIndex = bundle.getInt("currentShapeIndex");
             // ... load any other custom state here ...
-
             // Load base view state back
-
             state = bundle.getParcelable("instanceState");
         }
         // Pass base view state on to super
@@ -251,7 +249,7 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
     protected List<String> cities;
     protected List<Integer> path;
     protected double zoom = 1;
-    double invertNegavative = 0;
+    double invertNegative = 0;
 
 
 
@@ -268,19 +266,19 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
 
     protected void measureDim() {
         for (PointXY p : pointXY) {
-            if (p.x < invertNegavative)   invertNegavative = p.x;
-            if (p.y < invertNegavative)  invertNegavative = p.y;
+            if (p.x < invertNegative)   invertNegative = p.x;
+            if (p.y < invertNegative)  invertNegative = p.y;
             if (p.y > contentHeight)  contentHeight = (int)p.y;
             if (p.x >contentWidth)  contentWidth = (int)p.x;
         }
         contentHeight++;
         contentWidth++;
-        double zoomInto = invertNegavative;
-        if (invertNegavative < 0)   invertNegavative = invertNegavative * -1;
-        else invertNegavative=0;
+        double zoomInto = invertNegative;
+        if (invertNegative < 0)   invertNegative = invertNegative * -1;
+        else invertNegative =0;
 
-        contentHeight= (int) (contentHeight+invertNegavative);
-        contentWidth= (int) (contentWidth+invertNegavative);
+        contentHeight= (int) (contentHeight+ invertNegative);
+        contentWidth= (int) (contentWidth+ invertNegative);
         calculateZoom(contentHeight,contentWidth);
     }
 
@@ -313,13 +311,13 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
             DisplayMetrics dm = new DisplayMetrics();
             ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-            float max = contentHeight > contentWidth ? contentHeight : contentWidth;
-            float minScreen = dm.heightPixels < dm.widthPixels ? dm.heightPixels : dm.widthPixels;
+            float max = Math.max(contentHeight, contentWidth);
+            float minScreen = Math.min(dm.heightPixels, dm.widthPixels);
 
             initZoom=  (minScreen -100 ) / max;
             zoomingBy= initZoom/5;
             setZoom( initZoom);          }catch ( Exception e){
-            Log.e(CodeX.tag," PLotTsp class should only be use in activity");
+            Log.e(CodeX.tag," PlotTsp class should only be use in activity");
         }
     }
     private void initValues() {
