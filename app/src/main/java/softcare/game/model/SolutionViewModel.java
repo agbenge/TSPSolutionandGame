@@ -14,7 +14,7 @@ import softcare.algorithm.SelectionType;
 import softcare.algorithm.TSPNearestNeighbour;
 import softcare.algorithm.TspDynamicProgrammingIterative;
 import softcare.gui.PointXY;
-import softcare.util.S;
+import softcare.util.Util;
 
 public class SolutionViewModel extends ViewModel {
 
@@ -302,7 +302,7 @@ return;
 
         StringBuilder  res = new StringBuilder(tsp.getHeader());
         for (int i = 0; i < tsp.getCities().size(); i++) {
-            res.append(tsp.getCities().get(i).replace(" ", "_")).append("    ").append(S.doubleToString(tsp.getPointXY().get(i).getX())).append("\t\t ").append(S.doubleToString(tsp.getPointXY().get(i).getY()));
+            res.append(tsp.getCities().get(i).replace(" ", "_")).append("    ").append(Util.doubleToString(tsp.getPointXY().get(i).getX())).append("\t\t ").append(Util.doubleToString(tsp.getPointXY().get(i).getY()));
             res.append("\n");
         }
 
@@ -329,7 +329,7 @@ return;
         for (int i = 0; i < tsp.getCities().size(); i++) {
             res.append(tsp.getCities().get(i));
             for (int j = 0; j < tsp.getCities().size(); j++) {
-                res.append("\t").append(S.doubleToString(tsp.getMatrix()[i][j]));
+                res.append("\t").append(Util.doubleToString(tsp.getMatrix()[i][j]));
             }
 
             res.append("\n");
@@ -361,7 +361,7 @@ return;
         for (int x = 1; x < tsp.getDirection().size(); x++) {
             int i = tsp.getDirection().get(x);
             res.append(tsp.getCities().get(prevouse)).append("\t");
-            res.append("\t").append(S.doubleToString(tsp.getMatrix()[prevouse][i])).append("\tto\t");
+            res.append("\t").append(Util.doubleToString(tsp.getMatrix()[prevouse][i])).append("\tto\t");
 
             dist[prevouse] = tsp.getMatrix()[prevouse][i];
             cost = cost + tsp.getMatrix()[prevouse][i];
@@ -372,7 +372,7 @@ return;
         if (tsp.getCost() == 0) {
             tsp.setCost(cost);
         }
-        res.append("\n Total distances \t").append(S.doubleToString(tsp.getCost()));
+        res.append("\n Total distances \t").append(Util.doubleToString(tsp.getCost()));
         if (tsp.getDuration() > 0L) {
             double time = (double) tsp.getDuration() / (double) 1000;
             if (time != 1)

@@ -48,7 +48,7 @@ import softcare.game.model.TspCode;
 import softcare.gui.OnPointListener;
 import softcare.gui.PlotGame;
 import softcare.gui.StyleDialog;
-import softcare.util.S;
+import softcare.util.Util;
 
 public class GameActivity extends AppCompatActivity implements OnPointListener {
     private GameViewModel gameViewModel;
@@ -326,7 +326,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 resumeTimer(game);
                 level.setText(String.valueOf(game.getLevel()));
                 scores.setText(String.valueOf(game.getScores()));
-                time.setText(S.timeDisplay(game.getUsedTime()));
+                time.setText(Util.timeDisplay(game.getUsedTime()));
                 if (tsp.getTspActions() == TspCode.SOLVED) {
                     final int size = tsp.getCities().size() + 1;
                     int[] playId = new int[size];
@@ -380,8 +380,8 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         if (tsp != null) {
             if (game != null) {
                 String result = game.getResult(tsp, this);
-                if (S.formDouble(tsp.getCost()) >=
-                        S.formDouble(game.getCost())) {
+                if (Util.formDouble(tsp.getCost()) >=
+                        Util.formDouble(game.getCost())) {
                     dialogWin(game, result, tsp);
 
                 } else {
@@ -589,7 +589,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         ((TextView) dialog.findViewById(R.id.title)).setText(getString(R.string.game_over));
         ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
         ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getLevel()));
-        ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
+        ((TextView) dialog.findViewById(R.id.time)).setText(Util.timeDisplay(game.getGameLifeTime()));
         ((TextView) dialog.findViewById(R.id.try_again)).setText(getString(R.string.new_));
         dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
             dialog.cancel();
@@ -624,7 +624,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         if (game != null && tsp != null) {
             ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
             ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getScores()));
-            ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
+            ((TextView) dialog.findViewById(R.id.time)).setText(Util.timeDisplay(game.getGameLifeTime()));
 
             ((TextView) dialog.findViewById(R.id.try_again)).setText(R.string.resume);
             ((TextView) dialog.findViewById(R.id.return_btn)).setText(R.string.new_);
@@ -783,7 +783,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 @Override
                 public void onTick(long millisUntilFinished) {
                    // Log.d(CodeX.tag, " time change " + S.timeDisplay(millisUntilFinished));
-                    time.setText(S.timeDisplay(millisUntilFinished));
+                    time.setText(Util.timeDisplay(millisUntilFinished));
                 }
 
                 @Override
@@ -802,7 +802,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 @Override
                 public void onTickDown(long timeCount) {
                    // Log.d(CodeX.tag, "  count up output ... " + timeCount);
-                    time.setText(S.timeDisplay(timeCount));
+                    time.setText(Util.timeDisplay(timeCount));
                 }
 
                 @Override
@@ -841,7 +841,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         if (game != null && tsp != null) {
             ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(game.getLevel()));
             ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(game.getScores()));
-            ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(game.getGameLifeTime()));
+            ((TextView) dialog.findViewById(R.id.time)).setText(Util.timeDisplay(game.getGameLifeTime()));
 
             dialog.findViewById(R.id.share_img_btn).setOnClickListener(v -> share( ));
         }
@@ -969,7 +969,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         if (highestGame != null) {
             ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(highestGame.getLevel()));
             ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(highestGame.getScores()));
-            ((TextView) dialog.findViewById(R.id.time)).setText(S.timeDisplay(highestGame.getGameLifeTime()));
+            ((TextView) dialog.findViewById(R.id.time)).setText(Util.timeDisplay(highestGame.getGameLifeTime()));
 
             dialog.findViewById(R.id.return_btn).setOnClickListener(v -> {
                 dialog.cancel();

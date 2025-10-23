@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import softcare.gui.StyleDialog;
-import softcare.util.S;
+import softcare.util.Util;
 
 public class MainActivity extends AppCompatActivity{
    private boolean soundState;
@@ -129,7 +129,7 @@ public class MainActivity extends AppCompatActivity{
         Calendar c = Calendar.getInstance();
         int hour = c.get(Calendar.HOUR_OF_DAY);
         int minute = c.get(Calendar.MINUTE);
-        Date end= S.getDateFromString(day + "/" + (month + 1) + "/" + year + " " + hour + ":" + minute);
+        Date end= Util.getDateFromString(day + "/" + (month + 1) + "/" + year + " " + hour + ":" + minute);
         if(end.before(now)){
             System.out.println("Time is over");
             return true;

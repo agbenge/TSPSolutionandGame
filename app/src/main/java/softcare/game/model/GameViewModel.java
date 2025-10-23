@@ -17,7 +17,7 @@ import softcare.algorithm.SelectionType;
 import softcare.algorithm.TSPNearestNeighbour;
 import softcare.algorithm.TspDynamicProgrammingIterative;
 import softcare.gui.PointXY;
-import softcare.util.S;
+import softcare.util.Util;
 
 public class GameViewModel extends ViewModel {
 
@@ -166,7 +166,7 @@ public class GameViewModel extends ViewModel {
         List<String> n=  new ArrayList<>();
         for (int i = 0; i<game.getNodes() ;i++){
              p.add(getUniquePoint(p,r,game,i));
-             n.add(S.getName(i));
+             n.add(Util.getLocationEmoji(i));
         }
         Tsp tsp = getTspLiveData().getValue();
 

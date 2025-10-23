@@ -5,11 +5,9 @@ import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import softcare.game.R;
-import softcare.gui.PointXY;
-import softcare.util.S;
+import softcare.util.Util;
 
 public class Game {
     private int level;
@@ -128,7 +126,7 @@ public class Game {
         for (int x = 1; x < getDirection().size(); x++) {
             int i = getDirection().get(x);
             res += tsp.getCities().get(prevouse) + "\t";
-            res += "\t" +  S.formDouble(tsp.getMatrix()[prevouse][i]) + "\tto\t";
+            res += "\t" +  Util.formDouble(tsp.getMatrix()[prevouse][i]) + "\tto\t";
 
             dist[prevouse] = tsp.getMatrix()[prevouse][i];
             cost = cost + tsp.getMatrix()[prevouse][i];
@@ -137,8 +135,8 @@ public class Game {
         }
         cost = cost + tsp.getMatrix()[prevouse][getDirection().get(0)];
         res += tsp.getCities().get(prevouse) + "\t";
-        res1 += context.getString(R.string.distances_by_u) + S.formDouble(cost)+
-                context.getString(R.string.distance_by_alg)+ S.formDouble(tsp.getCost());
+        res1 += context.getString(R.string.distances_by_u) + Util.formDouble(cost)+
+                context.getString(R.string.distance_by_alg)+ Util.formDouble(tsp.getCost());
 
 
         this.cost = cost;

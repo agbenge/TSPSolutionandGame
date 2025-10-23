@@ -20,7 +20,7 @@ import java.util.List;
 
 import softcare.game.R;
 import softcare.game.model.CodeX;
-import softcare.util.S;
+import softcare.util.Util;
 
 public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
     //circle and text colors
@@ -193,10 +193,10 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
         int minW =  getPaddingLeft()+getXZoom(contentWidth) +getPaddingRight() +textSize;
         int minh = getPaddingTop() +getYZoom(contentHeight)+getPaddingBottom() +textSize;
 
-        canvas.drawText("  cH "+S.doubleToString(minh)  , +textSize, 100, labelPaint);
-        canvas.drawText("    cW "+S.doubleToString(minh)  , +textSize, 200, labelPaint);
-        canvas.drawText( "    Ty   "+ S.doubleToString(totalHeight), +200, 300, labelPaint);
-        canvas.drawText( "     Tx "+ S.doubleToString(totalWidth), +200, 400, labelPaint);
+        canvas.drawText("  cH "+ Util.doubleToString(minh)  , +textSize, 100, labelPaint);
+        canvas.drawText("    cW "+ Util.doubleToString(minh)  , +textSize, 200, labelPaint);
+        canvas.drawText( "    Ty   "+ Util.doubleToString(totalHeight), +200, 300, labelPaint);
+        canvas.drawText( "     Tx "+ Util.doubleToString(totalWidth), +200, 400, labelPaint);
         canvas.drawText( "Text"+initZoom ,  0+textSize, 0+textSize, labelPaint);
           canvas.drawCircle(450,500,20,circlePaint);
 

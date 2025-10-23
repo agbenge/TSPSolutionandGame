@@ -6,24 +6,18 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 
-import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import softcare.game.R;
-import softcare.game.model.CodeX;
-import softcare.util.S;
+import softcare.util.Util;
 
 public class PlotImage  extends androidx.appcompat.widget.AppCompatImageView {
 
@@ -107,7 +101,7 @@ public class PlotImage  extends androidx.appcompat.widget.AppCompatImageView {
             public boolean onTouch(View v, MotionEvent event) {
                 if (isAddingPoint) {
                     locations.add(new PointXY(event.getX(),event.getY()));
-                    names.add(S.getName(names.size()));
+                    names.add(Util.getLocationEmoji(names.size()));
             refresh();
                 }
                 return false;
@@ -116,7 +110,7 @@ public class PlotImage  extends androidx.appcompat.widget.AppCompatImageView {
     }
 
     public void undo() {
-        if(locations.size()>0){
+        if(!locations.isEmpty()){
             names.remove(names.size()-1);
             locations.remove(locations.size()-1);
             refresh();

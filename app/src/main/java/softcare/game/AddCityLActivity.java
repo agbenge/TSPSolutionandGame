@@ -20,7 +20,7 @@ import softcare.game.model.Location;
 import softcare.game.model.LocationAdapter;
 import softcare.game.model.TspData;
 import softcare.gui.StyleDialog;
-import softcare.util.S;
+import softcare.util.Util;
 
 public class AddCityLActivity extends AppCompatActivity implements View.OnKeyListener {
 
@@ -230,8 +230,8 @@ addCity(dialog);
         dialog.setCanceledOnTouchOutside(false);
         addCity(dialog);
         city.setText(locations.getNames().get(i));
-        y_input.setText( S.doubleToString( locations.getLocations().get(i).y));
-        x_input.setText(S.doubleToString( locations.getLocations().get(i).x));
+        y_input.setText( Util.doubleToString( locations.getLocations().get(i).y));
+        x_input.setText(Util.doubleToString( locations.getLocations().get(i).x));
         dialog.findViewById(R.id.go).setOnClickListener(v -> {
             if(isOkay()){
                 if( locations.editPoint(getName(),getPointX(),getPointY(),i)) {

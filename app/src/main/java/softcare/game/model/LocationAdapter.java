@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import softcare.game.R;
 import softcare.gui.PointClickListener;
-import softcare.util.S;
+import softcare.util.Util;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LevelViewHolder> {
     private final Context mContext;
@@ -40,8 +40,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LevelV
 
         if(locations!=null) {
             holder.title.setText(locations.getNames().get(position));
-            holder.lati.setText(S.doubleToString(locations.getLocations().get(position).x));
-            holder.logi.setText(S.doubleToString(locations.getLocations().get(position).y));
+            holder.lati.setText(Util.doubleToString(locations.getLocations().get(position).x));
+            holder.logi.setText(Util.doubleToString(locations.getLocations().get(position).y));
         holder.container.setOnClickListener(v->{
             if(pointClickListener!=null) pointClickListener.click(position);
         });

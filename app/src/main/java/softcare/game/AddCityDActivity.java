@@ -16,7 +16,7 @@ import java.util.List;
 
 import softcare.game.model.CodeX;
 import softcare.gui.ViewCityDistance;
-import softcare.util.S;
+import softcare.util.Util;
 
 public class AddCityDActivity extends AppCompatActivity {
 
@@ -62,7 +62,7 @@ addCity();
                             data[i] = c.getDistance();
                             i++;
                         }
-                        Log.d(S.TAG, " sending data size "+ data.length);
+                        Log.d(Util.TAG, " sending data size "+ data.length);
                         if (isOkay) {
 
                             Intent intent = new Intent(this, SolutionActivity.class);
