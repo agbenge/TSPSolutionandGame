@@ -174,8 +174,12 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
 
     private void dialogBack( Game game ) {
-        if (dialog == null) dialog = new StyleDialog(this);
-           if(game!=null) pauseTimer();
+        if (dialog == null) {
+            dialog = new StyleDialog(this);
+        }
+           if(game!=null) {
+               pauseTimer();
+           }
         dialog.setContentView(R.layout.pop_game_end);
         ((TextView) dialog.findViewById(R.id.title)).setText(getString(R.string.exit_game_msg));
         ((TextView) dialog.findViewById(R.id.msg)).setText(getString(R.string.exit_game_msg_));

@@ -81,7 +81,6 @@ public class PlotGame extends PlotTSP implements View.OnTouchListener {
                 a.recycle();
             }
         }
-
         setOnTouchListener( this);
 
     }
