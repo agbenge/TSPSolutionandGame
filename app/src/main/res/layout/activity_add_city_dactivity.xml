@@ -5,31 +5,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/fab_margin"
+    android:fitsSystemWindows="true"
     tools:context=".AddCityDActivity">
 
     <TextView
         android:id="@+id/textView12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/city_name"
         android:labelFor="@id/new_city_name"
+        android:text="@string/city_name"
         app:layout_constraintBottom_toBottomOf="@+id/new_city_name"
         app:layout_constraintEnd_toStartOf="@+id/new_city_name"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/new_city_name" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/new_city_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autofillHints="@string/city_name"
         android:ems="10"
+        android:hint="@string/city_name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView12"
-        app:layout_constraintTop_toTopOf="parent"
-        android:autofillHints="@string/city_name" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/add"
@@ -42,12 +43,12 @@
     <ScrollView
         android:id="@+id/scroll"
         android:layout_width="0dp"
+        app:layout_constraintVertical_bias="0"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/add"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_city_name"
-        app:layout_constraintVertical_bias="0.03">
+        app:layout_constraintTop_toBottomOf="@+id/new_city_name">
 
         <LinearLayout
             android:id="@+id/linear_list"
