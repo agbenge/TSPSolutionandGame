@@ -54,63 +54,19 @@ public 	static  void print (List<String> sub) {
 	public static int  getRandomInt(Random r, int lower, int upper){
 		return   r.nextInt(upper-lower)+lower;
 	}
-	public static String getLocationEmoji(int i) {
-		switch (i) {
-			case 0: return "📍"; // Pin - perfect starting point
-			case 1: return "🌍"; // Earth (Africa/Europe)
-			case 2: return "🏙️"; // Cityscape
-			case 3: return "🏔️"; // Mountain
-			case 4: return "🏝️"; // Island
-			case 5: return "🌈"; // Rainbow
-			case 6: return "🏰"; // Castle
-			case 7: return "🏖️"; // Beach
-			case 8: return "🌋"; // Volcano
-			case 9: return "✈️"; // Airplane
-			case 10: return "🚀"; // Rocket
-			case 11: return "🏞️"; // National park
-			case 12: return "🌆"; // City at dusk
-			case 13: return "🏕️"; // Camping
-			case 14: return "🌄"; // Sunrise over mountains
-			case 15: return "🏯"; // Japanese castle
-			case 16: return "🕌"; // Mosque
-			case 17: return "⛩️"; // Shinto shrine
-			case 18: return "🛕"; // Hindu temple
-			case 19: return "🏛️"; // Classical building
-			case 20: return "🏗️"; // Construction site
-			case 21: return "🚗"; // Car
-			case 22: return "🚢"; // Ship
-			case 23: return "🛫"; // Plane departure
-			case 24: return "🛬"; // Plane arrival
-			case 25: return "🛳️"; // Passenger ship
-			case 26: return "🚉"; // Train station
-			case 27: return "🛣️"; // Highway
-			case 28: return "🌧️"; // Rain
-			case 29: return "☀️"; // Sun
-			case 30: return "🌨️"; // Snow
-			case 31: return "⛈️"; // Thunderstorm
-			case 32: return "🌙"; // Moon
-			case 33: return "⭐"; // Star
-			case 34: return "🏠"; // House
-			case 35: return "🏡"; // House with garden
-			case 36: return "🏢"; // Office building
-			case 37: return "🏫"; // School
-			case 38: return "🏥"; // Hospital
-			case 39: return "🌅"; // Sunrise
-			case 40: return "🌉"; // Bridge at night
-			case 41: return "🗺️"; // World map
-			case 42: return "🌏"; // Earth (Asia/Australia)
-			case 43: return "🌎"; // Earth (Americas)
-			case 44: return "🌤️"; // Sun behind cloud
-			case 45: return "💡"; // Idea/light (discovery moment)
-			case 46: return "🎯"; // Target
-			case 47: return "🔭"; // Telescope (exploration)
-			case 48: return "🚁"; // Helicopter
-			case 49: return "🚜"; // Tractor (fields)
-			case 50: return "🧭"; // Compass
-			default: return "📌" + i; // fallback
-		}
-	}
 
+	public static String getLocationName(int number) {
+		StringBuilder columnName = new StringBuilder();
+
+		while (number > 0) {
+			number--; // Adjust for 1-based index
+			int remainder = number % 26;
+			columnName.insert(0, (char) ('A' + remainder));
+			number = number / 26;
+		}
+
+		return columnName.toString();
+	}
 	// project folder and sub folders
 	public static final String PATH_PROJECT = File.separator + "Path Finder";
 	public static final String PATH_IMAGES = PATH_PROJECT + File.separator + "Images";

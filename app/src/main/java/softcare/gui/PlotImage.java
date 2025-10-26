@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import softcare.game.R;
-import softcare.util.Util;
+import softcare.game.model.CityInfo;
 
 public class PlotImage  extends androidx.appcompat.widget.AppCompatImageView {
 
@@ -52,7 +52,8 @@ public class PlotImage  extends androidx.appcompat.widget.AppCompatImageView {
 
                     float circleRadius=30;
                     canvas.drawCircle((float)p.x,(float)p.y, circleRadius, highlightPaint);
-                    canvas.drawText( names.get(i),(float)p.x,(float)p.y,   highlightPaint);
+                    canvas.drawText( cityInfos.get(i).getName(),(float)p.x,(float)p.y,   highlightPaint);
+
                     i++;
                 }
         }
@@ -60,21 +61,21 @@ public class PlotImage  extends androidx.appcompat.widget.AppCompatImageView {
 
 
     private boolean  isAddingPoint;
-    List<String> names= new ArrayList<>();
+    List<CityInfo> cityInfos = new ArrayList<>();
     List<PointXY> locations= new ArrayList<>();
 
     public boolean isAddingPoint() {
         return isAddingPoint;
     }
 
-    public List<String> getNames() {
-        return names;
+    public List<CityInfo> getCityInfos() {
+        return cityInfos;
     }
 
     @Override
     public void setImageDrawable(@Nullable  Drawable drawable) {
         super.setImageDrawable(drawable);
-         names= new ArrayList<>();
+         cityInfos = new ArrayList<>();
         locations= new ArrayList<>();
     }
 
@@ -88,20 +89,17 @@ public class PlotImage  extends androidx.appcompat.widget.AppCompatImageView {
 
     private void _init(Context context, AttributeSet attrs) {
         highlightPaint = new Paint();
-        TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
-                R.styleable.PlotTSP, 0, 0);
+        try (TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
+                R.styleable.PlotTSP, 0, 0)) {
+                highlightColor = a.getInteger(R.styleable.PlotGame_highlightColor, Color.MAGENTA);
 
-        try {    highlightColor = a.getInteger(R.styleable.PlotGame_highlightColor, Color.MAGENTA);
-
-        } finally {
-            a.recycle();
         }
         setOnTouchListener(new OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (isAddingPoint) {
                     locations.add(new PointXY(event.getX(),event.getY()));
-                    names.add(Util.getLocationEmoji(names.size()));
+                    cityInfos.add(CityInfo.getCityInfo(cityInfos.size()));
             refresh();
                 }
                 return false;
@@ -111,7 +109,7 @@ public class PlotImage  extends androidx.appcompat.widget.AppCompatImageView {
 
     public void undo() {
         if(!locations.isEmpty()){
-            names.remove(names.size()-1);
+            cityInfos.remove(cityInfos.size()-1);
             locations.remove(locations.size()-1);
             refresh();
         }

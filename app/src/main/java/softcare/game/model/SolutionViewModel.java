@@ -65,7 +65,7 @@ if(isOkay) {
         String[] name_X_Y = lines[i].trim().split("\\s+");
         System.out.println(" Debug size " + name_X_Y.length);
         if (name_X_Y.length == 3) {
-            tsp.addCity(name_X_Y[0]);
+            tsp.addCity(CityInfo.getCityInfo(i));
             try {
                 double x = Double.parseDouble(name_X_Y[1]);
                 double y = Double.parseDouble(name_X_Y[2]);
@@ -243,6 +243,8 @@ return;
             }
             x = -1;
             if (columns.length == lines.length) {
+
+
                 for (String column : columns) {
                     if (x < y) {
                         if (x != -1) {
@@ -252,7 +254,7 @@ return;
                                     + " position " + x + " , " + y);
                             x++;
                         } else {
-                            tsp.addCity(column);
+                            tsp.addCity(new CityInfo( tsp.getCities().size()+1,column, column+"["+(tsp.getCities().size()+1)+"]"));
                             x = 0;
                         }
                     } else {
@@ -302,11 +304,11 @@ return;
 
         StringBuilder  res = new StringBuilder(tsp.getHeader());
         for (int i = 0; i < tsp.getCities().size(); i++) {
-            res.append(tsp.getCities().get(i).replace(" ", "_")).append("    ").append(Util.doubleToString(tsp.getPointXY().get(i).getX())).append("\t\t ").append(Util.doubleToString(tsp.getPointXY().get(i).getY()));
+            res.append(tsp.getCities().get(i).getName().replace(" ", "_")).append("    ").append(Util.doubleToString(tsp.getPointXY().get(i).getX())).append("\t\t ").append(Util.doubleToString(tsp.getPointXY().get(i).getY()));
             res.append("\n");
         }
 
-        return res+"EOF";
+        return res+"";
     }
 
 
@@ -322,8 +324,8 @@ return;
             return "";
         }
         StringBuilder res = new StringBuilder();
-        for (String c : tsp.getCities()) {
-            res.append("\t").append(c);
+        for (CityInfo c : tsp.getCities()) {
+            res.append("\t").append(c.getName());
         }
         res.append("\n");
         for (int i = 0; i < tsp.getCities().size(); i++) {
@@ -360,7 +362,7 @@ return;
 
         for (int x = 1; x < tsp.getDirection().size(); x++) {
             int i = tsp.getDirection().get(x);
-            res.append(tsp.getCities().get(prevouse)).append("\t");
+            res.append(tsp.getCities().get(prevouse).getName()).append("\t");
             res.append("\t").append(Util.doubleToString(tsp.getMatrix()[prevouse][i])).append("\tto\t");
 
             dist[prevouse] = tsp.getMatrix()[prevouse][i];
@@ -368,7 +370,7 @@ return;
             prevouse = i;
         }
 
-        res.append(tsp.getCities().get(prevouse)).append("\t");
+        res.append(tsp.getCities().get(prevouse).getName()).append("\t");
         if (tsp.getCost() == 0) {
             tsp.setCost(cost);
         }
@@ -388,7 +390,7 @@ return;
         prevouse = tsp.getDirection().get(0);
         for (int x = 0; x < tsp.getDirection().size(); x++) {
             int i = tsp.getDirection().get(x);
-            res.append(tsp.getCities().get(i)).append("\t");
+            res.append(tsp.getCities().get(i).getName()).append("\t");
         }
         return res.toString();
 
@@ -411,7 +413,7 @@ return;
     }
 
     private void updateTsp(Tsp tsp, String name, double[] distance) {
-        tsp.addCity(name);
+        tsp.addCity(new CityInfo(tsp.getCities().size()+1, name, name+"["+(tsp.getCities().size()+1)+"]"));
         if (tsp.updateMatrix(tsp.getCities().size() - 1, distance)) {
             tsp.setLocation(tsp.getCities().size() - 1);
             tsp.setTspActions(TspCode.UPDATE);
@@ -427,7 +429,7 @@ return;
         Tsp tsp = tspLiveData.getValue();
         if (tsp == null) tsp = new Tsp();
         tsp.addPointXY(_pointXY);
-        tsp.addCity(name);
+        tsp.addCity(new CityInfo(tsp.getCities().size()+1, name, name+"["+(tsp.getCities().size()+1)+"]" ));
         tsp.countDistancesAndUpdateMatrix();
         tsp.setTspActions(TspCode.UPDATE);
         tspLiveData.setValue(tsp);
@@ -441,7 +443,7 @@ return;
     public void addMapData(TspData data, String title) {
         Tsp tsp = new Tsp();
         tsp.setPointXY(data.getLocations());
-        tsp.setCities(data.getCities());
+        tsp.setCities(CityInfo.getCitiesFromNames(data.getCities()));
         tsp.countDistancesAndUpdateMatrix();
         tsp.setTspActions(TspCode.UPDATE);
         tsp.setHeader(title);
@@ -457,7 +459,7 @@ return;
     public void addLocData(TspData data, String title) {
         Tsp tsp = new Tsp();
         tsp.setPointXY(data.getLocations());
-        tsp.setCities(data.getCities());
+        tsp.setCities(CityInfo.getCitiesFromNames(data.getCities()));
         tsp.countDistancesAndUpdateMatrix();
         tsp.setHeader(title);
         tsp.setTspActions(TspCode.UPDATE);

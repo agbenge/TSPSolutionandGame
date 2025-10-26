@@ -13,9 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -35,6 +33,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import softcare.game.model.CityInfo;
 import softcare.game.model.CodeX;
 import softcare.game.model.TspData;
 import softcare.gui.PlotImage;
@@ -248,9 +247,9 @@ public void undo(View v){
 }
 
     public void finish(View v){
-      if(plotImage.getNames().size()>=3) {
+      if(plotImage.getCityInfos().size()>=3) {
           Intent intent = new Intent(this, SolutionActivity.class);
-          TspData data = new TspData(plotImage.getNames(), plotImage.getLocations());
+          TspData data = new TspData(CityInfo.getCitiesInfoNames(plotImage.getCityInfos()), plotImage.getLocations());
           intent.putExtra("data", data);
           intent.putExtra("img", img);
           intent.setFlags(RESULT_OK);

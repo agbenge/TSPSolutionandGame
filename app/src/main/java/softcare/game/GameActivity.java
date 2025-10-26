@@ -21,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import softcare.game.model.CityInfo;
 import softcare.game.model.CodeX;
 import softcare.game.model.Game;
 import softcare.game.model.GameShare;
@@ -84,24 +86,21 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         setAnimations();
         startSound();
 
+
+
     }
 
     private SoundPool soundPool;
 
     private void startSound() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_GAME)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build();
-            soundPool = new SoundPool.Builder().
-                    setMaxStreams(10).
-                    setAudioAttributes(audioAttributes)
-                    .build();
-        } else {
-            soundPool = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
-        }
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool.Builder().
+                setMaxStreams(10).
+                setAudioAttributes(audioAttributes)
+                .build();
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         soundIds = new int[10];
@@ -227,7 +226,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
       dialogS.setCancelable(false);
       taskManager.runTask(() -> {
           Gson gson = new Gson();
-          Location gs= new Location(tsp.getCities(), tsp.getPointXY());
+          Location gs= new Location(CityInfo.getCitiesInfoNames(tsp.getCities()), tsp.getPointXY());
           String text = gson.toJson(gs, Location.class);
           Intent sendIntent = new Intent();
           sendIntent.setAction(Intent.ACTION_SEND);
@@ -337,12 +336,12 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                     playId[0] = plotGame.getId();
 
                     int i = 0;
-                    for (String city : tsp.getCities()) {
+                    for (CityInfo city : tsp.getCities()) {
 
                         Button b = new Button(GameActivity.this);
                         b.setId(i);
                         playId[i] = i;
-                        b.setText(city);
+                        b.setText(city.getName());
                         b.setBackground(getResources().getDrawable(R.drawable.btn_b ));
                         b.setTextColor(getResources().getColor(R.color.white));
                         if (game.getDirection().contains(i))
@@ -746,10 +745,15 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     @Override
     public void onPoint(int index) {
         Button b = optionsContainer.findViewById(index);
-        if (b == null) b = answersContainer.findViewById(index);
-        if (b != null) b.callOnClick();
-       else
-        Log.e(CodeX.tag, "Index  button error " + index);
+        if (b == null) {
+            b = answersContainer.findViewById(index);
+        }
+        if (b != null) {
+            b.callOnClick();
+        }
+       else {
+            Log.e(CodeX.tag, "Index  button error " + index);
+        }
     }
 
 

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import softcare.game.R;
+import softcare.game.model.CityInfo;
 import softcare.game.model.CodeX;
 
 public class PlotGame extends PlotTSP implements View.OnTouchListener {
@@ -73,13 +74,10 @@ public class PlotGame extends PlotTSP implements View.OnTouchListener {
         try (TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.PlotTSP, 0, 0)) {
 
-            try {
                 //get the text and colors specified using the names in attrs.xml
                 highlightColor = a.getInteger(R.styleable.PlotGame_highlightColor, Color.MAGENTA);
                 positionColor = a.getInteger(R.styleable.PlotGame_positionColor, Color.BLUE);
-            } finally {
-                a.recycle();
-            }
+
         }
         setOnTouchListener( this);
 
@@ -112,7 +110,8 @@ public class PlotGame extends PlotTSP implements View.OnTouchListener {
                 x = getXZoom(p.x);
                 y = getYZoom(p.y);
                 canvas.drawCircle(x, y, circleRadius, circlePaint);
-                canvas.drawText(cities.get(i), x, y, labelPaint);
+                canvas.drawText(cities.get(i).getName(), x, y, labelPaint);
+                //todo add description effect on long press
                 i++;
             }
         drawPath(canvas);
@@ -156,7 +155,7 @@ public class PlotGame extends PlotTSP implements View.OnTouchListener {
 
 /// my methods
 
-    public void plotGame(List<PointXY> pointXY, List<String> cities) {
+    public void plotGame(List<PointXY> pointXY, List<CityInfo> cities) {
         super.pointXY = pointXY;
         super.cities = cities;
         super.path = new ArrayList<>();

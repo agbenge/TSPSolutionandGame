@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import softcare.game.R;
+import softcare.game.model.CityInfo;
 import softcare.game.model.CodeX;
 import softcare.util.Util;
 
@@ -59,7 +60,6 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
         try (TypedArray a = context.getTheme().obtainStyledAttributes(attrs,
                 R.styleable.PlotTSP, 0, 0)) {
 
-            try {
                 //get the text and colors specified using the names in attrs.xml
                 circleColor = a.getInt(R.styleable.PlotTSP_circleColor, Color.BLUE);
                 lineColor = a.getInteger(R.styleable.PlotTSP_lineColor, Color.MAGENTA);
@@ -71,9 +71,7 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
                 circleRadius = a.getInteger(R.styleable.PlotTSP_circleRadiusTsp, textSize);
                 zoom = a.getInteger(R.styleable.PlotTSP_zoomValue, 1);
                 circleBorderWidth = a.getInteger(R.styleable.PlotTSP_circleWidth, 5);
-            } finally {
-                a.recycle();
-            }
+
         }
 
         spaceX= Math.max(textSize, circleRadius);
@@ -177,7 +175,8 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
             y = getYZoom(pointXY.get(i).y ) ;
             gc.lineTo(x, y);
            canvas.drawCircle(x, y, circleRadius, circlePaint);
-            canvas.drawText(cities.get(i), x, y, labelPaint);
+            canvas.drawText(cities.get(i).getName(), x, y, labelPaint);
+            //todo add log press effect
         }
         gc.lineTo(i_x, i_y);
        canvas.drawPath(gc, linePaint);
@@ -246,7 +245,7 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
 /// my methods
 
     protected List<PointXY> pointXY;
-    protected List<String> cities;
+    protected List<CityInfo> cities;
     protected List<Integer> path;
     protected double zoom = 1;
     double invertNegative = 0;
@@ -254,7 +253,7 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
 
 
     public void plot(List<PointXY> pointXY,
-                     List<String> cities,
+                     List<CityInfo> cities,
                      List<Integer> path) {
         this.pointXY = pointXY;
         this.cities = cities;
@@ -328,10 +327,7 @@ public class PlotTSP extends androidx.appcompat.widget.AppCompatImageView {
                 new PointXY(7, 5),
                 new PointXY(5, 3),
                 new PointXY(7, 7) );
-        this.cities = Arrays.asList(
-                "A",
-                "B",
-                "C","D","E","F" );
+        this.cities =  CityInfo.getCitiesEmoji(6);
         this.path = Arrays.asList(
                 2,
                 0,

@@ -1,5 +1,6 @@
 package softcare.game;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity{
    private boolean soundState;
     private SharedPreferences gameSettings;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +42,10 @@ public class MainActivity extends AppCompatActivity{
         ImageView sound= findViewById(R.id.sound_btn);
         findViewById(R.id.share_btn).setOnClickListener(this::shareApp);
        if(gameSettings.getBoolean("k_sound", true)|| gameSettings.getBoolean("b_sound", true)){
-                      sound.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_volume_up_24));
-                      soundState=true;
+           sound.setImageResource(R.drawable.ic_baseline_volume_up_24);
+           soundState=true;
        }else{
-           sound.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_volume_off_24));
+           sound.setImageResource( R.drawable.ic_baseline_volume_off_24);
            soundState=false;
        }
         sound.setOnClickListener(v -> {
@@ -57,11 +59,11 @@ public class MainActivity extends AppCompatActivity{
 
             if(gameSettings.getBoolean("k_sound", true)||
                     gameSettings.getBoolean("b_sound", true)){
-                sound.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_volume_up_24));
+                sound.setImageResource(R.drawable.ic_baseline_volume_up_24);
                 Toast.makeText(MainActivity.this,R.string.sound_enable,Toast.LENGTH_SHORT).show();
 
             }else{
-                sound.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_volume_off_24));
+                sound.setImageResource(R.drawable.ic_baseline_volume_off_24);
                 Toast.makeText(MainActivity.this,R.string.sound_disable,Toast.LENGTH_SHORT).show();
             }
 

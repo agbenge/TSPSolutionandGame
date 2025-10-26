@@ -30,6 +30,7 @@ import java.io.OutputStream;
 
 import softcare.game.databinding.ActivitySolutionBinding;
 import softcare.game.model.Alg;
+import softcare.game.model.CityInfo;
 import softcare.game.model.CodeX;
 import softcare.game.model.SolutionViewModel;
 import softcare.game.model.TaskManager;
@@ -345,7 +346,7 @@ public class SolutionActivity extends AppCompatActivity {
 
     private void prepareResult(Tsp tsp) {
         Intent intent = new Intent(this, PlotTspActivity.class);
-        intent.putExtra("result", new TspResult(tsp.getCities(), tsp.getPointXY()
+        intent.putExtra("result", new TspResult(CityInfo.getCitiesInfoNames(tsp.getCities()), tsp.getPointXY()
                 , tsp.getDirection(), tsp.getCost(), tsp.getDuration(), tsp.getResult(), imgpath));
         startActivity(intent);
         Log.d(CodeX.tag, " Path " + imgpath);
@@ -381,7 +382,7 @@ public class SolutionActivity extends AppCompatActivity {
         Intent intent = new Intent(SolutionActivity.this, AddCityDActivity.class);
         if (tsp != null) {
             Log.d(CodeX.tag, tsp.getCities().toString() + " sending names  " + tsp.getCities().size());
-            intent.putExtra("Cities", tsp.getCities().toArray(new String[0]));
+            intent.putExtra("Cities",CityInfo.getCitiesInfoNames( tsp.getCities()).toArray(new String[0]));
         } else {
             Log.d(CodeX.tag, " sending names is 00  ");
         }
@@ -396,7 +397,7 @@ public class SolutionActivity extends AppCompatActivity {
         Tsp tsp = solutionViewModel.getTsp();
         if (tsp != null) {
             if (tsp.getCities() != null && tsp.getCities().size() > 0) {
-                TspData data = new TspData(tsp.getCities(), tsp.getPointXY());
+                TspData data = new TspData(CityInfo.getCitiesInfoNames(tsp.getCities()), tsp.getPointXY());
                 intent.putExtra("data", data);
                 Log.d(CodeX.tag, tsp.getCities().get(0) + "sending tsp init input" + tsp.getCities().size());
 

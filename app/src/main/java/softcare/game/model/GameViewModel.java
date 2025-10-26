@@ -17,7 +17,6 @@ import softcare.algorithm.SelectionType;
 import softcare.algorithm.TSPNearestNeighbour;
 import softcare.algorithm.TspDynamicProgrammingIterative;
 import softcare.gui.PointXY;
-import softcare.util.Util;
 
 public class GameViewModel extends ViewModel {
 
@@ -163,36 +162,37 @@ public class GameViewModel extends ViewModel {
     public void start(Game game) {
         Random r= new Random();
         List<PointXY> p=  new ArrayList<>();
-        List<String> n=  new ArrayList<>();
+        List<CityInfo> emojiInfos=  new ArrayList<>();
         for (int i = 0; i<game.getNodes() ;i++){
              p.add(getUniquePoint(p,r,game,i));
-             n.add(Util.getLocationEmoji(i));
+             emojiInfos.add(CityInfo.getEmoji(i));
         }
         Tsp tsp = getTspLiveData().getValue();
 
         if(tsp==null) {
             tsp = new Tsp();
             tsp.setPointXY(p);
-            tsp.setCities(n);
+            tsp.setCities(emojiInfos);
             tsp.countDistancesAndUpdateMatrix();
         }else {
                 tsp.setPointXY(p);
-                tsp.setCities(n);
+                tsp.setCities(emojiInfos);
                 tsp.countDistancesAndUpdateMatrix();
         }
 
 
 
         /// run in background thread...
-        if(n.size()<20){
+        if(emojiInfos.size()<20){
             tsp.setAlg(Alg.DYN);
         }else {
             tsp.setAlg(Alg.KNN);
         }
-        if(n.size()>2)
+        if(emojiInfos.size()>2)
         startAgl(tsp);
-        else
-        updateCodeLiveData.setValue(UpdateCode.NOT_SOLVED);
+        else {
+            updateCodeLiveData.setValue(UpdateCode.NOT_SOLVED);
+        }
     }
 
 
@@ -232,7 +232,7 @@ public class GameViewModel extends ViewModel {
         Game game= new Game();
         game.setLevel(share.getNames().size()-game.defaultLevelToNode);
         Tsp tsp = new Tsp();
-        tsp.setCities(share.getNames());
+        tsp.setCities(CityInfo.getCitiesEmoji(share.getNames().size()));
         tsp.setPointXY(share.getLocations());
         tsp.countDistancesAndUpdateMatrix();
         getGameLiveData().postValue(game);

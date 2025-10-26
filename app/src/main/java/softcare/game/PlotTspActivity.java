@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import softcare.game.model.CityInfo;
 import softcare.game.model.CodeX;
 import softcare.game.model.TspResult;
 import softcare.gui.PlotTSP;
@@ -25,7 +26,7 @@ public class PlotTspActivity extends AppCompatActivity {
         plotTSP = findViewById(R.id.plotTSP);
         TspResult tspResult=getIntent().getParcelableExtra("result");
         if(tspResult!=null) {
-            plotTSP.plot(tspResult.getLocations(), tspResult.getCities(),  tspResult.getPath());
+            plotTSP.plot(tspResult.getLocations(), CityInfo.getCitiesFromNames(tspResult.getCities()),  tspResult.getPath());
             ( (TextView)findViewById(R.id.scores)).setText(String.valueOf(Util.formDouble(tspResult.getCost())));
             String t=tspResult.getTime() + getString(R.string.milli_sec_);
             ( (TextView)findViewById(R.id.time)).setText(t);

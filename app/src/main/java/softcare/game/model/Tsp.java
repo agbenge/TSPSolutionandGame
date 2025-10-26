@@ -15,7 +15,7 @@ public class Tsp {
     }
     private  String result;
    private TspCode tspCode = TspCode.EMPTY;
-    private List<String> cities;
+    private List<CityInfo> cities;
     private List<Integer> direction;
     private  String header;
     private List<PointXY> pointXY;
@@ -27,7 +27,7 @@ public class Tsp {
     private  double cost;
 
 
-    public void addCity(String _city){
+    public void addCity(CityInfo _city){
          cities.add(_city);
      }
     public void addDirection(int _direction){
@@ -43,11 +43,11 @@ public class Tsp {
         header=header+_header;
     }
 
-    public List<String> getCities() {
+    public List<CityInfo> getCities() {
         return cities;
     }
 
-    public void setCities(List<String> cities) {
+    public void setCities(List<CityInfo> cities) {
         this.cities = cities;
     }
 
@@ -245,14 +245,14 @@ public class Tsp {
     }
 
 
- public  void _addCityXY(String name, PointXY _pointXY){
+ public  void _addCityXY(CityInfo city, PointXY _pointXY){
          pointXY.add(_pointXY);
-         cities.add(name);
+         cities.add(city);
          countDistancesAndUpdateMatrix();
  }
 
- public void   _addCity(String name, double[] data){
-     cities.add(name);
+ public void   _addCity(CityInfo city, double[] data){
+     cities.add(city);
      updateMatrix(cities.size() - 1, data);
      setLocation(cities.size() - 1);
 
