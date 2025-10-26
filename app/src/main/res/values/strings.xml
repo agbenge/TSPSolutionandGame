@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Path Finder</string>
+    <string name="app_name">Path Finder Puzzle</string>
     <string name="title_activity_solution">Find My Path</string>
     <string name="large_text">
         PathFinder\n
