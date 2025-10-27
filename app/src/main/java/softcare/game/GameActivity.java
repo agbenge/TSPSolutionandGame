@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -85,7 +86,21 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         startSound();
 
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Game game = null;
+                try {
+                    if (gameViewModel != null) {
+                        game = gameViewModel.getGame();
+                    }
+                } catch (Exception e) {
+                    Log.e(CodeX.tag, "Error getting game: " + e.getMessage(), e);
+                }
 
+                dialogBack(game);
+            }
+        });
     }
 
     private SoundPool soundPool;
@@ -144,7 +159,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         ProgressBar progressBar= dialog.findViewById(R.id.progressBar);
         dialog.show();
         dialog.setCancelable(false);
-        //dialog.setOnCancelListener(dialog -> super.onBackPressed());
+
         taskManager.runTask(() -> {
             GameShare gameShare = getCurrentGame(CodeX.tspKey, CodeX.gameKey);
            progressBar.setIndeterminate(false);
@@ -191,7 +206,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
             dialog.cancel();
             if(taskManager!=null) taskManager.shutdownNow();
-            super.onBackPressed();
+            super.finish();
         });
         dialog.setCancelable(false);
         dialog.show();
@@ -211,7 +226,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         dialog.findViewById(R.id.try_again).setOnClickListener(v -> {
             dialog.cancel();
             if(taskManager!=null) taskManager.shutdownNow();
-            super.onBackPressed();
+            super.finish();
         });
         dialog.setCancelable(false);
         dialog.show();
@@ -721,16 +736,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        try {
-            Game game = gameViewModel.getGame();
-            dialogBack(game);
-        }catch (Exception e){
-            Log.d(CodeX.tag,"error "+e.getMessage());
-            dialogBack(null);
-        }
-    }
+
     @Override
     protected void onStop() {
         super.onStop();

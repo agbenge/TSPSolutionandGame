@@ -113,7 +113,7 @@ public class Game {
         }
 
         double cost = 0;
-        double[] dist = new double[getDirection().size()];
+       // double[] dist = new double[getDirection().size()];
         StringBuilder pathBuilder = new StringBuilder();
         int previous = getDirection().get(0);
 
@@ -123,7 +123,8 @@ public class Game {
             int current = getDirection().get(x);
             double segment = tsp.getMatrix()[previous][current];
             cost += segment;
-            dist[previous] = segment;
+           // dist[previous] = segment;  // add distance to previous city
+
 
             // Append city and segment info
             pathBuilder.append(tsp.getCities().get(previous).getName())
