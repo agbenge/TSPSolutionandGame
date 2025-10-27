@@ -150,9 +150,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
     protected GameShare getCurrentGame(String tspKey,String gameKey){
          return  openGame(tspKey, gameKey);
     }
-    protected GameShare getBestGame(String tspKey,String gameKey){
-        return  openGame(tspKey, gameKey);
-    }
+//    protected GameShare getBestGame(String tspKey,String gameKey){
+//        return  openGame(tspKey, gameKey);
+//    }
     protected void dialogResume() {
         if (dialog == null) dialog = new StyleDialog(this);
         dialog.setContentView(R.layout.pop_progress);
