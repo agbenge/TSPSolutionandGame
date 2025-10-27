@@ -141,24 +141,35 @@ public class GameViewModel extends ViewModel {
 
 
 
-   private PointXY getUniquePoint( List<PointXY> p, Random r,Game game, int i){
+    private PointXY getUniquePoint(List<PointXY> existingPoints, Random random, Game game, int index) {
+        int bound = game.getBound();
+        PointXY point;
 
-       int x= r.nextInt(game.getBound());
-       int y= r.nextInt(game.getBound());
-      PointXY pxy= new PointXY(x,y);
-       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-           if(p.stream().anyMatch(pointXY -> (pointXY.x == pxy.x) && (pointXY.y == pxy.y))){
-               x= r.nextInt(game.getBound());
-               y= r.nextInt(game.getBound());
-           }
-           Log.d(CodeX.tag, i+"---->  x "+x+"  y "+y);
-       } else{
-           Log.w(CodeX.tag, i+" This point may be same with others ---->  x "+x+"  y "+y);
-       }
+        int safetyCounter = 0; // Prevent infinite loop if all points are taken
+        do {
+            int x = random.nextInt(bound);
+            int y = random.nextInt(bound);
+            point = new PointXY(x, y);
+            safetyCounter++;
+        } while (containsPoint(existingPoints, point) && safetyCounter < bound * bound);
 
+        if (containsPoint(existingPoints, point)) {
+            Log.w(CodeX.tag, "Failed to find unique point after many attempts!");
+        }
 
-        return pxy;
+        Log.d(CodeX.tag, index + " ---> x: " + point.x + "  y: " + point.y);
+        return point;
     }
+
+    private boolean containsPoint(List<PointXY> points, PointXY newPoint) {
+        for (PointXY p : points) {
+            if (p.x == newPoint.x && p.y == newPoint.y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void start(Game game) {
         Random r= new Random();
         List<PointXY> p=  new ArrayList<>();

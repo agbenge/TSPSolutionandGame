@@ -6,7 +6,6 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import softcare.game.GameMessage;
 import softcare.game.R;
 
 public class Game {

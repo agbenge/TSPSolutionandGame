@@ -1,8 +1,10 @@
-package softcare.game;
+package softcare.game.model;
 
 import android.content.Context;
 
 import java.util.Random;
+
+import softcare.game.R;
 
 public class GameMessage {
 
