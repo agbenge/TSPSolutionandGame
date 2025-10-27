@@ -7,7 +7,6 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -21,7 +20,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -383,12 +381,13 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         if (tsp != null) {
             if (game != null) {
                 String result = game.getResult(tsp, this);
+
                 if (Util.formDouble(tsp.getCost()) >=
                         Util.formDouble(game.getCost())) {
                     dialogWin(game, result, tsp);
 
                 } else {
-                    dialogLoose(game, result);
+                    dialogLose(game, result);
                 }
             }
         }
@@ -497,7 +496,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 , v -> share()).show();
     }
 
-    private void dialogLoose(Game game, String result) {
+    private void dialogLose(Game game, String result) {
         if (game.getTryAgain() > 3) {
             dialogGameOver(game);
             return;
@@ -554,8 +553,12 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                         if (gameViewModel.getGameLiveData().getValue() == null)
                             selectNewGame();
                     }
-                } else dialogLoose(game, result);
-            } else dialogWin(game, result, tsp);
+                } else {
+                    dialogLose(game, result);
+                }
+            } else {
+                dialogWin(game, result, tsp);
+            }
 
 
         });
@@ -798,7 +801,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 public void onFinish() {
                     optionsContainer.removeAllViews();
                     answersContainer.removeAllViews();
-                    dialogLoose(game, getString(R.string.time_up_msg));
+                    dialogLose(game, getString(R.string.time_up_msg));
 
                 }
             };
@@ -815,7 +818,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
 
                 @Override
                 public void onFinish() {
-                    dialogLoose(game, "Sorry you have take too much time to figure out the solution try again");
+                    dialogLose(game, "Sorry you have take too much time to figure out the solution try again");
                     optionsContainer.removeAllViews();
                     answersContainer.removeAllViews();
                 }

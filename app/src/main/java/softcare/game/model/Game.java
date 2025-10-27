@@ -6,8 +6,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import softcare.game.GameMessage;
 import softcare.game.R;
-import softcare.util.Util;
 
 public class Game {
     private int level;
@@ -106,42 +106,56 @@ public class Game {
         this. usedTime=0L;
     }
 
-    public String getResult(Tsp tsp , Context context) { /// presenting path as result
-        double cost = 0;
-        if (getDirection() != null) {
-            if (getDirection().size() < 2) {
-                Log.e(CodeX.tag,"Action have no defined output yet... Size less than 2");
-                return context.getString(R.string.undefined_output);
-            }
-        } else{
-                Log.e(CodeX.tag,"Action have no defined output yet... Null Error");
-            return  context.getString(R.string.undefined_output);
+    public String getResult(Tsp tsp, Context context) {
+        if (getDirection() == null || getDirection().size() < 2) {
+            Log.e(CodeX.tag, "Action has no defined output yet... Invalid path");
+            return context.getString(R.string.undefined_output);
         }
-        String res1="";
-        String res = "\n";
-        res += context.getString(R.string.path);
+
+        double cost = 0;
         double[] dist = new double[getDirection().size()];
-        int prevouse = getDirection().get(0);
+        StringBuilder pathBuilder = new StringBuilder();
+        int previous = getDirection().get(0);
+
+        pathBuilder.append(context.getString(R.string.path)).append(": ");
 
         for (int x = 1; x < getDirection().size(); x++) {
-            int i = getDirection().get(x);
-            res += tsp.getCities().get(prevouse) + "\t";
-            res += "\t" +  Util.formDouble(tsp.getMatrix()[prevouse][i]) + "\tto\t";
+            int current = getDirection().get(x);
+            double segment = tsp.getMatrix()[previous][current];
+            cost += segment;
+            dist[previous] = segment;
 
-            dist[prevouse] = tsp.getMatrix()[prevouse][i];
-            cost = cost + tsp.getMatrix()[prevouse][i];
+            // Append city and segment info
+            pathBuilder.append(tsp.getCities().get(previous).getName())
+//                    .append(" (")
+//                    .append(Util.formDouble(segment))
+//                    .append(")")
+                    .append("→");
 
-            prevouse = i;
+            // Update previous
+            previous = current;
         }
-        cost = cost + tsp.getMatrix()[prevouse][getDirection().get(0)];
-        res += tsp.getCities().get(prevouse) + "\t";
-        res1 += context.getString(R.string.distances_by_u) + Util.formDouble(cost)+
-                context.getString(R.string.distance_by_alg)+ Util.formDouble(tsp.getCost());
 
+        // Add return to start city
+        cost += tsp.getMatrix()[previous][getDirection().get(0)];
+        pathBuilder.append(tsp.getCities().get(previous).getName())
+                .append("→")
+                .append(tsp.getCities().get(getDirection().get(0)).getName());
+
+        // Determine win or lose
+        double expected = tsp.getCost();
+        boolean isWin = Math.abs(cost - expected) < 0.001 || cost <= expected;
 
         this.cost = cost;
-        return res1+res;
 
+        // Use the GameMessage class
+        return GameMessage.buildResultMessage(
+                context,
+                isWin,
+                expected,
+                cost,
+                pathBuilder.toString()
+        );
     }
 
 

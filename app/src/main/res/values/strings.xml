@@ -216,4 +216,67 @@ Open the App and click Find My Path for the solution model will be visible to wo
     <string name="intro_s8_m"> Click Save in the option to save. Remember the saving input method as it will be needed when opening.Always open with the saved input type</string>
     <string name="about">About</string>
 
+
+  <!-- ✅ Win Messages -->
+  <string name="win_message1">🎉 Brilliant! You found one of the shortest routes!</string>
+  <string name="win_message2">🚀 You did it! Efficiency at its best!</string>
+  <string name="win_message3">🧠 Smart moves! You conquered the TSP challenge!</string>
+  <string name="win_message4">🏅 Great job! You optimized like a true pathfinder!</string>
+  <string name="win_message5">🌍 Perfect route! You travelled smarter, not longer!</string>
+  <string name="win_message6">✨ Outstanding! Every city, one smooth journey!</string>
+  <string name="win_message7">🔥 Flawless route! That’s top-tier optimization!</string>
+  <string name="win_message8">🎯 Perfect precision! You’ve mastered the map!</string>
+  <string name="win_message9">💪 Champion! Your logic is unstoppable!</string>
+  <string name="win_message10">🏆 Victory! You beat the path and the distance!</string>
+  <string name="win_message11">🧭 Excellent planning — that’s how a true traveler wins!</string>
+  <string name="win_message12">⚙️ Every move mattered — and you nailed it!</string>
+  <string name="win_message13">⭐ Incredible! You just set a new benchmark!</string>
+  <string name="win_message14">💡 Genius route! You truly think like a TSP solver!</string>
+  <string name="win_message15">🎉 Record broken! You travelled the smartest way possible!</string>
+  <string name="win_message16">🌟 Unstoppable! You’ve mastered optimization!</string>
+  <string name="win_message17">🥇 Precision perfect! That’s how it’s done!</string>
+  <string name="win_message18">🏹 Bullseye! Every move was on target!</string>
+  <string name="win_message19">🧩 Every city in sync — perfect route built!</string>
+  <string name="win_message20">🔥 You’re a true pathfinding pro!</string>
+  <string name="win_message21">💎 Masterstroke! You found pure efficiency!</string>
+  <string name="win_message22">🚦 Smooth travel! No wrong turns, pure genius!</string>
+  <string name="win_message23">🌈 Perfection! You reached true balance!</string>
+  <string name="win_message24">🧠 Logic level: Elite optimizer!</string>
+  <string name="win_message25">🏁 You nailed it — the route couldn’t be better!</string>
+
+  <!-- ❌ Lose Messages -->
+  <string name="lose_message1">😅 Not bad, but there’s a shorter path out there.</string>
+  <string name="lose_message2">🧩 Close call! Try improving your route next time.</string>
+  <string name="lose_message3">⚡ Too long! Think sharper, plan better!</string>
+  <string name="lose_message4">🚧 Almost! Re-check your order — you can do better!</string>
+  <string name="lose_message5">🌀 Every extra mile matters — try again for a tighter route!</string>
+  <string name="lose_message6">💭 So close! A few smarter turns could win it next time!</string>
+  <string name="lose_message7">🤔 Hmm… there’s a better route waiting to be found.</string>
+  <string name="lose_message8">📍 You visited every city — now find the best path!</string>
+  <string name="lose_message9">🧮 Optimization takes patience — give it another shot!</string>
+  <string name="lose_message10">💫 Keep refining — every step gets you closer!</string>
+  <string name="lose_message11">🛣️ Your route’s okay, but it could be smoother.</string>
+  <string name="lose_message12">🔁 Retry and find the efficient route — you’ve got this!</string>
+  <string name="lose_message13">💥 Don’t give up — even pros need a few tries!</string>
+  <string name="lose_message14">🧠 Think like a strategist — less travel, more logic!</string>
+  <string name="lose_message15">🧭 A little more planning and you’ll master this map!</string>
+  <string name="lose_message16">💨 Too far! Your cities are out of sync — try again!</string>
+  <string name="lose_message17">🚦 Missed a turn? Plan your route carefully next time!</string>
+  <string name="lose_message18">⚙️ The puzzle beat you this time — but not for long!</string>
+  <string name="lose_message19">🧩 You’re learning — every mistake brings mastery!</string>
+  <string name="lose_message20">🧱 You built a long path — shorten it next time!</string>
+  <string name="lose_message21">🔍 There’s a smarter way — find it!</string>
+  <string name="lose_message22">🧠 The cities are connected, but not efficiently!</string>
+  <string name="lose_message23">💡 You’re close! Just a few tweaks could win it!</string>
+  <string name="lose_message24">📊 Analyze your route — improvement awaits!</string>
+  <string name="lose_message25">🌙 Not perfect yet, but your next one will shine!</string>
+
+  <!-- 🏁 Distance info -->
+  <string name="your_total_distance">Your total distance: %.2f</string>
+  <string name="optimal_distance">Optimal distance: %.2f</string>
+  <string name="expected_best">Expected best: %.2f</string>
+  <string name="went_longer">You went %.2f units longer.</string>
+  <string name="path_followed">Path followed: %1$s</string>
+
+
 </resources>

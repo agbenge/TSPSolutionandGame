@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -95,15 +96,45 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void contactUs(View view) {
-        String subject = getString(R.string.app_name);
-        String[] addresses = getResources().getStringArray(R.array.email_addresses);
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:"));
-        intent.putExtra(Intent.EXTRA_EMAIL, addresses);
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);}
+        // Show a small options dialog to choose between Email or WhatsApp
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Contact Us")
+                .setItems(new CharSequence[]{"Email Support", "WhatsApp Support"}, (dialog, which) -> {
+                    if (which == 0) {
+                        contactByEmail();
+                    } else {
+                        contactByWhatsApp();
+                    }
+                })
+                .show();
     }
+
+    private void contactByEmail() {
+        try {
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+            emailIntent.setData(Uri.parse("mailto:raphaelraymondproduct@gmali.com")); // Replace with your email
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Support Request");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Hello,\n\nI need help with...");
+            startActivity(Intent.createChooser(emailIntent, "Send Email"));
+        } catch (Exception e) {
+            Toast.makeText(this, "No email app found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void contactByWhatsApp() {
+        String phoneNumber = "+2349022588943"; // Replace with your WhatsApp support number
+        String message = "Hello, I need help with your app.";
+
+        try {
+            String url = "https://wa.me/" + phoneNumber.replace("+", "") + "?text=" + Uri.encode(message);
+            Intent whatsappIntent = new Intent(Intent.ACTION_VIEW);
+            whatsappIntent.setData(Uri.parse(url));
+            startActivity(whatsappIntent);
+        } catch (Exception e) {
+            Toast.makeText(this, "WhatsApp not installed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
 
     public  void game(View v){
@@ -124,87 +155,86 @@ public class MainActivity extends AppCompatActivity{
     public void help(View v ) {
         startActivity(new Intent(this, IntroMain.class));
     }
-    final private String prefName = "game_settings";
-    public  boolean  reinstallOn(int day, int month, int year){
-        Date now= new Date();
-        now.setTime(System.currentTimeMillis());
-        Calendar c = Calendar.getInstance();
-        int hour = c.get(Calendar.HOUR_OF_DAY);
-        int minute = c.get(Calendar.MINUTE);
-        Date end= Util.getDateFromString(day + "/" + (month + 1) + "/" + year + " " + hour + ":" + minute);
-        if(end.before(now)){
-            System.out.println("Time is over");
-            return true;
-        }else{
-            System.out.println("Time  remains ");
-            return false;
-        }
-    }
-
-    public  boolean reinstallOn2(int day, int month, int year){
-        boolean res=reinstallOn(day,month,year);
-        SharedPreferences.Editor editor = gameSettings.edit();
-        editor.putBoolean("grace", !res);
-        editor.apply();
-        editor.commit();
-        if(res){
-          final int warnCount=  gameSettings.getInt("warn_count",0);
-            editor.putInt("warn_count", warnCount+1);
-            editor.apply();
-            editor.commit();
-          StyleDialog d= new StyleDialog(this);
-          d.setContentView(R.layout.update_app);
-          d.show();
-          d.setCancelable(false);
-          d.findViewById(R.id.return_btn).setOnClickListener(v->{
-              d.cancel();
-              if(warnCount>15) onBackPressed();
-          });
-            if(warnCount>15)
-                ((TextView) d.findViewById(R.id.msg)).setText(R.string.warn_over);
-          else {
-             String s=getString(R.string.warn_msg)
-                     +" "+(15-warnCount)+" "+getString(R.string.time_s_);
-                ((TextView) d.findViewById(R.id.msg)).setText(s);
-            }
-
-            d.findViewById(R.id.update).setOnClickListener(v->{
-                d.cancel();
-
-                    String url1 =  "market://details?id="    +getApplicationContext().getPackageName() ;
-                    String url2 =  "https://play.google.com/store/apps/details?id=com.softcare.game"    ;
-                    try {
-                        startActivity(new Intent(Intent.ACTION_VIEW,  Uri.parse(url1)));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        try {
-                           startActivity(new Intent(Intent.ACTION_VIEW,  Uri.parse(url2)));
-                        } catch ( Exception e2){
-                            Snackbar.make(v, getString(R.string.error_occurred), Snackbar.LENGTH_LONG).show();
-
-
-                            e2.printStackTrace();
-                        }
-
-                    }
-
-                finish();
-            });
-            d.findViewById(R.id.button).setOnClickListener(this::help);
-        }
-
-        return res;
-    }
-    public void isNewUser(boolean update  ) {
-
-        SharedPreferences.Editor editor = gameSettings.edit();
-        editor.putBoolean("newUser", update);
-        editor.apply();
-        editor.commit();
-    }
-    public boolean isNewUser() {
-        return gameSettings.getBoolean("newUser", true);
-    }
-
+ //   final private String prefName = "game_settings";
+//    public  boolean  reinstallOn(int day, int month, int year){
+//        Date now= new Date();
+//        now.setTime(System.currentTimeMillis());
+//        Calendar c = Calendar.getInstance();
+//        int hour = c.get(Calendar.HOUR_OF_DAY);
+//        int minute = c.get(Calendar.MINUTE);
+//        Date end= Util.getDateFromString(day + "/" + (month + 1) + "/" + year + " " + hour + ":" + minute);
+//        if(end.before(now)){
+//            System.out.println("Time is over");
+//            return true;
+//        }else{
+//            System.out.println("Time  remains ");
+//            return false;
+//        }
+//    }
+//
+//    public  boolean reinstallOn2(int day, int month, int year){
+//        boolean res=reinstallOn(day,month,year);
+//        SharedPreferences.Editor editor = gameSettings.edit();
+//        editor.putBoolean("grace", !res);
+//        editor.apply();
+//        editor.commit();
+//        if(res){
+//          final int warnCount=  gameSettings.getInt("warn_count",0);
+//            editor.putInt("warn_count", warnCount+1);
+//            editor.apply();
+//            editor.commit();
+//          StyleDialog d= new StyleDialog(this);
+//          d.setContentView(R.layout.update_app);
+//          d.show();
+//          d.setCancelable(false);
+//          d.findViewById(R.id.return_btn).setOnClickListener(v->{
+//              d.cancel();
+//              if(warnCount>15) onBackPressed();
+//          });
+//            if(warnCount>15)
+//                ((TextView) d.findViewById(R.id.msg)).setText(R.string.warn_over);
+//          else {
+//             String s=getString(R.string.warn_msg)
+//                     +" "+(15-warnCount)+" "+getString(R.string.time_s_);
+//                ((TextView) d.findViewById(R.id.msg)).setText(s);
+//            }
+//
+//            d.findViewById(R.id.update).setOnClickListener(v->{
+//                d.cancel();
+//
+//                    String url1 =  "market://details?id="    +getApplicationContext().getPackageName() ;
+//                    String url2 =  "https://play.google.com/store/apps/details?id=com.softcare.game"    ;
+//                    try {
+//                        startActivity(new Intent(Intent.ACTION_VIEW,  Uri.parse(url1)));
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        try {
+//                           startActivity(new Intent(Intent.ACTION_VIEW,  Uri.parse(url2)));
+//                        } catch ( Exception e2){
+//                            Snackbar.make(v, getString(R.string.error_occurred), Snackbar.LENGTH_LONG).show();
+//
+//
+//                            e2.printStackTrace();
+//                        }
+//
+//                    }
+//
+//                finish();
+//            });
+//            d.findViewById(R.id.button).setOnClickListener(this::help);
+//        }
+//
+//        return res;
+//    }
+//    public void isNewUser(boolean update  ) {
+//        SharedPreferences.Editor editor = gameSettings.edit();
+//        editor.putBoolean("newUser", update);
+//        editor.apply();
+//        editor.commit();
+//    }
+//    public boolean isNewUser() {
+//        return gameSettings.getBoolean("newUser", true);
+//    }
+//
 
 }
