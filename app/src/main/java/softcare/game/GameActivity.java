@@ -340,7 +340,7 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                         b.setId(i);
                         playId[i] = i;
                         b.setText(city.getName());
-                        b.setBackground(getResources().getDrawable(R.drawable.btn_b ));
+                        b.setBackgroundResource(R.drawable.btn_b );
                         b.setTextColor(getResources().getColor(R.color.white));
                         if (game.getDirection().contains(i))
                             addAnswer(b, i);

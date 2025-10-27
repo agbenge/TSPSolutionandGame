@@ -152,7 +152,7 @@ Open the App and click Find My Path for the solution model will be visible to wo
     <string name="dimenssion_">"DIMENSION: "</string>
     <string name="edge_weight_type">"EDGE_WEIGHT_TYPE: "</string>
     <string name="node_coord_section">NODE_COORD_SECTION\n</string>
-    <string name="undefined_output">Action have no defined output yet...</string>
+    <string name="undefined_output">Action have no defined output yet…</string>
     <string name="path">Path:  </string>
     <string name="distances_by_u">\nTotal distance(cost) by you \t</string>
     <string name="distance_by_alg">\nExpected distance(cost) is </string>
@@ -178,7 +178,7 @@ Open the App and click Find My Path for the solution model will be visible to wo
     <string name="intro_g2_t">Select Level</string>
     <string name="intro_g2_m">Chose a level from the unlock levels. Play more to unlock more</string>
     <string name="intro_g3_t">Playing the Game</string>
-    <string name="intro_g3_m">To play, connect all points together by touching one after another... Use the plus and the minus button to zoom in and out</string>
+    <string name="intro_g3_m">To play, connect all points together by touching one after another… Use the plus and the minus button to zoom in and out</string>
     <string name="intro_g4_t">Player Wining</string>
     <string name="intro_g4_m">Play to win as you follow the shortest path</string>
     <string name="intro_g5_t">Player Win</string>

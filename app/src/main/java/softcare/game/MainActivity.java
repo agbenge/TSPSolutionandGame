@@ -1,6 +1,5 @@
 package softcare.game;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,19 +7,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.Calendar;
-import java.util.Date;
-
 import softcare.gui.StyleDialog;
-import softcare.util.Util;
 
 public class MainActivity extends AppCompatActivity{
    private boolean soundState;
