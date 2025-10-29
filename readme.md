@@ -1,15 +1,23 @@
-md
-### What's New in Path Finder Puzzle 2.0.0
+🌟 Version 2.0.0 — Major Update!
 
-Welcome to a major update! We've renamed the app to **Path Finder Puzzle** and packed this release with new features, improvements, and important fixes to make your puzzle-solving experience even better.
+Release Date: October 27, 2025
 
-#### ✨ New Features*   **A Fresh, New Look with Emojis:** We've replaced the simple letters in the game grid with fun and colorful emojis! This makes the game more visually engaging and enjoyable to play.
+This update brings exciting improvements, a brand-new puzzle feature, and smoother gameplay all around. Here’s what’s new:
 
-#### 🚀 Improvements
+🧩 New Features
 
-*   **New App Name:** To better reflect the game's core experience, "Path Finder" is now officially **"Path Finder Puzzle"**.
-*   **Under-the-Hood Enhancements:** We've refactored how city data is managed, leading to better performance and improved stability throughout the app.
+Puzzle Mode Added! Challenge yourself with fun city-based puzzles.
 
-#### 🛠️ Bug Fixes
+City Info Update: Each city now includes its name and unique emoji icons instead of plain letters.
 
-*   **Correct Solution Distances:** Fixed a critical bug where the distances between cities were not displaying correctly in the final puzzle solutions.
+⚙️ Improvements
+
+Optimized game performance and reduced unnecessary resource usage.
+
+Better "Win" and "Lose" messages for a clearer experience.
+
+Improved app behavior when pressing the back button.
+
+Enhanced location logic for unique city points.
+
+Codebase refined and dependencies updated for faster, more stable performance.
