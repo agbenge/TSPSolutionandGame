@@ -26,8 +26,6 @@ public class MainActivity extends AppCompatActivity{
         gameSettings = getSharedPreferences("game_settings",
                  Activity.MODE_PRIVATE);
 
-
-        findViewById(R.id.solution_btn).setOnClickListener(this::solution);
         findViewById(R.id.game_btn).setOnClickListener(this::game);
         findViewById(R.id.contact_us_btn).setOnClickListener(this::contactUs);
         findViewById(R.id.help_btn).setOnClickListener(this::help);
@@ -132,9 +130,7 @@ public class MainActivity extends AppCompatActivity{
     public  void game(View v){
         startActivity(new Intent(this, GameActivity.class));
     }
-    public  void solution(View v){
- startActivity(new Intent(this, SolutionActivity.class));
-    }
+
 
     public void about(View v) {
 
@@ -145,7 +141,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
     public void help(View v ) {
-        startActivity(new Intent(this, IntroMain.class));
+        startActivity(new Intent(this, IntroGameSlides.class));
     }
  //   final private String prefName = "game_settings";
 //    public  boolean  reinstallOn(int day, int month, int year){

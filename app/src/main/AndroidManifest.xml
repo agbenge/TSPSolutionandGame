@@ -33,14 +33,17 @@
             android:name=".IntroMain"
             android:exported="false" />
         <activity
+            android:screenOrientation="landscape"
             android:name=".IntroGameSlides"
             android:exported="false"
             android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar" />
         <activity
+            android:screenOrientation="landscape"
             android:name=".IntroSolveTspSlides"
             android:exported="false"
             android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar" />
         <activity
+            android:screenOrientation="landscape"
             android:name=".SharedGame"
             android:exported="true"
             android:label="@string/playingSharedGame" >
@@ -53,27 +56,17 @@
             </intent-filter>
         </activity>
         <activity android:name=".PlotTspActivity" />
+
         <activity
-            android:name=".AddCityMapActivity"
-            android:label="@string/addByLoadingMap"
-            android:screenOrientation="locked" />
-        <activity
+            android:screenOrientation="landscape"
             android:name=".GameActivity"
             android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar" />
-        <activity
-            android:name=".AddCityDActivity"
-            android:label="@string/addByDistances" />
-        <activity
-            android:name=".AddCityLActivity"
-            android:label="@string/addByLocation" />
-        <activity
-            android:name=".SolutionActivity"
-            android:label="@string/title_activity_solution"
-            android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar" />
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -82,15 +75,7 @@
             </intent-filter>
         </activity>
 
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true" >
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_path" />
-        </provider>
+
     </application>
 
 </manifest>

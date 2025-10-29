@@ -9,9 +9,6 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import softcare.algorithm.SalesmanGenome;
-import softcare.algorithm.Salesmensch;
 import softcare.algorithm.SelectionType;
 import softcare.algorithm.TSPNearestNeighbour;
 import softcare.algorithm.TspDynamicProgrammingIterative;
@@ -85,24 +82,7 @@ public class GameViewModel extends ViewModel {
                 break;
             }
 
-            case GEN: {
-                start = System.currentTimeMillis();
-                Salesmensch geneticAlgorithm = new
-                        Salesmensch(tsp.getCities().size(), SelectionType.ROULETTE, tsp.getDataInt(), 0, 0);
-                SalesmanGenome result = geneticAlgorithm.optimize();
-                end = System.currentTimeMillis();
-                System.out.println(result);
-                tsp.addDirection(result.getStartingCity());
-                tsp.addDirection(result.getGenome());
-                tsp.addDirection(result.getStartingCity());
-                tsp.setCost(result.getFitness());
-                duration = end - start;
-                System.out.println(duration);
 
-                tsp.setTspActions(TspCode.SOLVED);
-                tspLiveData.postValue(tsp);
-                break;
-            }
 
             case KNN: {
 
