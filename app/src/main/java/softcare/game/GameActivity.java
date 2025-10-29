@@ -597,10 +597,29 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         Gson gson = new Gson();
         String jsonTsp = gameSettings.getString(tspKey, null);
         String jsonGame = gameSettings.getString(gameKey, null);
-        if (jsonGame != null && jsonTsp != null)
-            return new GameShare(gson.fromJson(jsonTsp, Tsp.class), gson.fromJson(jsonGame, Game.class));
-
+        if (jsonGame != null && jsonTsp != null) {
+            try {
+                return new GameShare(gson.fromJson(jsonTsp, Tsp.class), gson.fromJson(jsonGame, Game.class));
+            }catch (Exception e){
+                Log.e(CodeX.tag, "Error opening game: " + e.getMessage(), e);
+              resetGame();
+            }
+        }
         return new GameShare(null, null);
+    }
+
+    private void resetGame() {
+        SharedPreferences.Editor editor = gameSettings.edit();
+        editor.putString(CodeX.bestGameKey, null);
+        editor.putString(CodeX.bestTspKey, null);
+        editor.putString(CodeX.tspKey, null);
+        editor.putString(CodeX.gameKey,null);
+        editor.apply();
+        editor.commit();
+        bestGame = null;
+        Toast.makeText(GameActivity.this,
+                "We are sorry to reset your scores(It won't happen again in the future)",
+                Toast.LENGTH_LONG).show();
     }
 
 
