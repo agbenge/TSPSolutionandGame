@@ -48,6 +48,7 @@
             tools:targetApi="24" />
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.TSPSolutionAndGame.NoActionBar"
             android:exported="true"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:resizeableActivity="true"
