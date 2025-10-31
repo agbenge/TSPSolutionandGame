@@ -64,23 +64,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
-    <TextView
-        android:id="@+id/textView15"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_dp"
-        android:background="@drawable/btn"
-        android:padding="@dimen/medium_dp"
-        android:paddingBottom="@dimen/text_margin"
-        android:text="How to Solve TSP"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:drawableTint="@color/white"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView14" />
-
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"

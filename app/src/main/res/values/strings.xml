@@ -12,11 +12,6 @@
 \n\n1.	Introduction
 \nPathFinder is a game and a problem-solving tool for TSP (Travelling salesman problem).
 \nShortest Path Game will provide you with some points (let say stations) for you to find the shortest path to move around the points(to all points). Imagine a problem of vaccines to be distributed at various airports and back to the main station, with aim of trying to minimize the cost of transportation. Tip: when playing the game aim to form a cyclic path.
-\nFind My Path (Solving tool for TSP) you will provide either the locations or distances between the locations (or cost) and the App will give you the shortest path to follow. If have an image of the map of locations you can easily load the map (snap or gallery) and point at the desired location to which want to find the shortest path.
-\nChoosing input method:
-\n•	Choose a location by typing if you have the coordinate and the distance (cost) equals the displacement (or distance by going by road is equal going by air) --- location important, graph important.
-\n•	Choose a location by loading the image when you have the map image with the locations. Note locations generated are only equivalent to the actual location.
-\n•	Choose distance when the distances or costs are known and coordinate are unknown.  Cost is important, the graph is not important.
 
 \n\n2.	Operation (User guide)
 \nA.	Playing the game.
@@ -25,12 +20,6 @@
 \nMenu (menu icon) have the preference setting about sound, keyboard, refreshing point on try again, and using timing. It also contains the highest score ever played.
 \nSharing a Game Stage: You can share your highest played game or current game to another person by press share in the Lose, game over, resume the game. The shared value will be in form of text. Once the text is received from the next user, he will highlight and share it with the game as it appeared. For example, using the Facebook web.
 
-\n\nB.	Solving a TSP problem
-Open the App and click Find My Path for the solution model will be visible to work on. Select your input method by click on the current input method which now helps you to toggle between “add by location”, “add by loading map” and “add by distance”. After changing the desire input method click on the plus icon (top right) to add. You can always clear all by clicking on the clear icon (top left). After adding the problem click on the bottom right icon to get the shortest path. ). Clear data to start afresh problem when adding a new problem.
-\nAdding by image is not incremental, which means when you add an image you are required to finish adding all the locations before clicking the finish icon (bottom right). Also, note you load an image by press the map icon (bottom left first). Now toggle add switch (bottom left, second icon) to enable adding points. You can click on the desired position on the loaded image to add points. If you made a mistake click on the third icon to remove the previous point. When you are done adding the point you can then press the bottom right icon as the finish or fourth icon from the left, it will take you back to the main TSP solution with location extracted. Note once you click add (plus icon) when “add by Loading map” is active the exiting data will be discarded.
-\nAdding Location select it to be active the click the add icon. Again click add icon (bottom left first). The next view will require you to put the latitude and longitude of the location and the location name. Click add button when done inputting the location. Again click add if you have another point. Once done adding location click the check icon (bottom right). It will take you back to the main where you can click on the right bottom icon to find the shortest path.
-\nAdding by distances or cost, select add by distance. Next, click add icon and type the only city name in the next edit text and click finish when done just like in add by location. The next will require you to add the city name and its distance to the first.  The third will require you to add the city name and its distance to the first and second. Repeatedly you add all the cities and their distances as the number of distances increment.
-\nNote a problem must have up to three cities at minimum.
   </string>
 
     <string name="action_settings">Settings</string>
