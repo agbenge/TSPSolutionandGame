@@ -1,4 +1,4 @@
-package softcare.game;
+package softcare.activities;
 
 
 import java.util.Random;

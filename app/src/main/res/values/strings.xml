@@ -266,6 +266,7 @@
   <string name="expected_best">Expected best: %.2f</string>
   <string name="went_longer">You went %.2f units longer.</string>
   <string name="path_followed">Path followed: %1$s</string>
+  <string name="close_app">close app</string>
 
 
 </resources>

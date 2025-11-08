@@ -116,7 +116,7 @@
         android:overScrollMode="ifContentScrolls"
         android:scrollbarStyle="outsideOverlay"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/options_h_scroll"
+        app:layout_constraintEnd_toStartOf="@+id/close"
         app:layout_constraintStart_toEndOf="@+id/answer_h_scroll"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -133,10 +133,10 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/bg"
 
+                android:padding="@dimen/plot_padding"
                 app:circleColor="@color/blueLight"
                 app:labelColor="@color/blueDark"
                 app:lineColor="@color/yellowDark"
-                android:padding="@dimen/plot_padding"
                 app:zoomValue="60" />
         </ScrollView>
     </HorizontalScrollView>
@@ -198,4 +198,15 @@
         app:tint="@color/white"
         android:contentDescription="@string/zoom_in" />
 
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_1"
+        android:contentDescription="@string/close_app"
+        android:padding="@dimen/fab_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/baseline_close_24"
+        app:tint="@color/red" />
 </androidx.constraintlayout.widget.ConstraintLayout>

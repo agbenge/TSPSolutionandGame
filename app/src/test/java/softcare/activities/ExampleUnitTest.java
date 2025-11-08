@@ -1,19 +1,15 @@
-package softcare.game;
-import android.util.Log;
+package softcare.activities;
 
 import com.google.gson.Gson;
 
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import softcare.game.model.CodeX;
-import softcare.game.model.Game;
-import softcare.game.model.Tsp;
+import softcare.activities.model.Game;
+import softcare.activities.model.Tsp;
 import softcare.gui.PointXY;
 
 import static org.junit.Assert.assertEquals;

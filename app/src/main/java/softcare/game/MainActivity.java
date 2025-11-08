@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
     public void help(View v ) {
-        startActivity(new Intent(this, IntroGameSlides.class));
+        startActivity(new Intent(this, IntroMain.class));
     }
  //   final private String prefName = "game_settings";
 //    public  boolean  reinstallOn(int day, int month, int year){

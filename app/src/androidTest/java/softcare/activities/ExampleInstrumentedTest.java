@@ -1,4 +1,4 @@
-package softcare.game;
+package softcare.activities;
 
 import android.content.Context;
 

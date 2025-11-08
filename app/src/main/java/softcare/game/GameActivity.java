@@ -85,8 +85,19 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
         setAnimations();
         startSound();
 
+ findViewById(R.id.close).setOnClickListener(v -> {
+     Game game = null;
+     try {
+         if (gameViewModel != null) {
+             game = gameViewModel.getGame();
+         }
+     } catch (Exception e) {
+         Log.e(CodeX.tag, "Error getting game: " + e.getMessage(), e);
+     }
 
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+     dialogBack(game);
+ });
+     getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 Game game = null;
