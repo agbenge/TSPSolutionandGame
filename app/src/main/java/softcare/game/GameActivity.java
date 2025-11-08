@@ -1010,9 +1010,9 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
             runOnUiThread(() -> selectNewGame(dialog, bestGame.getGame()));
         });
     }
-
     protected void selectNewGame(StyleDialog dialog, Game highestGame) {
         dialog.setContentView(R.layout.pop_game_resume);
+
         if (highestGame != null) {
             ((TextView) dialog.findViewById(R.id.level)).setText(String.valueOf(highestGame.getLevel()));
             ((TextView) dialog.findViewById(R.id.scores)).setText(String.valueOf(highestGame.getScores()));
@@ -1022,39 +1022,56 @@ public class GameActivity extends AppCompatActivity implements OnPointListener {
                 dialog.cancel();
                 activatePlayResume(null, null);
             });
-            dialog.show();
+
             dialog.setCancelable(false);
             dialog.show();
+
             RecyclerView recycler = dialog.findViewById(R.id.levels);
             String name = "Level";
             LevelAdapter levelAdapter = new LevelAdapter(this, name);
             recycler.setAdapter(levelAdapter);
 
-
+            // ✅ Get screen width in dp
             DisplayMetrics dm = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(dm);
+            float screenWidthDp = dm.widthPixels / dm.density;
 
+            // ✅ Choose column count based on screen width
+            int spanCount;
+            if (screenWidthDp < 360) {
+                spanCount = 3; // small phones
+            } else if (screenWidthDp < 600) {
+                spanCount = 4; // average phones
+            } else if (screenWidthDp < 840) {
+                spanCount = 5; // large phones/small tablets
+            } else {
+                spanCount = 6; // tablets and above
+            }
 
-            int spanCount = dm.densityDpi / 70;
+            // ✅ Apply GridLayoutManager with calculated span count
             GridLayoutManager gridLayoutManager = new GridLayoutManager(this, spanCount);
-            List<Integer> l = new ArrayList<>();
-            for (int i = 0; i < (Math.max(highestGame.getNodes(), 20)); i++)
-                l.add(i);
-
             recycler.setLayoutManager(gridLayoutManager);
-            levelAdapter.changeSize(highestGame.getLevel(), l);
+
+            // ✅ Load levels dynamically
+            List<Integer> levels = new ArrayList<>();
+
+            for (int i = 0; i < Math.max(highestGame.getNodes()+5, 20); i++) {
+                levels.add(i);
+            }
+
+            levelAdapter.changeSize(highestGame.getLevel(), levels);
             levelAdapter.setPointClickListener(i -> {
                 gameViewModel.newGame(i);
                 playActive(null, false);
                 dialog.cancel();
             });
+
         } else {
             dialog.cancel();
             gameViewModel.newGame(0);
         }
-
-
     }
+
     private void share( ) {
         final CharSequence[] options = {
                 getString(R.string.highestStageGame),
