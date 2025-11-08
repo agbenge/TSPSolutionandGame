@@ -8,8 +8,8 @@ android {
         applicationId "softcare.game"
         minSdkVersion 21
         targetSdkVersion 36
-        versionCode 9
-        versionName "2.0.1PC"
+        versionCode 10
+        versionName "3.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
